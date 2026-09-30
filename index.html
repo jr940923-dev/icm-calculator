@@ -321,6 +321,7 @@ main{max-width:560px;margin:0 auto;padding:4px 16px 120px}
 .icm-grid b{font-size:15px}
 .icm-status{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
 
+.lsub{display:block;font-size:11.5px;font-weight:600;color:var(--muted)}
 /* 상대 반응 */
 .rsp{display:block;margin-top:4px;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700}
 .rsp.on{border-color:var(--pri);color:var(--pri-strong)}
@@ -1916,20 +1917,27 @@ function decisionSection(){
     </section>`;
 }
 
+// 각 라인을 "실제 라인과 갈라지는 스트리트" 기준으로 실제 라인과 비교
 function linesSection(){
   const L = lastRes.lines;
   if (!L || L.length < 2 || !L.some((x, k) => k > 0 && !x.r.empty)) return "";
-  const act = L[0].r;
+  const acts = S.lines[0].acts, R0 = replay(handCfg(), acts);
+  const rows = L.map(({ line, r }, k) => {
+    if (k === 0 || r.empty) return "";
+    let d = 0; while (d < acts.length && sameAct(acts[d], line.acts[d])) d++;
+    const st = d < R0.log.length ? R0.log[d].before.street : R0.H.street;
+    const who = d < line.acts.length ? positionsFor(S.seatCount)[line.acts[d].p] : "";
+    const mine = evalAt(0, st), rr = evalAt(k, st);
+    const val = ok(rr.ev) && ok(mine.ev)
+      ? `<b>${won(rr.ev)}</b><em class="${cls(rr.ev - mine.ev)}">${sgnWon(rr.ev - mine.ev)}</em>`
+      : `<span class="muted">${rr.incomplete ? "아직 안 끝남" : rr.error || "-"}</span>`;
+    return `<div class="lsum"><span>${line.name}<small class="lsub">${STREETS[st]}에서 갈라짐${who ? ` · ${who}` : ""} · 실제 ${ok(mine.ev) ? won(mine.ev) : "-"}</small></span><span>${val}</span></div>`;
+  }).join("");
   return `
     <section class="card">
       <h2>라인 한눈에 비교</h2>
-      ${L.map(({ line, r }, k) => {
-        if (r.empty) return "";
-        const val = ok(r.ev) ? `<b>${won(r.ev)}</b>${k > 0 && ok(act.ev) ? `<em class="${cls(r.ev - act.ev)}">${sgnWon(r.ev - act.ev)}</em>` : ""}`
-          : `<span class="muted">${r.incomplete ? "아직 안 끝남" : r.error || "-"}</span>`;
-        return `<div class="lsum ${k === 0 ? "me" : ""}"><span>${line.name}${k === 0 ? " (실제)" : ""}</span><span>${val}</span></div>`;
-      }).join("")}
-      <p class="help">판단 기준 기대값이에요. 상대 레인지는 핸드 단계에서 정한 그대로 끝까지 써요.</p>
+      ${rows}
+      <p class="help">각 라인이 실제 라인과 갈라지는 스트리트 시점에서, 같은 기준으로 실제 라인과 비교한 판단 기준 기대값이에요.</p>
     </section>`;
 }
 
