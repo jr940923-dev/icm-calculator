@@ -278,6 +278,9 @@ main{max-width:560px;margin:0 auto;padding:4px 16px 120px}
 .verdict{border-radius:22px;padding:20px;margin-bottom:12px;color:#fff;box-shadow:var(--shadow)}
 .verdict.good{background:linear-gradient(135deg,#0e9f6e,#0a7453)}
 .verdict.bad{background:linear-gradient(135deg,#e2574c,#b53a32)}
+.verdict.neutral{background:linear-gradient(135deg,#56606e,#3b434e)}
+.dcard.ref{opacity:.82}
+.dcard.ref .dc-top b{color:var(--sub)}
 .vd-title{font-size:20px;font-weight:800;letter-spacing:-.02em}
 .vd-text{margin:6px 0 14px;font-size:14px;opacity:.95}
 .vd-text b{color:#fff}
@@ -469,6 +472,12 @@ function prizesList(){
   return out;
 }
 
+// 계산 중간에 잠깐 화면에 양보하기. setTimeout은 폰 미리보기·백그라운드에서 1초씩 늦어질 수 있어서 MessageChannel을 써요
+const YIELD_Q = [], YIELD_CH = new MessageChannel();
+YIELD_CH.port1.onmessage = () => { const f = YIELD_Q.shift(); if (f) f(); };
+const nextTick = () => new Promise(r => { YIELD_Q.push(r); YIELD_CH.port2.postMessage(0); });
+const paint = () => new Promise(r => { let done = false; const fin = () => { if (!done) { done = true; r(); } };
+  requestAnimationFrame(() => nextTick().then(fin)); nextTick().then(() => nextTick()).then(() => setTimeout(fin, 60)); });
 let toastTimer;
 function toast(msg){
   const t = document.getElementById("toast");
@@ -844,8 +853,10 @@ function straightHigh(m){
   return -1;
 }
 function topRanks(m, k, excl){ let v = 0, n = 0; for (let r = 12; r >= 0 && n < k; r--) if ((m >> r) & 1 && !((excl >> r) & 1)) { v = (v << 4) | r; n++; } return v; }
+const EV_RC = new Int8Array(13), EV_SC = new Int8Array(4), EV_SM = new Int32Array(4);
 function evalHand(cs){
-  const rc = [0,0,0,0,0,0,0,0,0,0,0,0,0], sc = [0,0,0,0], sm = [0,0,0,0];
+  const rc = EV_RC, sc = EV_SC, sm = EV_SM;
+  rc.fill(0); sc.fill(0); sm.fill(0);
   let mask = 0;
   for (let i = 0; i < cs.length; i++) { const c = cs[i], r = c >> 2, s = c & 3; rc[r]++; sc[s]++; sm[s] |= 1 << r; mask |= 1 << r; }
   for (let s = 0; s < 4; s++) if (sc[s] >= 5) {
@@ -907,7 +918,7 @@ function equityCalc(heroCards, villains, board, onProgress){
     }
     const TRIALS = 60000; let t = 0, done = 0;
     (function run(){
-      const end = Math.min(TRIALS, t + 4000);
+      const end = Math.min(TRIALS, t + 15000);
       while (t < end) {
         t++;
         used.fill(0);
@@ -928,7 +939,7 @@ function equityCalc(heroCards, villains, board, onProgress){
         score(); done++;
       }
       onProgress && onProgress(t / TRIALS);
-      if (t < TRIALS) setTimeout(run, 0);
+      if (t < TRIALS) nextTick().then(run);
       else resolve(done ? { share: Array.from(share, v => v / done), trials: done, exact: false } : { error: "상대 두 명의 레인지가 서로 겹쳐서 계산할 수 없어요." });
     })();
   });
@@ -1511,20 +1522,22 @@ function comboName(c1, c2){
   return a === b ? RANKS[a] + RANKS[b] : RANKS[a] + RANKS[b] + ((c1 & 3) === (c2 & 3) ? "s" : "o");
 }
 // 그 보드에서 상대 핸드가 어느 정도인지
+const HF_ALL = [], HF_SC = new Int8Array(4);
 function handFlags(hole, board){
-  const all = [hole[0], hole[1], ...board];
+  const all = HF_ALL; all.length = 0; all.push(hole[0], hole[1]);
+  let top = 0, mB = 0;
+  for (let i = 0; i < board.length; i++) { const c = board[i]; all.push(c); const r = c >> 2; if (r > top) top = r; mB |= 1 << r; }
   const vA = evalHand(all), vB = evalHand(board), cA = vA >> 20, cB = vB >> 20;
-  const hr = [hole[0] >> 2, hole[1] >> 2], top = Math.max(...board.map(c => c >> 2));
-  const made = cA > cB, pocket = hr[0] === hr[1];
-  const topPlus = made && (cA >= 3 || (cA === 2 && cB === 0) || hr.includes(top) || (pocket && hr[0] > top));
+  const h0 = hole[0] >> 2, h1 = hole[1] >> 2;
+  const made = cA > cB, pocket = h0 === h1;
+  const topPlus = made && (cA >= 3 || (cA === 2 && cB === 0) || h0 === top || h1 === top || (pocket && h0 > top));
   let draw = false;
   if (board.length < 5 && cA < 4) {
-    for (let s = 0; s < 4; s++) {
-      const n = all.filter(c => (c & 3) === s).length;
-      if (n === 4 && ((hole[0] & 3) === s || (hole[1] & 3) === s)) { draw = true; break; }
-    }
-    if (!draw) {
-      let mA = 0, mB = 0; all.forEach(c => mA |= 1 << (c >> 2)); board.forEach(c => mB |= 1 << (c >> 2));
+    HF_SC.fill(0); for (let i = 0; i < all.length; i++) HF_SC[all[i] & 3]++;
+    const s0 = hole[0] & 3, s1 = hole[1] & 3;
+    if (HF_SC[s0] === 4 || HF_SC[s1] === 4) draw = true;
+    else {
+      const mA = mB | (1 << h0) | (1 << h1);
       if (straightHigh(mA) < 0) {
         let outs = 0;
         for (let r = 0; r < 13; r++) if (!((mA >> r) & 1) && straightHigh(mA | (1 << r)) >= 0 && straightHigh(mB | (1 << r)) < 0) outs++;
@@ -1532,8 +1545,8 @@ function handFlags(hole, board){
       }
     }
   }
-  const score = made ? vA : draw ? (1 << 20) - 1 : ((Math.max(...hr) << 4) | Math.min(...hr));
-  return { made, topPlus, draw, ace: hr.includes(12), score };
+  const score = made ? vA : draw ? (1 << 20) - 1 : ((Math.max(h0, h1) << 4) | Math.min(h0, h1));
+  return { made, topPlus, draw, ace: h0 === 12 || h1 === 12, score };
 }
 function styleContinues(t, f){
   if (t === "tight") return f.topPlus;
@@ -1577,9 +1590,11 @@ function evalMix(ctx, R, line, atStreet, override, trials = 200000){
     }
     return cb;
   };
+  const bds = [null, [0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0, 0]];
+  const boardAt = st => { const a = bds[st]; for (let i = 0; i < a.length; i++) a[i] = b[i]; return a; };
   const cont = (p, cb) => {
     if (p.street === 0) return p.pre.has(comboName(cb[0], cb[1]));
-    const f = handFlags(cb, b.slice(0, [0, 3, 4, 5][p.street]));
+    const f = handFlags(cb, boardAt(p.street));
     return p.rule.t === "pct" ? f.score >= p.T : styleContinues(p.rule.t, f);
   };
   // 직접 입력한 폴드율 → 그 비율만큼 약한 쪽이 폴드하도록 기준선 맞추기
@@ -1592,7 +1607,7 @@ function evalMix(ctx, R, line, atStreet, override, trials = 200000){
       const cb = deal(t * 7 + 3);
       let reach = true;
       for (const q of pts) { if (q === p) break; if (!cont(q, cb)) { reach = false; break; } }
-      if (reach) sc.push(handFlags(cb, b.slice(0, [0, 3, 4, 5][p.street])).score);
+      if (reach) sc.push(handFlags(cb, boardAt(p.street)).score);
     }
     sc.sort((x, y) => x - y);
     p.T = sc.length ? sc[Math.min(sc.length - 1, Math.floor(p.rule.pct / 100 * sc.length))] : 0;
@@ -1615,15 +1630,22 @@ function evalMix(ctx, R, line, atStreet, override, trials = 200000){
     sdVals = { 1: outcome(1), "-1": outcome(-1), 0: outcome(0) };
   }
   let s1 = 0, s2 = 0, sc = 0, n = 0, wins = 0, ties = 0, sdN = 0;
+  const hv = [0, 0, 0, 0, 0, 0, 0], vv = [0, 0, 0, 0, 0, 0, 0];
+  const target = ctx.seTarget || 0, minT = Math.min(trials, 20000);
   for (let t = 0; t < trials; t++) {
+    if (t >= minT && t % 5000 === 0 && target) {
+      const m = s1 / n, se = Math.sqrt(Math.max(0, s2 / n - m * m) / n);
+      if (se <= target) break;
+    }
     const cb = deal(t);
     let val = null, chip = null;
     for (const p of pts) { p.reach++; if (!cont(p, cb)) { p.fold++; val = p.vFold; chip = p.cFold; break; } }
     if (val == null) {
       if (!sd) { val = endVal; chip = endChip; }
       else {
-        const sh = evalHand([heroCards[0], heroCards[1], b[0], b[1], b[2], b[3], b[4]]);
-        const sv = evalHand([cb[0], cb[1], b[0], b[1], b[2], b[3], b[4]]);
+        hv[0] = heroCards[0]; hv[1] = heroCards[1]; vv[0] = cb[0]; vv[1] = cb[1];
+        for (let i = 0; i < 5; i++) hv[i + 2] = vv[i + 2] = b[i];
+        const sh = evalHand(hv), sv = evalHand(vv);
         const res = sh > sv ? 1 : sh < sv ? -1 : 0;
         val = sdVals[res].v; chip = sdVals[res].c; sdN++; if (res > 0) wins++; else if (!res) ties++;
       }
@@ -1651,7 +1673,20 @@ function showdownEV(ctx, H, atStreet){
   const se = d.exact ? 0 : Math.sqrt(Math.max(0, d.outs.reduce((a, o) => a + o.p * o.v * o.v, 0) - ev * ev) / d.n);
   return { ev, se, outs: d.outs };
 }
-// 리버에서 공짜로 체크할 수 있을 때, 체크하면 바로 쇼다운이면 그 값을 계산
+// 리버에서 공짜로 체크할 수 있을 때: 실제 라인을 그 자리까지 가져와서 체크로 끝낸 라인으로 계산 (상대 레인지 좁히기도 똑같이 적용)
+function checkBackLine(d, st){
+  if (d.snap.street !== 3 || d.snap.cur - d.snap.bet[S.hero] > 0) return null;
+  const key = `cb:${d.k}:${st}`;
+  if (!lastRes.cache.has(key)) {
+    const line0 = S.lines[0], acts = line0.acts.slice(0, d.k).concat([{ p: S.hero, a: "x" }]);
+    const R = replay(handCfg(), acts);
+    lastRes.cache.set(key, R.H.end && R.H.end.type === "showdown" && R.valid === acts.length ? evaluateLine(lastRes.ctx, { acts, resp: line0.resp }, st) : null);
+  }
+  const r = lastRes.cache.get(key);
+  if (!r || !ok(r.ev)) return null;
+  return { ev: r.ev, se: r.se, outs: r.outs, mixed: r.mixed, calledEq: r.calledEq };
+}
+// (예전 방식) 리버에서 공짜로 체크할 수 있을 때, 체크하면 바로 쇼다운이면 그 값을 계산
 function checkBackEV(ctx, snap){
   if (snap.street !== 3 || snap.cur - snap.bet[S.hero] > 0) return null;
   const H = cloneH(snap);
@@ -1670,7 +1705,7 @@ function lineDecisions(ctx, R){
   });
   return decisions;
 }
-function evaluateLine(ctx, line, atStreet = 0, override = null, trials = 200000){
+function evaluateLine(ctx, line, atStreet = 0, override = null, trials = 80000){
   const R = replay(handCfg(), line.acts), H = R.H, h = S.hero;
   if (!line.acts.length) return { empty: true };
   if (!H.end) return { incomplete: true };
@@ -1690,7 +1725,7 @@ function evaluateLine(ctx, line, atStreet = 0, override = null, trials = 200000)
     const vis = known.slice(0, [0, 3, 4, 5][Math.min(H.street, atStreet)]);
     const dead = [];
     Object.entries(specs).forEach(([seat, sp]) => { if (sp.fixed && !live.includes(+seat)) dead.push(...sp.fixed); });
-    const d = showdownDist(H, specs, vis, dead, live.length > 2 ? 200000 : 400000);
+    const d = showdownDist(H, specs, vis, dead, live.length > 2 ? 100000 : 150000);
     if (d.error) return { error: d.error };
     outs = d.outs; exact = d.exact; trials = d.n;
   }
@@ -1721,9 +1756,10 @@ async function step6(){
     <h1 class="title">결과</h1>
     <p class="lead">내 결정을 상금 기준으로 복기해요.</p>
     <section class="card loading"><div class="spinner"></div><div id="prog">계산 중...</div></section>`;
-  await new Promise(r => setTimeout(r, 30));
+  await paint();
   const ctx = icmCtx();
   const eq = ctx.stacks.map((_, i) => icmValue(ctx.stacks, i, ctx.others, ctx.otherStack, ctx.prizes));
+  ctx.seTarget = Math.max(100, eq[S.hero] * 0.0025);
   cleanVillains();
   let equity = null;
   if (S.heroCards.every(c => c != null) && S.villains.length) {
@@ -1736,11 +1772,12 @@ async function step6(){
   if (S.villains.length) {
     for (let k = 0; k < S.lines.length; k++) {
       const el = document.getElementById("prog"); if (el) el.textContent = `라인 계산 중... (${k + 1}/${S.lines.length})`;
-      await new Promise(r => setTimeout(r, 0));
+      await nextTick();
       if (token !== calcToken) return;
       lastRes.lines.push({ line: S.lines[k], r: evalAt(k, firstStreet()) });
     }
     lastRes.actual = actualResult(ctx, S.lines[0]);
+    await precomputeDecisions(token);
   }
   if (token !== calcToken || S.step !== 6) return;
   result();
@@ -1774,44 +1811,35 @@ function allinInfo(r, d, cb){
   r.outs.forEach(o => { if (o.fs[h] === top) win += o.p; else if (o.fs[h] !== bot) tie += o.p; });
   // 손익분기 승률: 이 선택의 기대값 = 비교 대상의 기대값이 되는 승률
   let W0 = d.foldEV, L0 = d.foldEV, base = "폴드";
-  if (d.toCall <= 0 && cb) { const v0 = cb.outs.map(o => o.v); W0 = Math.max(...v0); L0 = Math.min(...v0); base = "체크"; }
+  if (d.toCall <= 0 && cb) { if (!cb.outs) return null; const v0 = cb.outs.map(o => o.v); W0 = Math.max(...v0); L0 = Math.min(...v0); base = "체크"; }
   const denom = (vWin - vLose) - (W0 - L0);
   if (denom <= 0) return null;
   const need = (L0 - vLose) / denom;
   return { eq: win + tie / 2, need: Math.min(Math.max(need, 0), 1), base };
 }
 
-function verdictSection(){
-  const L = lastRes.lines, first = L[0];
-  if (!first || !ok(first.r.ev) || !first.r.decisions.length) return "";
-  const r = first.r, base = r.decisions[0].foldEV, pos = positionsFor(S.seatCount);
-  const dec = r.ev - base, A = lastRes.actual, decNoise = 2 * (r.se || 0);
-  const hasActual = A && ok(A.v);
-  const res = hasActual ? A.v - base : null, luck = hasActual ? A.v - r.ev : null;
-  const good = dec >= -Math.max(10, decNoise);
-  let title, text, tone;
-  if (!hasActual) { title = good ? "결정은 +였어요" : "결정은 −였어요"; tone = good ? "good" : "bad";
-    text = `판단 기준으로 이 라인은 첫 자리에서 폴드했을 때보다 <b class="${cls(dec)}">${sgnWon(dec)}</b>이에요.`; }
-  else {
-    const won_ = res >= -10;
-    if (good && !won_) { title = "결과는 졌지만, 결정은 +였어요"; tone = "good"; text = "운이 나빴던 핸드예요. 같은 상황이 오면 같은 선택을 해도 돼요."; }
-    else if (good && won_) { title = "결정도 +, 결과도 +"; tone = "good"; text = "좋은 선택이 좋은 결과로 이어졌어요."; }
-    else if (!good && won_) { title = "결과는 이겼지만, 결정은 −였어요"; tone = "bad"; text = "운이 좋았던 핸드예요. 같은 선택을 반복하면 길게 보면 손해예요."; }
-    else { title = "결정도 −, 결과도 −"; tone = "bad"; text = "아래 스트리트별 결정에서 어디서 손해가 났는지 확인해보세요."; }
+// 결과 화면에 필요한 무거운 계산을 미리 하면서 진행 상황 보여주기
+async function precomputeDecisions(token){
+  const first = lastRes.lines[0];
+  if (!first || !ok(first.r.ev)) return;
+  const decs = first.r.decisions, tick = nextTick;
+  for (let i = 0; i < decs.length; i++) {
+    const d = decs[i], st = d.snap.street;
+    const el = document.getElementById("prog"); if (el) el.textContent = `내 결정 분석 중... (${i + 1}/${decs.length})`;
+    await tick(); if (token !== calcToken) return;
+    const mine = evalAt(0, st);
+    if (d.e.act.a !== "x") checkBackLine(d, st);
+    if (mine.mixed && d.e.act.a === "r") {
+      const log = mine.R.log;
+      const p = mine.pts.find(q => q.k > d.k && q.street === st && log.slice(d.k + 1, q.k).every(e => e.act.p !== S.hero));
+      if (p) for (const f of [0, 20, 40, 60, 80]) {
+        await tick(); if (token !== calcToken) return;
+        const key = `g:${p.k}:${st}:${f}`;
+        if (!lastRes.cache.has(key)) lastRes.cache.set(key, evaluateLine(lastRes.ctx, S.lines[0], st, { [p.k]: { t: "pct", pct: f } }, 25000));
+      }
+    }
   }
-  return `
-    <section class="verdict ${tone}">
-      <div class="vd-title">${tone === "good" ? "👍" : "🤔"} ${title}</div>
-      <p class="vd-text">${text}</p>
-      <div class="vd-grid">
-        <div><span>결정의 가치</span><b class="${cls(dec)}">${sgnWon(dec)}</b><small>이후 카드는 평균</small></div>
-        <div><span>실제 결과</span>${hasActual ? `<b class="${cls(res)}">${sgnWon(res)}</b><small>실제 나온 카드</small>` : `<b class="muted">-</b><small>${A && A.need ? A.need + "를 넣으면 보여요" : "계산 불가"}</small>`}</div>
-        <div><span>운</span>${hasActual ? `<b class="${cls(luck)}">${sgnWon(luck)}</b><small>결과 − 결정</small>` : `<b class="muted">-</b><small>&nbsp;</small>`}</div>
-      </div>
-      <p class="vd-foot">기준: ${pos[S.hero]} 첫 결정에서 바로 폴드했을 때 ${won(base)}</p>
-    </section>`;
 }
-
 // 내 벳·레이즈 바로 뒤 상대 반응 자리를 찾아서, 폴드율별 기대값과 손익분기 폴드율 계산
 function foldInfo(mine, d, st, bestAlt){
   if (!mine.mixed || d.e.act.a !== "r") return null;
@@ -1820,7 +1848,7 @@ function foldInfo(mine, d, st, bestAlt){
   if (!p) return null;
   const grid = [0, 20, 40, 60, 80].map(f => {
     const key = `g:${p.k}:${st}:${f}`;
-    if (!lastRes.cache.has(key)) lastRes.cache.set(key, evaluateLine(lastRes.ctx, S.lines[0], st, { [p.k]: { t: "pct", pct: f } }, 60000));
+    if (!lastRes.cache.has(key)) lastRes.cache.set(key, evaluateLine(lastRes.ctx, S.lines[0], st, { [p.k]: { t: "pct", pct: f } }, 25000));
     return { f, ev: lastRes.cache.get(key).ev };
   });
   let be = null;
@@ -1850,11 +1878,11 @@ function feHTML(fe, bestAlt){
       ${fe.calledEq != null && fe.last ? `<p class="help" style="margin:2px 0 0">콜 받았을 때 (콜한 강한 쪽 레인지 상대로) 내 승률 <b>${pct(fe.calledEq)}</b></p>` : ""}
     </div>`;
 }
-function decisionSection(){
+// 내 결정 목록 만들기. 이후 스트리트에 내 결정이 더 남아 있으면 "참고"(reliable=false)
+function buildDecisions(){
   const L = lastRes.lines, first = L[0];
-  if (!first || !ok(first.r.ev) || !first.r.decisions.length) return "";
+  if (!first || !ok(first.r.ev) || !first.r.decisions.length) return null;
   const r = first.r, acts = first.line.acts;
-  // 다른 라인이 내 결정 어디에서 갈라졌는지 찾기
   const alts = {};
   L.forEach(({ line }, li) => {
     if (li === 0) return;
@@ -1862,12 +1890,12 @@ function decisionSection(){
     if (d >= acts.length || !line.acts[d] || acts[d].p !== S.hero) return;
     (alts[d] = alts[d] || []).push({ name: line.name, li, act: line.acts[d] });
   });
-  const groups = [[], [], [], []];
-  r.decisions.forEach(d => {
+  const items = r.decisions.map(d => {
     const st = d.snap.street, mine = evalAt(0, st);
+    const reliable = !r.decisions.some(x => x.k > d.k && x.snap.street > st);
     const list = [];
     if (d.toCall > 0 && d.e.act.a !== "f") list.push({ label: "폴드했다면", ev: d.foldEV, se: 0, note: d.multi ? "남은 두 명이 팟을 반씩 가져간다고 가정" : "" });
-    const cb = d.e.act.a !== "x" ? checkBackEV(lastRes.ctx, d.snap) : null;
+    const cb = d.e.act.a !== "x" ? checkBackLine(d, st) : null;
     if (cb) list.push({ label: "체크했다면", ev: cb.ev, se: cb.se, note: "체크하고 바로 쇼다운", outs: cb.outs });
     (alts[d.k] || []).forEach(a => {
       const txt = a.act.a === "f" ? "폴드" : a.act.a === "x" ? "체크" : a.act.a === "c" ? "콜" : `${a.act.to >= d.snap.bet[S.hero] + d.snap.stack[S.hero] ? "올인" : "레이즈"} ${stackText(Math.min(a.act.to, d.snap.bet[S.hero] + d.snap.stack[S.hero]))}`;
@@ -1877,32 +1905,85 @@ function decisionSection(){
     });
     const valid = list.filter(x => ok(x.ev));
     const bestAlt = valid.length ? valid.reduce((a, b) => (b.ev > a.ev ? b : a)) : null;
-    const impact = bestAlt ? mine.ev - bestAlt.ev : null;
+    const raw = bestAlt ? mine.ev - bestAlt.ev : null;
     const noise = bestAlt ? 2 * Math.sqrt((mine.se || 0) ** 2 + (bestAlt.se || 0) ** 2) : 0;
-    const close = impact != null && Math.abs(impact) < Math.max(noise, 10);
+    const close = raw != null && Math.abs(raw) < Math.max(noise, 10);
     const info = allinInfo(mine, mine.decisions.find(x => x.k === d.k), cb);
     const fe = foldInfo(mine, d, st, bestAlt);
-    groups[st].push({ d, list, bestAlt, impact: close ? 0 : impact, close, info, fe, mineEV: mine.ev });
+    return { d, st, reliable, list, bestAlt, impact: close ? 0 : raw, close, info, fe, mineEV: mine.ev, mineSE: mine.se || 0 };
   });
+  return { r, items };
+}
+
+function verdictSection(D){
+  if (!D) return "";
+  const pos = positionsFor(S.seatCount), h = S.hero;
+  const rel = D.items.filter(x => x.reliable);
+  const judged = rel.filter(x => x.impact != null);
+  const base = lastRes.eq[h];
+  const A = lastRes.actual, hasActual = A && ok(A.v);
+  // 기대값은 믿을 수 있는 첫 결정 시점 기준
+  const anchor = rel[0] || D.items[D.items.length - 1];
+  const expect = anchor.mineEV;
+  const badList = judged.filter(x => x.impact < -10);
+  // 실수가 있으면 놓친 금액 합계, 없으면 마지막 핵심 결정이 다음 선택보다 얼마나 나았는지
+  const decVal = !judged.length ? null : badList.length ? badList.reduce((a, x) => a + x.impact, 0) : judged[judged.length - 1].impact;
+  const luck = hasActual ? A.v - expect : null, res = hasActual ? A.v - base : null;
+  const bad = judged.filter(x => x.impact < -10);
+  const good = decVal != null && !bad.length;
+  let title, text, tone;
+  if (decVal == null) {
+    title = "판단할 수 있는 결정이 없어요"; tone = "neutral";
+    text = "마지막 결정과 비교할 다른 선택이 없어요. 라인 화면에서 <b>↳ 다르게</b>로 다른 선택을 만들어보세요.";
+  } else {
+    const worst = bad.slice().sort((a, b) => a.impact - b.impact)[0];
+    const where = worst ? `${STREETS[worst.st]} ${actText(worst.d.e)}에서 ${won(-worst.impact)} 손해` : "";
+    if (!hasActual) { title = good ? "결정은 좋았어요" : "결정에 손해가 있었어요"; tone = good ? "good" : "bad"; text = good ? "믿을 수 있는 결정들이 모두 가장 좋은 선택이거나 비슷했어요." : where + "가 있었어요."; }
+    else if (good && luck < -10) { title = "결과는 나빴지만, 결정은 좋았어요"; tone = "good"; text = "운이 나빴던 핸드예요. 같은 상황이 오면 같은 선택을 해도 돼요."; }
+    else if (good) { title = "결정도 좋고, 결과도 좋았어요"; tone = "good"; text = "좋은 선택이 좋은 결과로 이어졌어요."; }
+    else if (luck >= -10) { title = "결과는 좋았지만, 결정은 −였어요"; tone = "bad"; text = `운이 좋았던 핸드예요. ${where}가 있었어요.`; }
+    else { title = "결정도 −, 결과도 −"; tone = "bad"; text = `${where}가 있었어요.`; }
+  }
+  return `
+    <section class="verdict ${tone}">
+      <div class="vd-title">${tone === "good" ? "👍" : tone === "bad" ? "🤔" : "💡"} ${title}</div>
+      <p class="vd-text">${text}</p>
+      <div class="vd-grid">
+        <div><span>결정의 가치</span>${decVal != null ? `<b class="${cls(decVal)}">${sgnWon(decVal)}</b><small>${badList.length ? "놓친 기대값" : "다음 선택보다"}</small>` : `<b class="muted">-</b><small>비교 대상 없음</small>`}</div>
+        <div><span>운</span>${hasActual ? `<b class="${cls(luck)}">${sgnWon(luck)}</b><small>실제 − 기대값</small>` : `<b class="muted">-</b><small>${A && A.need ? A.need + " 필요" : "계산 불가"}</small>`}</div>
+        <div><span>실제 결과</span>${hasActual ? `<b class="${cls(res)}">${sgnWon(res)}</b><small>핸드 전 대비</small>` : `<b class="muted">-</b><small>&nbsp;</small>`}</div>
+      </div>
+      <p class="vd-foot">판단 기준: ${STREETS[anchor.st]} ${actText(anchor.d.e)}부터${D.items.some(x => !x.reliable) ? " · 그 전 결정은 참고용" : ""}</p>
+    </section>`;
+}
+
+function decisionSection(D){
+  if (!D) return "";
+  const groups = [[], [], [], []];
+  D.items.forEach(x => groups[x.st].push(x));
   const sgroups = groups.map((items, st) => {
     if (!items.length) return "";
-    const lost = items.filter(x => x.impact != null && x.impact < -10).reduce((a, x) => a + x.impact, 0);
-    const any = items.some(x => x.impact != null);
+    const rel = items.filter(x => x.reliable);
+    const lost = rel.filter(x => x.impact != null && x.impact < -10).reduce((a, x) => a + x.impact, 0);
+    const any = rel.some(x => x.impact != null);
+    const head = !rel.length ? `<span class="muted">참고</span>` : !any ? `<span class="muted">비교 없음</span>` : lost < 0 ? `<span class="neg">${won(-lost)} 놓침</span>` : `<span class="pos">✓ 최선</span>`;
     return `
       <div class="sgrp">
-        <div class="sg-head"><b>${STREETS[st]}</b>${!any ? `<span class="muted">비교 없음</span>` : lost < 0 ? `<span class="neg">${won(-lost)} 놓침</span>` : `<span class="pos">✓ 최선</span>`}</div>
-        ${items.map(({ d, list, bestAlt, impact, close, info, fe, mineEV }) => `
-          <div class="dcard">
+        <div class="sg-head"><b>${STREETS[st]}</b>${head}</div>
+        ${items.map(({ d, reliable, list, bestAlt, impact, close, info, fe, mineEV }) => `
+          <div class="dcard ${reliable ? "" : "ref"}">
             <div class="dc-top"><b>${actText(d.e)}</b>
-              ${impact == null ? `<span class="chip">비교 대상 없음</span>`
+              ${!reliable ? `<span class="chip">참고</span>`
+                : impact == null ? `<span class="chip">비교 대상 없음</span>`
                 : close ? `<span class="chip">≈ 비슷해요</span>`
                 : impact >= -10 ? `<span class="chip good">✓ 최선 ${Math.abs(impact) >= 10 ? "+" + won(impact) : ""}</span>`
                 : `<span class="chip bad">✗ ${won(-impact)} 손해</span>`}
             </div>
+            ${!reliable ? `<p class="help" style="margin:0 0 6px">이후 스트리트의 내 행동을 모든 카드에서 똑같다고 보고 계산한 값이에요. 드로우·커넥터처럼 맞았을 때만 크게 이기는 핸드는 낮게 나올 수 있어요.</p>` : ""}
             <div class="alt me"><span>이렇게 했을 때 (실제)</span><span>${won(mineEV)}</span></div>
             ${list.map(x => `<div class="alt"><span>${x.label}${x.note ? `<small>${x.note}</small>` : ""}</span>${ok(x.ev) ? `<span>${won(x.ev)} <em class="${cls(x.ev - mineEV)}">${sgnWon(x.ev - mineEV)}</em></span>` : "<span>-</span>"}</div>`).join("")}
-            ${close ? `<p class="help" style="margin:6px 0 0">가장 좋은 다른 선택(${bestAlt.label.replace("했다면", "")})과 차이가 오차 범위 안이라, 어느 쪽이 낫다고 말하기 어려워요.</p>` : ""}
-            ${!list.length ? `<p class="help" style="margin:6px 0 0">다른 선택과 비교하려면 라인 화면에서 이 액션 옆 <b>↳ 다르게</b>를 눌러 라인을 만들어보세요.</p>` : ""}
+            ${reliable && close ? `<p class="help" style="margin:6px 0 0">가장 좋은 다른 선택(${bestAlt.label.replace("했다면", "")})과 차이가 오차 범위 안이라, 어느 쪽이 낫다고 말하기 어려워요.</p>` : ""}
+            ${reliable && !list.length ? `<p class="help" style="margin:6px 0 0">다른 선택과 비교하려면 라인 화면에서 이 액션 옆 <b>↳ 다르게</b>를 눌러 라인을 만들어보세요.</p>` : ""}
             ${fe ? feHTML(fe, bestAlt) : ""}
             ${info ? `<div class="eqline">콜 받았을 때 내 승률 <b>${pct(info.eq)}</b> · ${info.base}보다 나으려면 필요한 승률 <b>${pct(info.need)}</b>
               <span class="${info.eq >= info.need ? "pos" : "neg"}">${info.eq >= info.need ? "→ 충분해요" : "→ 부족해요"}</span></div>` : ""}
@@ -1942,6 +2023,7 @@ function linesSection(){
 }
 
 function result(){
+  const D = buildDecisions();
   const R = lastRes, C = R.ctx, n = S.seatCount, N = S.total, pos = positionsFor(n), h = S.hero;
   const pool = C.prizes.reduce((a, b) => a + b, 0);
   const heroEq = R.eq[h], fair = pool * C.stacks[h] / C.totalChips, diff = heroEq - fair;
@@ -1961,8 +2043,8 @@ function result(){
     <h1 class="title">결과</h1>
     <p class="lead">내 결정을 상금 기준으로 복기해요.</p>
 
-    ${verdictSection()}
-    ${decisionSection()}
+    ${verdictSection(D)}
+    ${decisionSection(D)}
     ${lineErr}
     ${linesSection()}
     ${equitySection(R.equity)}
