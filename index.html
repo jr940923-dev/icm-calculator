@@ -1509,13 +1509,25 @@ function respLabel(r){ return r.t === "pct" ? `폴드 ${r.pct}%` : STYLE[r.t]; }
 function responsePoints(R){
   const h = S.hero, pts = [];
   R.log.forEach((e, k) => {
-    if (e.act.p === h || (e.act.a !== "c" && e.act.a !== "r")) return;
+    if (e.act.p === h || (e.act.a !== "c" && e.act.a !== "r" && e.act.a !== "f")) return;
     const b = e.before;
     if (b.aggr !== h) return;
     if (b.parts.filter(i => i !== h && !b.folded[i]).length !== 1) return;
-    pts.push({ k, street: b.street, seat: e.act.p });
+    pts.push({ k, street: b.street, seat: e.act.p, folded: e.act.a === "f" });
   });
   return pts;
+}
+// 이 자리에서 콜했다면: 콜한 뒤 남은 스트리트는 모두 체크로 쇼다운까지 간다고 가정
+function callThrough(snap, seat){
+  const H = cloneH(snap);
+  if (applyAct(H, { p: seat, a: "c" })) return null;
+  let extra = 0;
+  while (!H.end && H.toAct != null && extra < 30) {
+    const i = H.toAct;
+    if (applyAct(H, { p: i, a: H.cur - H.bet[i] > 0 ? "c" : "x" })) return null;
+    extra++;
+  }
+  return H.end && H.end.type === "showdown" ? { H, approx: extra > 0 } : null;
 }
 function comboName(c1, c2){
   let a = c1 >> 2, b = c2 >> 2; if (a < b) { const t = a; a = b; b = t; }
@@ -1564,7 +1576,14 @@ function evalMix(ctx, R, line, atStreet, override, trials = 200000){
   const H = R.H, h = S.hero;
   const pts = responsePoints(R).map(p => ({ ...p, rule: (override && override[p.k]) || respOf(line, p.k) }));
   const specs = specsFor("decision"), v = pts[0].seat, vObj = S.villains.find(x => x.seat === v);
-  const sd = H.end.type === "showdown";
+  const lastPt = pts[pts.length - 1];
+  let term = H, approx = false;
+  if (lastPt.folded) {
+    const ct = callThrough(R.snaps[lastPt.k], lastPt.seat);
+    if (!ct) return { error: "상대가 콜했을 경우를 계산할 수 없어요." };
+    term = ct.H; approx = ct.approx;
+  }
+  const sd = term.end.type === "showdown";
   const heroCards = specs[h] && specs[h].fixed;
   if (sd && !heroCards) return { error: "쇼다운까지 가는 라인이라 내 핸드가 필요해요." };
   if (!vObj) return { error: "상대 정보를 찾을 수 없어요." };
@@ -1614,11 +1633,11 @@ function evalMix(ctx, R, line, atStreet, override, trials = 200000){
   }
   // 끝까지 갔을 때의 값
   let endVal = null, endChip = null, sdVals = null;
-  if (!sd) { const fs = H.stack.slice(); fs[H.end.winner] += potOf(H); endVal = heroValue(ctx, fs); endChip = fs[h]; }
+  if (!sd) { const fs = term.stack.slice(); fs[term.end.winner] += potOf(term); endVal = heroValue(ctx, fs); endChip = fs[h]; }
   else {
-    const slices = potSlices(H);
+    const slices = potSlices(term);
     const outcome = res => { // res: 1 내가 이김, -1 짐, 0 비김
-      const fs = H.stack.slice();
+      const fs = term.stack.slice();
       for (const s of slices) {
         const el = s.elig;
         if (el.length === 1) { fs[el[0]] += s.amt; continue; }
@@ -1656,7 +1675,7 @@ function evalMix(ctx, R, line, atStreet, override, trials = 200000){
   return {
     ev, se: Math.sqrt(Math.max(0, s2 / n - ev * ev) / n), chip: sc / n - ctx.stacks[h], exact: false, mixed: true,
     pts: pts.map(p => ({ k: p.k, street: p.street, rule: p.rule, foldRate: p.reach ? p.fold / p.reach : 0 })),
-    calledEq: sdN ? (wins + ties / 2) / sdN : null
+    calledEq: sdN ? (wins + ties / 2) / sdN : null, approx, termShowdown: sd
   };
 }
 
@@ -1712,7 +1731,7 @@ function evaluateLine(ctx, line, atStreet = 0, override = null, trials = 80000){
   if (responsePoints(R).length) {
     const m = evalMix(ctx, R, line, atStreet, override, trials);
     if (m.error) return m;
-    return { ...m, decisions: lineDecisions(ctx, R), R, showdown: H.end.type === "showdown" };
+    return { ...m, decisions: lineDecisions(ctx, R), R, showdown: H.end.type === "showdown" || m.termShowdown };
   }
   let outs, exact = true;
   trials = 1;
@@ -1878,6 +1897,34 @@ function feHTML(fe, bestAlt){
       ${fe.calledEq != null && fe.last ? `<p class="help" style="margin:2px 0 0">콜 받았을 때 (콜한 강한 쪽 레인지 상대로) 내 승률 <b>${pct(fe.calledEq)}</b></p>` : ""}
     </div>`;
 }
+// 내가 폴드한 자리에서 "콜했다면": 실제 라인을 그 자리까지 가져와서 콜 → (남으면) 체크다운
+function callLine(d, st){
+  const key = `call:${d.k}:${st}`;
+  if (!lastRes.cache.has(key)) {
+    const line0 = S.lines[0], acts = line0.acts.slice(0, d.k).concat([{ p: S.hero, a: "c" }]);
+    let R = replay(handCfg(), acts), extra = 0;
+    while (R.valid === acts.length && !R.H.end && R.H.toAct != null && extra < 30) {
+      const i = R.H.toAct; acts.push({ p: i, a: R.H.cur - R.H.bet[i] > 0 ? "c" : "x" }); extra++;
+      R = replay(handCfg(), acts);
+    }
+    const okLine = R.valid === acts.length && R.H.end;
+    lastRes.cache.set(key, okLine ? { r: evaluateLine(lastRes.ctx, { acts, resp: line0.resp }, st), approx: extra > 0 } : null);
+  }
+  return lastRes.cache.get(key);
+}
+// 콜 vs 폴드: ICM 기준 필요 승률, 칩 기준 필요 승률, 내 승률
+function callNeedInfo(r, d){
+  if (!r || !r.outs || !r.showdown) return null;
+  const live = r.R.H.parts.filter(i => !r.R.H.folded[i]);
+  if (live.length !== 2) return null;
+  const h = S.hero, vs = r.outs.map(o => o.v), cs = r.outs.map(o => o.fs[h]);
+  const vWin = Math.max(...vs), vLose = Math.min(...vs), cWin = Math.max(...cs), cLose = Math.min(...cs);
+  if (vWin - vLose < 1 || cWin - cLose < 1) return null;
+  let win = 0, tie = 0;
+  r.outs.forEach(o => { if (o.fs[h] === cWin) win += o.p; else if (o.fs[h] !== cLose) tie += o.p; });
+  const clamp = x => Math.min(Math.max(x, 0), 1);
+  return { eq: win + tie / 2, need: clamp((d.foldEV - vLose) / (vWin - vLose)), chipNeed: clamp((d.snap.stack[h] - cLose) / (cWin - cLose)) };
+}
 // 내 결정 목록 만들기. 이후 스트리트에 내 결정이 더 남아 있으면 "참고"(reliable=false)
 function buildDecisions(){
   const L = lastRes.lines, first = L[0];
@@ -1895,6 +1942,14 @@ function buildDecisions(){
     const reliable = !r.decisions.some(x => x.k > d.k && x.snap.street > st);
     const list = [];
     if (d.toCall > 0 && d.e.act.a !== "f") list.push({ label: "폴드했다면", ev: d.foldEV, se: 0, note: d.multi ? "남은 두 명이 팟을 반씩 가져간다고 가정" : "" });
+    let callInfo = null;
+    if (d.e.act.a === "f" && d.toCall > 0) {
+      const cl = callLine(d, st);
+      if (cl && ok(cl.r.ev)) {
+        list.push({ label: "콜했다면", ev: cl.r.ev, se: cl.r.se || 0, note: cl.approx ? "콜하고 체크다운 가정 (근사)" : "콜하면 바로 쇼다운" });
+        callInfo = callNeedInfo(cl.r, d);
+      } else if (cl && cl.r.error) list.push({ label: "콜했다면", ev: null, note: cl.r.error });
+    }
     const cb = d.e.act.a !== "x" ? checkBackLine(d, st) : null;
     if (cb) list.push({ label: "체크했다면", ev: cb.ev, se: cb.se, note: "체크하고 바로 쇼다운", outs: cb.outs });
     (alts[d.k] || []).forEach(a => {
@@ -1910,7 +1965,8 @@ function buildDecisions(){
     const close = raw != null && Math.abs(raw) < Math.max(noise, 10);
     const info = allinInfo(mine, mine.decisions.find(x => x.k === d.k), cb);
     const fe = foldInfo(mine, d, st, bestAlt);
-    return { d, st, reliable, list, bestAlt, impact: close ? 0 : raw, close, info, fe, mineEV: mine.ev, mineSE: mine.se || 0 };
+    if (!callInfo && d.toCall > 0 && d.e.act.a === "c") callInfo = mine.outs ? callNeedInfo(mine, d) : null;
+    return { d, st, reliable, list, bestAlt, impact: close ? 0 : raw, close, info: callInfo ? null : info, callInfo, fe, mineEV: mine.ev, mineSE: mine.se || 0 };
   });
   return { r, items };
 }
@@ -1938,7 +1994,8 @@ function verdictSection(D){
   } else {
     const worst = bad.slice().sort((a, b) => a.impact - b.impact)[0];
     const where = worst ? `${STREETS[worst.st]} ${actText(worst.d.e)}에서 ${won(-worst.impact)} 손해` : "";
-    if (!hasActual) { title = good ? "결정은 좋았어요" : "결정에 손해가 있었어요"; tone = good ? "good" : "bad"; text = good ? "믿을 수 있는 결정들이 모두 가장 좋은 선택이거나 비슷했어요." : where + "가 있었어요."; }
+    if (hasActual && Math.abs(luck) < 10) { title = good ? "결정이 좋았어요" : "결정에 손해가 있었어요"; tone = good ? "good" : "bad"; text = good ? "운이 끼어들 여지가 없는 결정이었고, ICM까지 따져봤을 때 가장 좋은 선택이었어요." : where + "가 있었어요."; }
+    else if (!hasActual) { title = good ? "결정은 좋았어요" : "결정에 손해가 있었어요"; tone = good ? "good" : "bad"; text = good ? "믿을 수 있는 결정들이 모두 가장 좋은 선택이거나 비슷했어요." : where + "가 있었어요."; }
     else if (good && luck < -10) { title = "결과는 나빴지만, 결정은 좋았어요"; tone = "good"; text = "운이 나빴던 핸드예요. 같은 상황이 오면 같은 선택을 해도 돼요."; }
     else if (good) { title = "결정도 좋고, 결과도 좋았어요"; tone = "good"; text = "좋은 선택이 좋은 결과로 이어졌어요."; }
     else if (luck >= -10) { title = "결과는 좋았지만, 결정은 −였어요"; tone = "bad"; text = `운이 좋았던 핸드예요. ${where}가 있었어요.`; }
@@ -1957,6 +2014,15 @@ function verdictSection(D){
     </section>`;
 }
 
+function callInfoHTML(ci){
+  const icmCall = ci.eq >= ci.need, chipCall = ci.eq >= ci.chipNeed;
+  const msg = icmCall ? "콜이 맞아요" : chipCall ? "칩으로는 콜이지만, ICM 때문에 폴드가 맞아요" : "폴드가 맞아요";
+  return `<div class="eqline">
+    <div>콜 받았을 때 내 승률 <b>${pct(ci.eq)}</b></div>
+    <div>콜에 필요한 승률 · ICM 기준 <b>${pct(ci.need)}</b> · 칩으로만 보면 <b>${pct(ci.chipNeed)}</b></div>
+    <div class="${icmCall ? "pos" : "neg"}" style="font-weight:800;margin-top:2px">→ ${msg}</div>
+  </div>`;
+}
 function decisionSection(D){
   if (!D) return "";
   const groups = [[], [], [], []];
@@ -1970,7 +2036,7 @@ function decisionSection(D){
     return `
       <div class="sgrp">
         <div class="sg-head"><b>${STREETS[st]}</b>${head}</div>
-        ${items.map(({ d, reliable, list, bestAlt, impact, close, info, fe, mineEV }) => `
+        ${items.map(({ d, reliable, list, bestAlt, impact, close, info, callInfo, fe, mineEV }) => `
           <div class="dcard ${reliable ? "" : "ref"}">
             <div class="dc-top"><b>${actText(d.e)}</b>
               ${!reliable ? `<span class="chip">참고</span>`
@@ -1985,6 +2051,7 @@ function decisionSection(D){
             ${reliable && close ? `<p class="help" style="margin:6px 0 0">가장 좋은 다른 선택(${bestAlt.label.replace("했다면", "")})과 차이가 오차 범위 안이라, 어느 쪽이 낫다고 말하기 어려워요.</p>` : ""}
             ${reliable && !list.length ? `<p class="help" style="margin:6px 0 0">다른 선택과 비교하려면 라인 화면에서 이 액션 옆 <b>↳ 다르게</b>를 눌러 라인을 만들어보세요.</p>` : ""}
             ${fe ? feHTML(fe, bestAlt) : ""}
+            ${callInfo ? callInfoHTML(callInfo) : ""}
             ${info ? `<div class="eqline">콜 받았을 때 내 승률 <b>${pct(info.eq)}</b> · ${info.base}보다 나으려면 필요한 승률 <b>${pct(info.need)}</b>
               <span class="${info.eq >= info.need ? "pos" : "neg"}">${info.eq >= info.need ? "→ 충분해요" : "→ 부족해요"}</span></div>` : ""}
           </div>`).join("")}
