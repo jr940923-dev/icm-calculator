@@ -5,7 +5,7 @@ name: Android APK
 
 on:
   push:
-    paths: ["index.html", "icon.png", "icon-fg.png", "debug.keystore", ".github/workflows/android.yml"]
+    paths: ["*.html", "icon.png", "icon-fg.png", "debug.keystore", ".github/workflows/android.yml"]
   workflow_dispatch:
 
 permissions:
@@ -33,7 +33,7 @@ jobs:
       - name: 앱 프로젝트 만들기 (Capacitor)
         run: |
           mkdir -p app/www
-          cp index.html app/www/index.html
+          cp *.html app/www/
           cd app
           npm init -y > /dev/null
           npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7 @capacitor/app@7 @capacitor/share@7 @capacitor/filesystem@7
