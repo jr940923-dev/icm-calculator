@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>사용법 · ICM 계산기</title>
+<style>
+:root{--bg:#f2f4f6;--card:#fff;--text:#191f28;--sub:#4e5968;--muted:#8b95a1;--line:#e5e8eb;--pri:#0e9f6e;--pri-soft:#e3f6ee}
+@media (prefers-color-scheme: dark){:root{--bg:#101214;--card:#1b1e22;--text:#eceef0;--sub:#b0b8c1;--muted:#7f8893;--line:#2b2f34;--pri:#2fbf8a;--pri-soft:#143a2d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Noto Sans KR","Hiragino Sans","Noto Sans JP",sans-serif;-webkit-text-size-adjust:100%}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.brand{font-weight:800;font-size:16px;color:var(--pri);text-decoration:none}
+.tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px}
+.tabs button{border:0;background:none;color:var(--sub);font:inherit;font-size:13px;font-weight:700;padding:5px 11px;border-radius:999px;cursor:pointer}
+.tabs button.on{background:var(--pri);color:#fff}
+article{display:none;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 20px}
+article.on{display:block}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.02em}
+.date{color:var(--muted);font-size:13px;margin:0 0 18px}
+.lead{background:var(--pri-soft);border-radius:12px;padding:12px 14px;margin:0 0 18px;font-weight:600}
+h2{font-size:16px;margin:22px 0 6px}
+p,li{color:var(--sub)}
+p{margin:0 0 8px}
+ul{margin:0 0 8px;padding-left:20px}
+a{color:var(--pri)}
+body.embed{background:var(--card)}
+body.embed .top,body.embed h1{display:none}
+body.embed .wrap{padding:14px 18px 40px}
+body.embed article{border:0;padding:4px 2px 16px;background:none}
+.ex{background:var(--bg);border-radius:12px;padding:12px 14px;margin:10px 0 8px}
+.ex p{margin:0 0 6px}.ex p:last-child{margin:0}
+table{width:100%;border-collapse:collapse;margin:8px 0 10px;font-size:14px}
+th,td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top;color:var(--sub)}
+th{color:var(--text);background:var(--bg)}
+small{color:var(--muted)}
+.gnav{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.gnav a{flex:1 1 auto;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-decoration:none;font-weight:700;font-size:14px}
+.gnav a.go{background:var(--pri);color:#fff;border-color:var(--pri)}
+body.embed .gnav{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="./">♠ ICM 계산기</a>
+    <div class="tabs"><button data-l="ko">한국어</button><button data-l="ja">日本語</button><button data-l="en">English</button></div>
+  </div>
+
+  <article data-l="ko">
+    <h1>사용법</h1>
+    <p class="date">휴식 시간 5분이면 핸드 하나를 복기할 수 있어요</p>
+    <p class="lead">6단계로 상황을 입력하면, 그 핸드에서 내린 결정 하나하나가 <b>상금 기준으로 +인지 −인지</b> 알려줘요. 기억나지 않는 값은 비워둬도 평균값으로 계산해요.</p>
+    
+    <h2>1. 대회</h2>
+    <ul>
+      <li><b>블라인드·앤티</b>: 핸드 당시 레벨을 넣어요. BB 앤티는 BB 자리가 한 번에 내는 방식이에요.</li>
+      <li><b>남은 상금</b>: 아직 지급되지 않은 순위의 상금만 넣어요. 같은 금액을 받는 순위가 여러 개면 <b>인원</b>만 늘리면 돼요. (예: 10~18위가 모두 30만 원 → 30만 원, 인원 9)</li>
+      <li>숫자는 <b>5만, 1.2억</b>처럼 입력해도 돼요.</li>
+    </ul>
+    
+    <h2>2. 인원</h2>
+    <ul>
+      <li><b>남은 총 인원</b>과 <b>에버리지 스택</b>: 대회 화면이나 시계에 나오는 값을 넣어요. 이 두 값으로 다른 테이블 사람들까지 계산에 넣어요.</li>
+      <li><b>테이블 인원</b>: 그 핸드 때 내 테이블에 앉아 있던 사람 수예요.</li>
+    </ul>
+    
+    <h2>3. 테이블</h2>
+    <p>자리를 눌러 <b>내 자리</b>를 고르고, 기억나는 스택만 고쳐요. 나머지는 에버리지로 계산해요. 위쪽 <b>BB / 칩</b> 버튼으로 BB 단위와 칩 단위를 오갈 수 있어요.</p>
+    
+    <h2>4. 핸드</h2>
+    <ul>
+      <li><b>내 핸드</b>와 <b>팟에 들어온 상대</b>(최대 2명)를 골라요.</li>
+      <li>상대는 <b>레인지</b>로 넣는 게 기본이에요. 포지션별 평균 오픈 레인지가 자동으로 들어가니, 3벳이나 콜 상황이면 % 를 줄여 좁혀주세요.</li>
+      <li>쇼다운으로 상대 핸드를 봤다면 <b>정확한 핸드</b>도 넣을 수 있어요. 결정 평가에는 쓰이지 않고(그때는 몰랐으니까요), <b>실제 결과와 운</b>을 계산하는 데만 쓰여요.</li>
+      <li><b>보드</b>: 깔린 카드만 넣어요. 비워둔 칸은 나올 수 있는 모든 카드로 평균을 내요.</li>
+    </ul>
+    
+    <h2>5. 라인</h2>
+    <ul>
+      <li>실제로 있었던 액션을 순서대로 넣어요. 민벳, 프리플랍 오버벳 같은 <b>불규칙한 사이즈</b>도 그대로 넣을 수 있어요.</li>
+      <li>액션 옆 <b>↳ 다르게</b>를 누르면 그 지점부터 다른 선택을 한 라인이 만들어져요. "여기서 올인했다면?", "체크했다면?"을 비교할 때 써요.</li>
+      <li>무료 버전은 라인을 2개까지 비교할 수 있어요.</li>
+      <li>폴드, 리버 체크백, 내가 폴드했을 때의 "콜했다면"은 따로 만들지 않아도 <b>자동으로 비교</b>해 줘요.</li>
+    </ul>
+    
+    <h2 id="fold">상대 반응 (폴드 성향)</h2>
+    <p>내가 벳·레이즈했는데 상대가 받았다면, 그 자리에 <b>반응</b> 버튼이 생겨요. 실제로는 상대가 콜했지만, 결정을 평가하려면 "상대가 얼마나 자주 접었을까"까지 따져야 하거든요. 내 베팅의 가치는 상대가 접는 부분과 받는 부분을 합친 값이에요.</p>
+    <table>
+      <tr><th>성향</th><th>플랍 이후</th><th>프리플랍</th></tr>
+      <tr><td><b>타이트</b></td><td>탑페어 이상만 콜</td><td>레인지 상위 40%만 계속</td></tr>
+      <tr><td><b>보통</b> (기본)</td><td>원페어·드로우까지 콜</td><td>레인지 상위 55%만 계속</td></tr>
+      <tr><td><b>콜링</b></td><td>에이스 하이도 콜</td><td>레인지 상위 70%까지 계속</td></tr>
+    </table>
+    <ul>
+      <li><b>폴드율 직접 입력</b>: "이 사람은 여기서 30%쯤 접는다"처럼 알면 숫자로 넣어요. 레인지에서 약한 핸드부터 그 비율만큼 접는 것으로 계산해요.</li>
+      <li>상대가 받은 뒤에는 <b>받은 핸드들만 남긴 좁은 레인지</b>로 다음 스트릿을 계산해요. 그래서 스트릿이 지날수록 상대 레인지가 강해져요.</li>
+      <li>잘 모르겠으면 <b>보통</b>으로 두세요. 결과 화면의 <b>폴드율별 표</b>를 보면 상대가 얼마나 접어야 내 선택이 이득인지 바로 보여요.</li>
+    </ul>
+    
+    <h2>6. 결과</h2>
+    <p>결정마다 다른 선택과 비교한 상금 기대값이 나와요. 읽는 법은 <a href="guide-result.html" data-guide="result">결과 읽는 법</a>에 자세히 정리했어요.</p>
+    
+    <h2>이런 것도 돼요</h2>
+    <ul>
+      <li><b>라인 없이 ICM만 보기</b>: 핸드·라인을 비워두고 결과로 가면 지금 스택의 상금 기대값만 보여줘요.</li>
+      <li><b>상대 입장에서 보기</b>: 나와 상대 자리를 바꿔 넣으면, 상대의 콜이나 폴드가 맞았는지도 볼 수 있어요.</li>
+      <li><b>결과 이미지 공유</b>: 결과 화면의 공유 버튼으로 요약 카드를 메신저로 보낼 수 있어요.</li>
+    </ul>
+    <nav class="gnav"><a href="guide-icm.html">ICM이란?</a><a href="guide-result.html">결과 읽는 법</a><a href="./" class=go>계산하러 가기 ›</a></nav>
+  </article>
+
+  <article data-l="ja">
+    <h1>使い方</h1>
+    <p class="date">休憩時間の5分で、ハンドを1つ振り返れます</p>
+    <p class="lead">6つのステップで状況を入力すると、そのハンドで下した判断ひとつひとつが<b>賞金ベースでプラスかマイナスか</b>を表示します。覚えていない値は空欄のままでも平均値で計算します。</p>
+    
+    <h2>1. 大会</h2>
+    <ul>
+      <li><b>ブラインド・アンティ</b>：ハンド当時のレベルを入力します。BBアンティはBBの席がまとめて支払う方式です。</li>
+      <li><b>残りの賞金</b>：まだ支払われていない順位の賞金だけを入力します。同じ金額の順位が複数ある場合は<b>人数</b>を増やすだけでOKです。（例：10〜18位がすべて3万円 → 3万円、人数9）</li>
+      <li>数字は<b>5万、1.2億</b>のようにも入力できます。</li>
+    </ul>
+    
+    <h2>2. 人数</h2>
+    <ul>
+      <li><b>残り人数（全体）</b>と<b>アベレージスタック</b>：大会の画面やクロックに表示される値を入力します。この2つで他のテーブルのプレイヤーも計算に含めます。</li>
+      <li><b>テーブル人数</b>：そのハンドの時に自分の卓に座っていた人数です。</li>
+    </ul>
+    
+    <h2>3. 卓</h2>
+    <p>席をタップして<b>自分の席</b>を選び、覚えているスタックだけ修正します。残りは平均スタックで計算します。上部の<b>BB / チップ</b>ボタンでBB単位とチップ単位を切り替えられます。</p>
+    
+    <h2>4. ハンド</h2>
+    <ul>
+      <li><b>自分のハンド</b>と<b>ポットに参加した相手</b>（最大2人）を選びます。</li>
+      <li>相手は<b>レンジ</b>で入力するのが基本です。ポジション別の平均オープンレンジが自動で入るので、3ベットやコールの場面では%を下げて絞ってください。</li>
+      <li>ショーダウンで相手のハンドを見た場合は<b>正確なハンド</b>も入力できます。判断の評価には使わず（その時は知らなかったので）、<b>実際の結果と運</b>の計算にだけ使います。</li>
+      <li><b>ボード</b>：出たカードだけ入力します。空欄は出る可能性のあるすべてのカードで平均を取ります。</li>
+    </ul>
+    
+    <h2>5. ライン</h2>
+    <ul>
+      <li>実際にあったアクションを順番に入力します。ミンベットやプリフロップのオーバーベットなど<b>変則的なサイズ</b>もそのまま入力できます。</li>
+      <li>アクションの横の<b>↳ 別の選択</b>を押すと、その地点から別の選択をしたラインが作られます。「ここでオールインしていたら？」「チェックしていたら？」を比べる時に使います。</li>
+      <li>無料版ではラインを2つまで比較できます。</li>
+      <li>フォールド、リバーのチェックバック、自分がフォールドした時の「コールしていたら」は、作らなくても<b>自動で比較</b>します。</li>
+    </ul>
+    
+    <h2 id="fold">相手の反応（フォールド傾向）</h2>
+    <p>自分がベット・レイズして相手が受けた場所には<b>反応</b>ボタンが表示されます。実際には相手はコールしましたが、判断を評価するには「相手はどのくらいの頻度で降りたか」まで考える必要があるからです。自分のベットの価値は、相手が降りる部分と受ける部分を合わせた値です。</p>
+    <table>
+      <tr><th>傾向</th><th>フロップ以降</th><th>プリフロップ</th></tr>
+      <tr><td><b>タイト</b></td><td>トップペア以上のみコール</td><td>レンジ上位40%のみ続行</td></tr>
+      <tr><td><b>普通</b>（初期値）</td><td>ワンペア・ドローまでコール</td><td>レンジ上位55%のみ続行</td></tr>
+      <tr><td><b>コーリング</b></td><td>エースハイでもコール</td><td>レンジ上位70%まで続行</td></tr>
+    </table>
+    <ul>
+      <li><b>フォールド率を直接入力</b>：「この人はここで30%くらい降りる」と分かっていれば数字で入力します。レンジの弱いハンドから、その割合だけ降りるものとして計算します。</li>
+      <li>相手が受けた後は<b>受けたハンドだけを残した狭いレンジ</b>で次のストリートを計算します。ストリートが進むほど相手のレンジは強くなります。</li>
+      <li>分からなければ<b>普通</b>のままで大丈夫です。結果画面の<b>フォールド率別の表</b>で、相手がどれだけ降りれば自分の選択が得かすぐ分かります。</li>
+    </ul>
+    
+    <h2>6. 結果</h2>
+    <p>判断ごとに、他の選択と比べた賞金期待値が表示されます。読み方は<a href="guide-result.html" data-guide="result">結果の読み方</a>で詳しく説明しています。</p>
+    
+    <h2>こんなこともできます</h2>
+    <ul>
+      <li><b>ラインなしでICMだけ見る</b>：ハンド・ラインを空欄のまま結果へ進むと、今のスタックの賞金期待値だけを表示します。</li>
+      <li><b>相手の立場で見る</b>：自分と相手の席を入れ替えて入力すると、相手のコールやフォールドが正しかったかも確認できます。</li>
+      <li><b>結果画像の共有</b>：結果画面の共有ボタンで、まとめカードをメッセンジャーに送れます。</li>
+    </ul>
+    <nav class="gnav"><a href="guide-icm.html">ICMとは？</a><a href="guide-result.html">結果の読み方</a><a href="./" class=go>計算する ›</a></nav>
+  </article>
+
+  <article data-l="en">
+    <h1>How to use</h1>
+    <p class="date">Review a hand in 5 minutes on your break</p>
+    <p class="lead">Enter the spot in 6 steps and the app tells you whether each decision you made was <b>plus or minus in prize money</b>. Anything you don't remember can be left blank; averages are used.</p>
+    
+    <h2>1. Event</h2>
+    <ul>
+      <li><b>Blinds & ante</b>: the level at the time of the hand. A BB ante is paid in one go by the big blind.</li>
+      <li><b>Remaining prizes</b>: only the places not yet paid. If several places pay the same, just raise the <b>count</b>. (e.g. 10th–18th all pay $300 → $300, count 9)</li>
+      <li>Shorthand like <b>50k or 1.2m</b> works.</li>
+    </ul>
+    
+    <h2>2. Count</h2>
+    <ul>
+      <li><b>Players left</b> and <b>average stack</b>: from the tournament clock. These two numbers bring players at other tables into the calculation.</li>
+      <li><b>Table size</b>: how many players were at your table for the hand.</li>
+    </ul>
+    
+    <h2>3. Table</h2>
+    <p>Tap a seat to choose <b>your seat</b>, and edit only the stacks you remember. Everyone else gets the average. The <b>BB / Chips</b> toggle at the top switches units.</p>
+    
+    <h2>4. Hand</h2>
+    <ul>
+      <li>Pick <b>your hand</b> and the <b>opponents in the pot</b> (up to 2).</li>
+      <li>Opponents are entered as a <b>range</b> by default. An average opening range for their position is filled in; narrow the % for 3-bet or calling spots.</li>
+      <li>If you saw their cards at showdown, you can enter the <b>exact hand</b>. It is not used to grade decisions (you didn't know it then), only for the <b>actual result and luck</b>.</li>
+      <li><b>Board</b>: only the cards that came. Blank cards are averaged over every possible card.</li>
+    </ul>
+    
+    <h2>5. Line</h2>
+    <ul>
+      <li>Enter the actions in order. <b>Odd sizes</b> such as min-bets or preflop overbets are fine.</li>
+      <li>Tap <b>↳ What if</b> next to an action to create a line with a different choice from that point. Use it for "what if I had shoved / checked here?"</li>
+      <li>The free version compares up to 2 lines.</li>
+      <li>Folding, a river check-back, and "if you had called" after you folded are <b>compared automatically</b>.</li>
+    </ul>
+    
+    <h2 id="fold">Opponent response (fold tendency)</h2>
+    <p>Where you bet or raised and the opponent continued, a <b>Response</b> button appears. They called in reality, but to grade the decision we also need to know how often they would have folded. Your bet's value combines the part where they fold and the part where they continue.</p>
+    <table>
+      <tr><th>Style</th><th>Postflop</th><th>Preflop</th></tr>
+      <tr><td><b>Tight</b></td><td>calls with top pair+</td><td>continues with top 40%</td></tr>
+      <tr><td><b>Normal</b> (default)</td><td>calls with any pair or draw</td><td>continues with top 55%</td></tr>
+      <tr><td><b>Calling station</b></td><td>calls with ace-high too</td><td>continues with top 70%</td></tr>
+    </table>
+    <ul>
+      <li><b>Enter fold % directly</b> if you have a read ("he folds here about 30%"). The weakest hands in the range fold first, up to that share.</li>
+      <li>After they continue, the next street uses <b>only the hands that continued</b>, so their range gets stronger street by street.</li>
+      <li>Not sure? Leave it on <b>Normal</b>. The <b>fold-rate table</b> in the results shows how often they must fold for your choice to profit.</li>
+    </ul>
+    
+    <h2>6. Result</h2>
+    <p>Each decision is compared with the alternatives in prize equity. See <a href="guide-result.html" data-guide="result">Reading the results</a> for details.</p>
+    
+    <h2>Also useful</h2>
+    <ul>
+      <li><b>ICM only</b>: skip hand and line and go to results to see the prize equity of the current stacks.</li>
+      <li><b>See it from their side</b>: swap your seat with the opponent's to check whether their call or fold was right.</li>
+      <li><b>Share the result</b>: the share button sends a summary card to any messenger.</li>
+    </ul>
+    <nav class="gnav"><a href="guide-icm.html">What is ICM?</a><a href="guide-result.html">Reading results</a><a href="./" class=go>Open the calculator ›</a></nav>
+  </article>
+
+</div>
+<script>
+// ▼ 문의 이메일: 여기 한 곳만 바꾸면 돼요
+const CONTACT = "";
+const q = new URLSearchParams(location.search);
+if (q.has("embed")) document.body.classList.add("embed");
+const pick = l => {
+  document.querySelectorAll("article").forEach(a => a.classList.toggle("on", a.dataset.l === l));
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("on", b.dataset.l === l));
+  document.documentElement.lang = l;
+  document.title = document.querySelector(`article[data-l="${l}"] h1`).textContent + " · ICM";
+};
+const nav = (navigator.language || "en").slice(0, 2);
+pick(["ko", "ja", "en"].includes(q.get("lang")) ? q.get("lang") : ["ko", "ja", "en"].includes(nav) ? nav : "en");
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => pick(b.dataset.l));
+document.querySelectorAll("a[data-guide]").forEach(a => a.onclick = e => {
+  if (q.has("embed") && window.parent !== window) { e.preventDefault(); window.parent.postMessage({ icmGuide: a.dataset.guide }, "*"); }
+});
+if (location.hash) setTimeout(() => { const el = document.querySelector(`article.on ${location.hash}`); if (el) el.scrollIntoView(); }, 50);
+document.querySelectorAll(".mail").forEach(s => {
+  if (CONTACT) s.innerHTML = `<a href="mailto:${CONTACT}">${CONTACT}</a>`;
+  else s.textContent = "(email)";
+});
+</script>
+</body>
+</html>

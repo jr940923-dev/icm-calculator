@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ICM이란? · ICM 계산기</title>
+<style>
+:root{--bg:#f2f4f6;--card:#fff;--text:#191f28;--sub:#4e5968;--muted:#8b95a1;--line:#e5e8eb;--pri:#0e9f6e;--pri-soft:#e3f6ee}
+@media (prefers-color-scheme: dark){:root{--bg:#101214;--card:#1b1e22;--text:#eceef0;--sub:#b0b8c1;--muted:#7f8893;--line:#2b2f34;--pri:#2fbf8a;--pri-soft:#143a2d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Noto Sans KR","Hiragino Sans","Noto Sans JP",sans-serif;-webkit-text-size-adjust:100%}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.brand{font-weight:800;font-size:16px;color:var(--pri);text-decoration:none}
+.tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px}
+.tabs button{border:0;background:none;color:var(--sub);font:inherit;font-size:13px;font-weight:700;padding:5px 11px;border-radius:999px;cursor:pointer}
+.tabs button.on{background:var(--pri);color:#fff}
+article{display:none;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 20px}
+article.on{display:block}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.02em}
+.date{color:var(--muted);font-size:13px;margin:0 0 18px}
+.lead{background:var(--pri-soft);border-radius:12px;padding:12px 14px;margin:0 0 18px;font-weight:600}
+h2{font-size:16px;margin:22px 0 6px}
+p,li{color:var(--sub)}
+p{margin:0 0 8px}
+ul{margin:0 0 8px;padding-left:20px}
+a{color:var(--pri)}
+body.embed{background:var(--card)}
+body.embed .top,body.embed h1{display:none}
+body.embed .wrap{padding:14px 18px 40px}
+body.embed article{border:0;padding:4px 2px 16px;background:none}
+.ex{background:var(--bg);border-radius:12px;padding:12px 14px;margin:10px 0 8px}
+.ex p{margin:0 0 6px}.ex p:last-child{margin:0}
+table{width:100%;border-collapse:collapse;margin:8px 0 10px;font-size:14px}
+th,td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top;color:var(--sub)}
+th{color:var(--text);background:var(--bg)}
+small{color:var(--muted)}
+.gnav{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.gnav a{flex:1 1 auto;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-decoration:none;font-weight:700;font-size:14px}
+.gnav a.go{background:var(--pri);color:#fff;border-color:var(--pri)}
+body.embed .gnav{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="./">♠ ICM 계산기</a>
+    <div class="tabs"><button data-l="ko">한국어</button><button data-l="ja">日本語</button><button data-l="en">English</button></div>
+  </div>
+
+  <article data-l="ko">
+    <h1>ICM이란?</h1>
+    <p class="date">토너먼트에서는 칩이 곧 돈이 아니에요</p>
+    <p class="lead">ICM(Independent Chip Model)은 지금 가진 칩이 <b>상금으로 치면 얼마인지</b> 계산하는 방법이에요. 토너먼트에서는 칩을 따는 기쁨보다 칩을 잃는 아픔이 더 크고, ICM은 그 차이를 숫자로 보여줘요.</p>
+    
+    <h2>왜 칩 = 돈이 아닐까요?</h2>
+    <p>캐시게임에서는 10만 원어치 칩이 그대로 10만 원이에요. 하지만 토너먼트는 칩을 모두 가져가도 <b>1등 상금</b>만 받아요. 그리고 탈락하지 않고 버티기만 해도 순위가 올라가면서 상금이 생겨요.</p>
+    <ul>
+      <li>칩을 2배로 늘려도 상금 기대값은 2배가 되지 않아요.</li>
+      <li>반대로 칩을 다 잃으면 지금까지 쌓은 상금 기대값이 한 번에 사라져요.</li>
+    </ul>
+    
+    <h2>숫자로 보면</h2>
+    <div class="ex">
+      <p><b>3명 남음 · 상금 50만 / 30만 / 20만 · 세 명 칩이 같음</b></p>
+      <p>지금 내 상금 기대값은 (50+30+20)÷3 = <b>33.3만</b>이에요.</p>
+      <p>한 명과 올인해서 <b>이기면</b> 칩이 2배가 되고 상대가 3등(20만)으로 탈락해요. 이제 2명이 남고 내 칩이 2/3이라, 기대값은 50×⅔ + 30×⅓ = <b>43.3만 (+10만)</b>.</p>
+      <p><b>지면</b> 내가 3등으로 20만을 받아요. <b>−13.3만</b>.</p>
+      <p>이기면 +10만, 지면 −13.3만. 칩으로는 반반 승부인데, 상금으로는 이길 확률이 <b>57% 이상</b>이어야 본전이에요.</p>
+    </div>
+    
+    <h2>언제 특히 중요할까요?</h2>
+    <ul>
+      <li><b>버블</b>(곧 상금권에 들어가는 시점): 탈락하면 상금이 0이라 잃는 쪽이 아주 무거워요.</li>
+      <li><b>머니 점프</b>가 큰 파이널 테이블: 한 명 더 떨어질 때마다 상금이 크게 올라요.</li>
+      <li><b>숏스택이 많을 때</b>: 내가 버티기만 해도 다른 사람이 먼저 떨어질 수 있어요.</li>
+    </ul>
+    <p>이럴 때 "칩으로는 콜이지만 ICM 때문에 폴드가 맞는" 상황이 자주 생겨요. 이 앱은 그런 판단을 상금 기준으로 보여줘요.</p>
+    
+    <h2>이 앱은 어떻게 계산하나요?</h2>
+    <ul>
+      <li>널리 쓰이는 <b>Harville(맘무스-하빌) 모델</b>로 ICM을 계산해요. 칩 비율대로 1등이 정해지고, 남은 사람끼리 다시 칩 비율대로 2등이 정해지는 방식이에요.</li>
+      <li>근사가 아니라 정확한 적분으로 계산해서, 같은 입력이면 매번 같은 값이 나와요.</li>
+      <li>다른 테이블 사람들은 하나하나 입력할 수 없으니 <b>평균 스택</b>을 가진 것으로 계산해요.</li>
+      <li>결과에 나오는 금액(원·엔·달러)은 <b>상금 기대값</b>이에요. 실제로 받는 돈이 아니라, 같은 상황을 아주 많이 반복했을 때의 평균이에요.</li>
+    </ul>
+    
+    <h2>ICM이 모르는 것</h2>
+    <p>ICM은 실력 차이, 앞으로 오를 블라인드, 내 자리(포지션) 같은 것은 모른다고 보고 계산해요. 그래서 실력 차이가 큰 테이블이거나 스택이 아주 깊을 때는 숫자를 <b>참고용 기준</b>으로 보는 게 좋아요.</p>
+    <nav class="gnav"><a href="guide-howto.html">사용법</a><a href="guide-result.html">결과 읽는 법</a><a href="./" class=go>계산하러 가기 ›</a></nav>
+  </article>
+
+  <article data-l="ja">
+    <h1>ICMとは？</h1>
+    <p class="date">トーナメントではチップ＝お金ではありません</p>
+    <p class="lead">ICM（Independent Chip Model）は、今持っているチップが<b>賞金でいくらに相当するか</b>を計算する方法です。トーナメントではチップを増やす喜びより、チップを失う痛みの方が大きく、ICMはその差を数字で示します。</p>
+    
+    <h2>なぜチップ＝お金ではないの？</h2>
+    <p>キャッシュゲームでは1万円分のチップはそのまま1万円です。しかしトーナメントでは、チップをすべて手に入れても<b>1位賞金</b>しかもらえません。また、敗退せずに生き残るだけで順位が上がり、賞金が増えていきます。</p>
+    <ul>
+      <li>チップを2倍にしても、賞金の期待値は2倍になりません。</li>
+      <li>逆にチップをすべて失うと、それまでに積み上げた賞金期待値が一気に消えます。</li>
+    </ul>
+    
+    <h2>数字で見ると</h2>
+    <div class="ex">
+      <p><b>残り3人・賞金 50万 / 30万 / 20万・3人のチップが同じ</b></p>
+      <p>今の自分の賞金期待値は (50+30+20)÷3 = <b>33.3万</b>です。</p>
+      <p>1人とオールインして<b>勝つと</b>チップが2倍になり、相手は3位（20万）で敗退します。残り2人で自分のチップが2/3なので、期待値は 50×⅔ + 30×⅓ = <b>43.3万（+10万）</b>。</p>
+      <p><b>負けると</b>自分が3位で20万を受け取ります。<b>−13.3万</b>。</p>
+      <p>勝てば+10万、負ければ−13.3万。チップでは五分の勝負でも、賞金で見ると勝率<b>57%以上</b>でようやく損益ゼロです。</p>
+    </div>
+    
+    <h2>特に重要になる場面</h2>
+    <ul>
+      <li><b>バブル</b>（もうすぐインマネになる時点）：敗退すると賞金0なので、失う側がとても重くなります。</li>
+      <li><b>賞金の上がり幅</b>が大きいファイナルテーブル：1人脱落するごとに賞金が大きく上がります。</li>
+      <li><b>ショートスタックが多い時</b>：耐えているだけで他の人が先に脱落することがあります。</li>
+    </ul>
+    <p>このような場面では「チップ的にはコールだが、ICMのせいでフォールドが正解」という状況がよく起こります。このアプリはその判断を賞金ベースで示します。</p>
+    
+    <h2>このアプリの計算方法</h2>
+    <ul>
+      <li>広く使われている<b>Harville（マルムス＝ハーヴィル）モデル</b>でICMを計算します。チップの比率で1位が決まり、残った人の中で再びチップ比率で2位が決まる方式です。</li>
+      <li>近似ではなく正確な積分で計算するため、同じ入力なら毎回同じ値になります。</li>
+      <li>他のテーブルのプレイヤーは1人ずつ入力できないため、<b>平均スタック</b>を持っているものとして計算します。</li>
+      <li>結果に表示される金額（ウォン・円・ドル）は<b>賞金の期待値</b>です。実際に受け取るお金ではなく、同じ状況を何度も繰り返した時の平均です。</li>
+    </ul>
+    
+    <h2>ICMが考慮しないこと</h2>
+    <p>ICMは、実力差、今後上がるブラインド、自分のポジションなどは考慮せずに計算します。実力差が大きいテーブルやスタックが非常に深い時は、数字を<b>参考の基準</b>として見るのがおすすめです。</p>
+    <nav class="gnav"><a href="guide-howto.html">使い方</a><a href="guide-result.html">結果の読み方</a><a href="./" class=go>計算する ›</a></nav>
+  </article>
+
+  <article data-l="en">
+    <h1>What is ICM?</h1>
+    <p class="date">In a tournament, chips are not money</p>
+    <p class="lead">ICM (Independent Chip Model) tells you <b>how much your chips are worth in prize money</b>. In a tournament, losing chips hurts more than winning chips helps, and ICM puts a number on that difference.</p>
+    
+    <h2>Why aren't chips worth money?</h2>
+    <p>In a cash game, $100 in chips is $100. In a tournament, even if you win every chip you only get <b>first prize</b>. And simply surviving moves you up the pay ladder.</p>
+    <ul>
+      <li>Doubling your chips does not double your prize equity.</li>
+      <li>Losing all your chips wipes out all the prize equity you had built up.</li>
+    </ul>
+    
+    <h2>In numbers</h2>
+    <div class="ex">
+      <p><b>3 left · prizes $500 / $300 / $200 · equal stacks</b></p>
+      <p>Your prize equity now is (500+300+200)÷3 = <b>$333</b>.</p>
+      <p><b>Win</b> an all-in against one player and you double up while they bust in 3rd ($200). With 2 left and 2/3 of the chips, your equity is 500×⅔ + 300×⅓ = <b>$433 (+$100)</b>.</p>
+      <p><b>Lose</b> and you finish 3rd for $200: <b>−$133</b>.</p>
+      <p>+$100 if you win, −$133 if you lose. A coin flip in chips needs <b>57%+</b> to break even in prize money.</p>
+    </div>
+    
+    <h2>When does it matter most?</h2>
+    <ul>
+      <li><b>The bubble</b>: busting means $0, so losing is very costly.</li>
+      <li><b>Final tables with big pay jumps</b>: every elimination moves the money up a lot.</li>
+      <li><b>Many short stacks</b>: just surviving may let others bust first.</li>
+    </ul>
+    <p>This is where "a call in chips, but a fold because of ICM" happens. The app shows those decisions in prize money.</p>
+    
+    <h2>How does this app calculate?</h2>
+    <ul>
+      <li>It uses the widely used <b>Harville (Malmuth–Harville) model</b>: first place is decided by chip share, then second place among the rest by chip share, and so on.</li>
+      <li>It is calculated with an exact integral rather than sampling, so the same input always gives the same value.</li>
+      <li>Players at other tables can't be entered one by one, so they are treated as having the <b>average stack</b>.</li>
+      <li>Amounts in the results (₩, ¥, $) are <b>prize equity</b>: not money you receive, but the average over many repeats of the same spot.</li>
+    </ul>
+    
+    <h2>What ICM doesn't know</h2>
+    <p>ICM ignores skill edges, rising blinds and position. With big skill gaps or very deep stacks, treat the numbers as a <b>reference point</b>.</p>
+    <nav class="gnav"><a href="guide-howto.html">How to use</a><a href="guide-result.html">Reading results</a><a href="./" class=go>Open the calculator ›</a></nav>
+  </article>
+
+</div>
+<script>
+// ▼ 문의 이메일: 여기 한 곳만 바꾸면 돼요
+const CONTACT = "";
+const q = new URLSearchParams(location.search);
+if (q.has("embed")) document.body.classList.add("embed");
+const pick = l => {
+  document.querySelectorAll("article").forEach(a => a.classList.toggle("on", a.dataset.l === l));
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("on", b.dataset.l === l));
+  document.documentElement.lang = l;
+  document.title = document.querySelector(`article[data-l="${l}"] h1`).textContent + " · ICM";
+};
+const nav = (navigator.language || "en").slice(0, 2);
+pick(["ko", "ja", "en"].includes(q.get("lang")) ? q.get("lang") : ["ko", "ja", "en"].includes(nav) ? nav : "en");
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => pick(b.dataset.l));
+document.querySelectorAll("a[data-guide]").forEach(a => a.onclick = e => {
+  if (q.has("embed") && window.parent !== window) { e.preventDefault(); window.parent.postMessage({ icmGuide: a.dataset.guide }, "*"); }
+});
+if (location.hash) setTimeout(() => { const el = document.querySelector(`article.on ${location.hash}`); if (el) el.scrollIntoView(); }, 50);
+document.querySelectorAll(".mail").forEach(s => {
+  if (CONTACT) s.innerHTML = `<a href="mailto:${CONTACT}">${CONTACT}</a>`;
+  else s.textContent = "(email)";
+});
+</script>
+</body>
+</html>
