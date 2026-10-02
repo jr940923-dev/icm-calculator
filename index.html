@@ -461,6 +461,7 @@ const I18N = {
   "결과 이미지 저장·공유": "結果画像を保存・共有",
   "이미지를 만들지 못했어요.": "画像を作成できませんでした。",
   "이미지를 저장했어요.": "画像を保存しました。",
+  "한 번 더 누르면 종료돼요.": "もう一度押すと終了します。",
   "남은 {n}명": "残り{n}人",
   "실제 라인": "実際のライン",
   "라인 {x}": "ライン{x}",
@@ -755,6 +756,7 @@ const I18N = {
   "결과 이미지 저장·공유": "Save / share result image",
   "이미지를 만들지 못했어요.": "Couldn't create the image.",
   "이미지를 저장했어요.": "Image saved.",
+  "한 번 더 누르면 종료돼요.": "Press back again to exit.",
   "남은 {n}명": "{n} left",
   "실제 라인": "Actual line",
   "라인 {x}": "Line {x}",
@@ -2776,6 +2778,16 @@ async function shareResult(){
   try { cv = drawShareCard(); } catch (e) { return toast(t("이미지를 만들지 못했어요.")); }
   const blob = await new Promise(r => cv.toBlob(r, "image/png"));
   if (!blob) return toast(t("이미지를 만들지 못했어요."));
+  // 앱(안드로이드)에서는 기기 공유창으로
+  const P = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform() && window.Capacitor.Plugins;
+  if (P && P.Filesystem && P.Share) {
+    try {
+      const data = cv.toDataURL("image/png").split(",")[1];
+      const w = await P.Filesystem.writeFile({ path: "icm-result.png", data, directory: "CACHE" });
+      await P.Share.share({ files: [w.uri], title: t("ICM 계산기") });
+    } catch (e) { if (!/cancel/i.test(String(e && e.message))) toast(t("이미지를 만들지 못했어요.")); }
+    return;
+  }
   const file = new File([blob], "icm-result.png", { type: "image/png" });
   try {
     if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: t("ICM 계산기") }); return; }
@@ -3030,6 +3042,23 @@ document.querySelectorAll("#unitSeg button").forEach(b => b.onclick = () => {
   S.unit = b.dataset.u; save();
   if (S.step === 6 && lastRes) { renderChrome(); result(); } else render();
 });
+
+/* ================= 앱(안드로이드) 뒤로가기 ================= */
+(function(){
+  const C = window.Capacitor;
+  if (!C || !C.isNativePlatform || !C.isNativePlatform() || !C.Plugins.App) return;
+  let lastBack = 0;
+  C.Plugins.App.addListener("backButton", () => {
+    const ad = document.getElementById("adOv");
+    if (ad.classList.contains("show")) { const b = document.getElementById("adClose"); if (b && !b.disabled) ad.classList.remove("show"); return; }
+    if (document.getElementById("mBg").classList.contains("show")) return closeModal();
+    if (document.getElementById("sheetBg").classList.contains("show")) return closeSheet();
+    if (S.step > 1) return goTo(S.step - 1);
+    const now = Date.now();
+    if (now - lastBack < 2000) return C.Plugins.App.exitApp();
+    lastBack = now; toast(t("한 번 더 누르면 종료돼요."));
+  });
+})();
 
 render();
 </script>
