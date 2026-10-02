@@ -38,7 +38,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .seg button{border:0;background:transparent;padding:6px 14px;border-radius:9px;font-weight:700;color:var(--muted);font-size:13px}
 .seg button.on{background:var(--card);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .steps{max-width:560px;margin:0 auto;padding:2px 16px 12px;display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
-.st{border:0;background:none;padding:0;text-align:left;color:var(--muted);font-size:12px;font-weight:600}
+.st{border:0;background:none;padding:0;text-align:left;color:var(--muted);font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .st .bar{display:block;height:4px;border-radius:4px;background:var(--line);margin-bottom:6px;transition:background .2s}
 .st.done .bar,.st.cur .bar{background:var(--pri)}
 .st.cur{color:var(--text);font-weight:700}
@@ -350,6 +350,34 @@ main{max-width:560px;margin:0 auto;padding:4px 16px 120px}
 .fgrid span{font-size:11px;color:var(--muted);font-weight:700}
 .fgrid b{font-size:12px;white-space:nowrap}
 
+/* 설정 · 프리미엄 · 광고 */
+.top-right{display:flex;align-items:center;gap:6px}
+.iconbtn{border:0;background:var(--line);border-radius:11px;width:36px;height:34px;font-size:16px;color:var(--sub)}
+.langs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:4px}
+.langs button{border:2px solid transparent;background:var(--field);border-radius:12px;padding:10px 4px;font-weight:700}
+.langs button.on{border-color:var(--pri);background:var(--pri-soft);color:var(--pri-strong)}
+.planrow{display:flex;justify-content:space-between;align-items:center;background:var(--field);border-radius:12px;padding:12px;margin-top:4px}
+.devrow{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-size:13px;color:var(--sub);font-weight:600}
+.switch{width:46px;height:28px;border-radius:999px;border:0;background:var(--line);position:relative;padding:0}
+.switch i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.switch.on{background:var(--pri)}.switch.on i{left:21px}
+.pw-reason{background:var(--pri-soft);color:var(--pri-strong);border-radius:12px;padding:10px 12px;font-size:14px;font-weight:700;margin:4px 0 10px}
+.pw-list{list-style:none;padding:0;margin:6px 0 14px;font-weight:700}
+.pw-list li{padding:4px 0}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.plan{position:relative;border:2px solid var(--line);background:var(--card);border-radius:16px;padding:16px 8px 12px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.plan b{font-size:15px}.plan span{font-size:18px;font-weight:800}.plan small{font-size:12px;color:var(--muted)}
+.plan.on{border-color:var(--pri);background:var(--pri-soft)}
+.badge3{position:absolute;top:-10px;background:var(--pri);color:#fff !important;font-size:11px !important;font-weight:800;padding:2px 8px;border-radius:999px}
+.adov{position:fixed;inset:0;z-index:50;background:var(--bg);display:none;flex-direction:column;padding:calc(12px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom))}
+.adov.show{display:flex}
+.adbox{flex:1;display:flex;flex-direction:column;width:100%;max-width:560px;margin:0 auto;text-align:center}
+.ad-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.adtag{font-size:11px;font-weight:800;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+.ad-slot{flex:1;min-height:300px;border-radius:16px;background:var(--field);display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700;overflow:hidden}
+.mini:disabled{opacity:.5}
+.sharebtn{width:100%;border:0;border-radius:14px;background:var(--card);box-shadow:var(--shadow);padding:13px;font-weight:700;font-size:15px;color:var(--text);margin:-2px 0 12px}
+
 /* 하단 버튼 */
 .bottom{position:fixed;left:0;right:0;bottom:0;z-index:20;background:linear-gradient(to top,var(--bg) 70%,transparent);padding:18px 16px calc(14px + env(safe-area-inset-bottom))}
 .bottom-inner{max-width:528px;margin:0 auto;display:flex;gap:8px}
@@ -366,9 +394,12 @@ main{max-width:560px;margin:0 auto;padding:4px 16px 120px}
 <body>
 <header class="top">
   <div class="top-inner">
-    <div class="brand"><span class="logo">♠</span>ICM 계산기</div>
-    <div class="seg" id="unitSeg" aria-label="스택 표시 단위">
-      <button data-u="bb">BB</button><button data-u="chip">칩</button>
+    <div class="brand"><span class="logo">♠</span><span id="brandName">ICM 계산기</span></div>
+    <div class="top-right">
+      <div class="seg" id="unitSeg" aria-label="unit">
+        <button data-u="bb">BB</button><button data-u="chip" id="unitChip">칩</button>
+      </div>
+      <button class="iconbtn" id="setBtn" aria-label="settings">⚙︎</button>
     </div>
   </div>
   <nav class="steps" id="steps"></nav>
@@ -385,11 +416,15 @@ main{max-width:560px;margin:0 auto;padding:4px 16px 120px}
 <div class="toast" id="toast"></div>
 <div class="sheet-bg" id="sheetBg"></div>
 <div class="sheet" id="sheet"><div class="sheet-in" id="sheetIn"></div></div>
+<div class="sheet-bg" id="mBg"></div>
+<div class="sheet" id="mSheet"><div class="sheet-in" id="mIn"></div></div>
+<div class="adov" id="adOv"></div>
 
 <script>
 /* ================= 기본 설정 ================= */
 const POS9 = ["UTG","UTG+1","UTG+2","LJ","HJ","CO","BTN","SB","BB"];
 const STEP_NAMES = ["대회","인원","테이블","핸드","라인","결과"];
+const STEP_SHORT = { ko: STEP_NAMES, ja: ["大会", "人数", "卓", "ハンド", "ライン", "結果"], en: ["Event", "Count", "Table", "Hand", "Line", "Result"] };
 const ORDER = "AA KK QQ JJ TT 99 88 AKs AQs 77 AJs AKo AQo ATs KQs AJo 66 KJs A9s ATo KTs A8s KQo A9o A7s KJo A5s 55 A6s QJs A8o KTo K9s QTs A4s A7o K8s QJo A3s A6o K9o Q9s A5o A2s K7s QTo JTs 44 K6s A4o Q8s K8o K5s J9s A3o Q9o JTo K4s K7o A2o K3s T9s J8s Q7s K6o Q8o 33 Q6s K5o K2s K4o J9o Q5s Q4s T8s J7s T9o Q7o K3o J8o Q6o 98s Q3s K2o T7s 22 J6s Q2s J7o J5s T8o Q5o T6s Q4o J4s 97s Q3o J3s T7o 98o J6o J2s 87s 96s T5s Q2o J5o T4s 97o J4o T6o 95s 86s T3s 76s J3o 87o T2s 85s 96o J2o T5o 93s 94s 75s T4o 86o 65s T3o 92s 95o 84s 76o 74s T2o 54s 85o 64s 83s 94o 75o 82s 93o 73s 53s 65o 63s 92o 84o 43s 74o 64o 54o 72s 52s 83o 62s 73o 82o 42s 53o 63o 32s 43o 72o 52o 62o 42o 32o".split(" ");
 const STORE_KEY = "icm-calc-v2";
 
@@ -404,7 +439,8 @@ const DEFAULT = {
   seatCount: 9, hero: 6, sel: 6,
   stacks: Array(9).fill(null),
   heroCards: [null, null], board: [null, null, null, null, null], villains: [],
-  anteType: "bb", lines: [{ name: "실제 라인", acts: [] }], lineSel: 0, runout: "avg"
+  anteType: "bb", lines: [{ name: "실제 라인", acts: [] }], lineSel: 0, runout: "avg",
+  lang: null, cur: null, premium: false, resultViews: 0
 };
 const clone = o => JSON.parse(JSON.stringify(o));
 
@@ -419,31 +455,657 @@ let S = load() || clone(DEFAULT);
 if (S.step >= 6) S.step = 5; // 새로 열면 결과 대신 라인 화면부터
 function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) {} }
 
+/* ================= 번역 (일본어 · 영어) ================= */
+const I18N = {
+ "ja": {
+  "결과 이미지 저장·공유": "結果画像を保存・共有",
+  "이미지를 만들지 못했어요.": "画像を作成できませんでした。",
+  "이미지를 저장했어요.": "画像を保存しました。",
+  "남은 {n}명": "残り{n}人",
+  "실제 라인": "実際のライン",
+  "라인 {x}": "ライン{x}",
+  "칩": "チップ",
+  "SB를 입력해주세요.": "SBを入力してください。",
+  "BB를 입력해주세요.": "BBを入力してください。",
+  "앤티를 확인해주세요.": "アンティを確認してください。",
+  "남은 인원은 2명 이상으로 입력해주세요.": "残り人数は2人以上で入力してください。",
+  "에버리지 스택을 입력해주세요.": "アベレージスタックを入力してください。",
+  "상금을 한 개 이상 입력해주세요.": "賞金を1つ以上入力してください。",
+  "{r}위 상금을 입력해주세요.": "{r}位の賞金を入力してください。",
+  "남은 인원({n}명)보다 테이블 인원이 많아요.": "テーブル人数が残り人数（{n}人）より多いです。",
+  "{p} 스택을 확인해주세요.": "{p}のスタックを確認してください。",
+  "테이블 칩 합계가 전체 칩(남은 인원 × 에버리지)보다 많아요.": "テーブルのチップ合計が全体（残り人数 × アベレージ）より多いです。",
+  "내 핸드 2장을 모두 골라주세요.": "自分のハンドを2枚とも選んでください。",
+  "플랍은 3장을 모두 골라주세요.": "フロップは3枚とも選んでください。",
+  "턴 전에 플랍 3장을 먼저 골라주세요.": "ターンの前にフロップ3枚を選んでください。",
+  "리버 전에 턴을 먼저 골라주세요.": "リバーの前にターンを選んでください。",
+  "팟에 들어온 상대를 한 명 이상 골라주세요.": "ポットに参加した相手を1人以上選んでください。",
+  "{p} 핸드 2장을 모두 골라주세요.": "{p}のハンドを2枚とも選んでください。",
+  "{p} 레인지가 비어 있어요.": "{p}のレンジが空です。",
+  "ICM 계산기": "ICM計算機",
+  "토너먼트 ICM 계산기": "トーナメントICM計算機",
+  "라인 수정": "ラインを修正",
+  "이전": "戻る",
+  "대회 정보": "大会情報",
+  "지금 블라인드와 남은 상금을 알려주세요.": "現在のブラインドと残りの賞金を入力してください。",
+  "블라인드": "ブラインド",
+  "앤티": "アンティ",
+  "없음": "なし",
+  "앤티 방식": "アンティ方式",
+  "BB 앤티": "BBアンティ",
+  "모두 앤티": "全員アンティ",
+  "BB 앤티는 BB 자리가 앤티를 한 번에 내요. <b>5만, 1.2억</b>처럼 입력해도 돼요.": "BBアンティはBBがまとめてアンティを払います。<b>5万、1.2億</b>のように入力してもOKです。",
+  "대회 현황": "大会の状況",
+  "남은 총 인원": "残り人数（全体）",
+  "명": "人",
+  "에버리지 스택": "アベレージスタック",
+  "남은 상금": "残りの賞金",
+  "순위": "順位",
+  "상금": "賞金",
+  "인원": "人数",
+  "+ 순위 추가": "+ 順位を追加",
+  "같은 금액을 받는 순위가 여러 개면 <b>인원</b>만 늘리면 돼요.<br>예: 10~18위가 모두 30만원 → 30만원, 인원 9": "同じ金額の順位が複数ある場合は<b>人数</b>を増やすだけでOKです。<br>例：10〜18位がすべて3万円 → 3万円、人数9",
+  "금액": "金額",
+  "상금은 최소 한 줄이 필요해요.": "賞金は最低1行必要です。",
+  "{a}~{b}위": "{a}〜{b}位",
+  "{r}위": "{r}位",
+  "{n}개 순위 · 총 {sum}": "{n}順位 · 合計 {sum}",
+  "테이블 인원": "テーブル人数",
+  "그 핸드 때 내 테이블에 몇 명이 앉아 있었나요?": "そのハンドのとき、テーブルに何人座っていましたか？",
+  "남은 {n}명이 모두 이 테이블에 있어요. <b>파이널 테이블</b>로 정확하게 계산해요.": "残り{n}人全員がこのテーブルにいます。<b>ファイナルテーブル</b>として正確に計算します。",
+  "남은 {n}명 중 다른 테이블 <b>{o}명</b>은 에버리지 스택으로 계산해요.": "残り{n}人のうち、他のテーブルの<b>{o}人</b>はアベレージスタックで計算します。",
+  "내 테이블": "自分のテーブル",
+  "자리를 눌러 <b>내 자리</b>와 기억나는 스택만 바꿔주세요. 나머지는 에버리지로 계산해요.": "席をタップして<b>自分の席</b>と覚えているスタックだけ変更してください。残りはアベレージで計算します。",
+  "나": "自分",
+  "직접 입력": "手入力",
+  "에버리지": "アベレージ",
+  "<b>남은 {n}명</b>에버리지 {avg}": "<b>残り{n}人</b>アベレージ {avg}",
+  "직접 입력한 스택": "手入力したスタック",
+  "에버리지로 계산 중": "アベレージで計算中",
+  "✓ 내 자리": "✓ 自分の席",
+  "여기가 내 자리": "ここが自分の席",
+  "스택": "スタック",
+  "에버리지로": "アベレージに",
+  "‹ 이전 자리": "‹ 前の席",
+  "다음 자리 ›": "次の席 ›",
+  "상대 레인지에 가능한 핸드가 없어요. (내 카드·보드와 모두 겹쳐요)": "相手のレンジに可能なハンドがありません。（自分のカード・ボードとすべて重なっています）",
+  "상대 두 명의 레인지가 서로 겹쳐서 계산할 수 없어요.": "相手2人のレンジが重なっていて計算できません。",
+  "핸드": "ハンド",
+  "내 카드와 상대, 보드를 넣으면 에퀴티를 계산해요. ICM만 볼 거면 비워두고 넘어가도 돼요.": "自分のカード、相手、ボードを入れるとエクイティを計算します。ICMだけ見るなら空欄のまま進んでもOKです。",
+  "내 핸드": "自分のハンド",
+  "팟에 들어온 상대": "ポットに参加した相手",
+  "최대 2명": "最大2人",
+  "보드": "ボード",
+  "비워둔 칸은 나올 수 있는 모든 카드를 고려해서 평균을 내요.": "空欄は出る可能性のあるすべてのカードの平均で計算します。",
+  "플랍": "フロップ",
+  "턴": "ターン",
+  "리버": "リバー",
+  "위에서 상대 자리를 눌러주세요.": "上で相手の席をタップしてください。",
+  "쇼다운이나 오픈으로 본 상대 핸드를 넣어주세요. 실제 결과 계산에 써요.": "ショーダウンなどで見た相手のハンドを入れてください。実際の結果の計算に使います。",
+  "결정할 때 예상한 레인지": "判断時に想定したレンジ",
+  "결정 평가에 써요": "判断の評価に使います",
+  "{p} 기본값 {d}%": "{p} 初期値 {d}%",
+  "레인지 접기 ▴": "レンジを閉じる ▴",
+  "레인지 보기·수정 ▾": "レンジを見る・編集 ▾",
+  "칸을 눌러 핸드를 넣거나 뺄 수 있어요.": "マスをタップしてハンドを追加・削除できます。",
+  "레인지": "レンジ",
+  "핸드 알아요": "ハンドが分かる",
+  "기본값은 포지션별 <b>대략적인 평균 오픈 레인지</b>예요. 3벳이나 콜 상황이면 더 좁게 줄여주세요.": "初期値はポジション別の<b>おおよその平均オープンレンジ</b>です。3ベットやコールの場面ではもっと狭くしてください。",
+  "{a}종류 · {b}조합": "{a}種類 · {b}コンボ",
+  "직접 수정함": "手動で修正",
+  "강한 순서로 상위 {p}%": "強い順に上位{p}%",
+  "{n}번째 카드": "{n}枚目",
+  "{p} 핸드": "{p}のハンド",
+  "닫기": "閉じる",
+  "숫자를 고르고 무늬를 눌러주세요": "数字を選んでからスートをタップしてください",
+  "이 칸 비우기": "この欄を空にする",
+  "에퀴티": "エクイティ",
+  "레인지 {p}% · {c}조합": "レンジ{p}% · {c}コンボ",
+  "모든 경우 계산": "全パターン計算",
+  "{n}번 시뮬레이션": "{n}回シミュレーション",
+  "끝까지 갔을 때 내가 팟을 가져가는 몫": "最後まで行ったときに自分が獲得するポットの割合",
+  "지금은 이 사람 차례가 아니에요.": "今はこのプレイヤーの番ではありません。",
+  "콜할 금액이 있어서 체크할 수 없어요.": "コールが必要なのでチェックできません。",
+  "콜할 금액이 없어요.": "コールする額がありません。",
+  "금액을 입력해주세요.": "金額を入力してください。",
+  "{x}보다 크게 입력해주세요.": "{x}より大きく入力してください。",
+  "최소 {x}까지는 올려야 해요.": "最低{x}までレイズする必要があります。",
+  "알 수 없는 액션이에요.": "不明なアクションです。",
+  "상대 레인지에 가능한 핸드가 없어요.": "相手のレンジに可能なハンドがありません。",
+  "폴드": "フォールド",
+  "체크": "チェック",
+  "콜": "コール",
+  "올인": "オールイン",
+  "벳": "ベット",
+  "레이즈": "レイズ",
+  "팟": "ポット",
+  "1.5팟": "1.5ポット",
+  "미니멈": "ミニマム",
+  "{x}배": "{x}倍",
+  "라인": "ライン",
+  "베팅 라인을 넣으면 선택마다 상금 기준 EV를 비교해요.": "ベッティングラインを入れると、選択ごとに賞金ベースのEVを比較します。",
+  "핸드 단계에서 <b>팟에 들어온 상대</b>를 먼저 골라주세요. 라인 없이 결과만 봐도 돼요.": "ハンドの画面で先に<b>ポットに参加した相手</b>を選んでください。ラインなしで結果だけ見てもOKです。",
+  "핸드 단계로 가기": "ハンドの画面へ",
+  "실제로 있었던 액션을 순서대로 넣어주세요. 액션 옆 <b>↳ 다르게</b>를 누르면 그 지점부터 다른 선택을 한 라인을 만들 수 있어요. 내 베팅을 상대가 받은 자리에는 <b>반응</b> 버튼이 생겨요.": "実際のアクションを順番に入力してください。アクション横の<b>↳ 別の選択</b>を押すと、そこから別の選択をしたラインを作れます。自分のベットに相手が反応した場面には<b>反応</b>ボタンが出ます。",
+  "앞 단계 입력이 바뀌어서 맞지 않는 액션을 지웠어요.": "前の画面の入力が変わったため、合わないアクションを削除しました。",
+  "+ 빈 라인": "+ 空のライン",
+  "라인은 6개까지 만들 수 있어요.": "ラインは6つまで作れます。",
+  "내 베팅에 이 상대는 얼마나 접었을까?": "自分のベットに、この相手はどれくらい降りた？",
+  "폴드율 직접 입력": "フォールド率を入力",
+  "모르겠으면 <b>보통</b>으로 두면 돼요. 접은 부분은 내가 팟을 가져가고, 콜한 부분은 강한 핸드만 남겨서 다음 스트리트를 계산해요.": "分からなければ<b>普通</b>のままでOKです。降りた分は自分がポットを獲得し、コールした分は強いハンドだけ残して次のストリートを計算します。",
+  "실제": "実際",
+  "라인 삭제": "ラインを削除",
+  "블라인드·앤티": "ブラインド・アンティ",
+  "반응": "反応",
+  "↳ 다르게": "↳ 別の選択",
+  "{p}가 팟 {x}을 가져가요": "{p}がポット{x}を獲得",
+  "쇼다운 · 팟 {x}": "ショーダウン · ポット{x}",
+  "↶ 마지막 액션 취소": "↶ 最後のアクションを取り消す",
+  "{n}개 액션": "{n}アクション",
+  "폴드 {p}%": "フォールド{p}%",
+  "핸드 끝": "ハンド終了",
+  "다른 선택을 해보고 싶으면 위 액션 옆 <b>↳ 다르게</b>를 눌러주세요. 다 넣었으면 <b>결과 보기</b>를 눌러주세요.": "別の選択を試すには、上のアクション横の<b>↳ 別の選択</b>を押してください。入力が終わったら<b>結果を見る</b>を押してください。",
+  "{p} 차례": "{p}の番",
+  "남은 스택": "残りスタック",
+  "콜 금액": "コール額",
+  "{v} 금액": "{v}額",
+  "이번 스트리트에 총 얼마까지 넣었는지": "このストリートで合計いくらまで入れたか",
+  "최소 {x} · 미니멈 3벳, 오버벳처럼 자유롭게 넣어도 돼요.": "最低{x} · ミニマム3ベットやオーバーベットも自由に入力できます。",
+  "금액을 입력하거나 위 버튼을 눌러주세요.": "金額を入力するか、上のボタンを押してください。",
+  "상대가 콜했을 경우를 계산할 수 없어요.": "相手がコールした場合を計算できません。",
+  "쇼다운까지 가는 라인이라 내 핸드가 필요해요.": "ショーダウンまで行くラインなので、自分のハンドが必要です。",
+  "상대 정보를 찾을 수 없어요.": "相手の情報が見つかりません。",
+  "{p} 핸드 2장을 모두 넣어주세요.": "{p}のハンドを2枚とも入れてください。",
+  "상대 핸드": "相手のハンド",
+  "보드 5장": "ボード5枚",
+  "결과": "結果",
+  "내 결정을 상금 기준으로 복기해요.": "自分の判断を賞金ベースで振り返ります。",
+  "계산 중...": "計算中...",
+  "에퀴티 계산 중... {p}%": "エクイティ計算中... {p}%",
+  "라인 계산 중... ({a}/{b})": "ライン計算中... ({a}/{b})",
+  "내 결정 분석 중... ({a}/{b})": "判断を分析中... ({a}/{b})",
+  "상대가 한 번도 안 접어도 {a}보다 나아요.": "相手が一度も降りなくても{a}より良いです。",
+  "상대가 80% 넘게 접어도 {a}보다 못해요.": "相手が80%以上降りても{a}より悪いです。",
+  "{a}보다 나으려면 상대가 <b>{p}%</b> 이상 접어야 해요.": "{a}より良くするには、相手が<b>{p}%</b>以上降りる必要があります。",
+  "상대 반응 <b>{r}</b> → 예상 폴드율 <b>{p}</b>": "相手の反応 <b>{r}</b> → 予想フォールド率 <b>{p}</b>",
+  "충분": "十分",
+  "부족": "不足",
+  "상대 폴드율별로 {a}보다 얼마나 나은지예요.": "相手のフォールド率ごとに、{a}よりどれだけ良いかです。",
+  "상대 폴드율별 기대값이에요.": "相手のフォールド率ごとの期待値です。",
+  "콜 받았을 때 (콜한 강한 쪽 레인지 상대로) 내 승률 <b>{p}</b>": "コールされたとき（コールした強いレンジ相手）の勝率 <b>{p}</b>",
+  "폴드했다면": "フォールドしていたら",
+  "남은 두 명이 팟을 반씩 가져간다고 가정": "残り2人がポットを半分ずつ取ると仮定",
+  "콜했다면": "コールしていたら",
+  "콜하고 체크다운 가정 (근사)": "コール後チェックダウンと仮定（近似）",
+  "콜하면 바로 쇼다운": "コールするとそのままショーダウン",
+  "체크했다면": "チェックしていたら",
+  "체크하고 바로 쇼다운": "チェックしてそのままショーダウン",
+  "라인이 아직 안 끝났어요": "ラインがまだ終わっていません",
+  "판단할 수 있는 결정이 없어요": "評価できる判断がありません",
+  "마지막 결정과 비교할 다른 선택이 없어요. 라인 화면에서 <b>↳ 다르게</b>로 다른 선택을 만들어보세요.": "最後の判断と比較できる別の選択がありません。ライン画面の<b>↳ 別の選択</b>で作ってみてください。",
+  "{s} {a}에서 {x} 손해": "{s}の{a}で{x}の損",
+  "결정이 좋았어요": "良い判断でした",
+  "결정에 손해가 있었어요": "判断に損がありました",
+  "운이 끼어들 여지가 없는 결정이었고, ICM까지 따져봤을 때 가장 좋은 선택이었어요.": "運が関わらない判断で、ICMまで考えると最善の選択でした。",
+  "{w}가 있었어요.": "{w}がありました。",
+  "결정은 좋았어요": "判断は良かったです",
+  "믿을 수 있는 결정들이 모두 가장 좋은 선택이거나 비슷했어요.": "信頼できる判断はすべて最善、またはほぼ同等でした。",
+  "결과는 나빴지만, 결정은 좋았어요": "結果は悪かったけど、判断は良かったです",
+  "운이 나빴던 핸드예요. 같은 상황이 오면 같은 선택을 해도 돼요.": "運が悪かったハンドです。同じ状況なら同じ選択でOKです。",
+  "결정도 좋고, 결과도 좋았어요": "判断も結果も良かったです",
+  "좋은 선택이 좋은 결과로 이어졌어요.": "良い選択が良い結果につながりました。",
+  "결과는 좋았지만, 결정은 −였어요": "結果は良かったけど、判断はマイナスでした",
+  "운이 좋았던 핸드예요. {w}가 있었어요.": "運が良かったハンドです。{w}がありました。",
+  "결정도 −, 결과도 −": "判断も結果もマイナス",
+  "결정의 가치": "判断の価値",
+  "놓친 기대값": "逃した期待値",
+  "다음 선택보다": "次善の選択より",
+  "비교 대상 없음": "比較対象なし",
+  "운": "運",
+  "실제 − 기대값": "実際 − 期待値",
+  "{x} 필요": "{x}が必要",
+  "계산 불가": "計算不可",
+  "실제 결과": "実際の結果",
+  "핸드 전 대비": "ハンド前と比べて",
+  "판단 기준: {s} {a}부터": "評価の基準：{s}の{a}から",
+  "그 전 결정은 참고용": "それ以前の判断は参考",
+  "콜이 맞아요": "コールが正解です",
+  "칩으로는 콜이지만, ICM 때문에 폴드가 맞아요": "チップ的にはコールですが、ICMのためフォールドが正解です",
+  "폴드가 맞아요": "フォールドが正解です",
+  "콜 받았을 때 내 승률 <b>{p}</b>": "コールしたときの勝率 <b>{p}</b>",
+  "콜에 필요한 승률 · ICM 기준 <b>{a}</b> · 칩으로만 보면 <b>{b}</b>": "コールに必要な勝率 · ICM基準 <b>{a}</b> · チップだけなら <b>{b}</b>",
+  "참고": "参考",
+  "비교 없음": "比較なし",
+  "{x} 놓침": "{x}の取りこぼし",
+  "✓ 최선": "✓ 最善",
+  "≈ 비슷해요": "≈ ほぼ同じ",
+  "✗ {x} 손해": "✗ {x}の損",
+  "이후 스트리트의 내 행동을 모든 카드에서 똑같다고 보고 계산한 값이에요. 드로우·커넥터처럼 맞았을 때만 크게 이기는 핸드는 낮게 나올 수 있어요.": "以降のストリートの自分のアクションを、どのカードでも同じと仮定した値です。ドローやコネクターのように当たったときだけ大きく勝つハンドは低く出ることがあります。",
+  "이렇게 했을 때 (실제)": "この選択（実際）",
+  "가장 좋은 다른 선택({a})과 차이가 오차 범위 안이라, 어느 쪽이 낫다고 말하기 어려워요.": "最善の別の選択（{a}）との差が誤差の範囲内なので、どちらが良いとは言いにくいです。",
+  "다른 선택과 비교하려면 라인 화면에서 이 액션 옆 <b>↳ 다르게</b>를 눌러 라인을 만들어보세요.": "別の選択と比較するには、ライン画面でこのアクション横の<b>↳ 別の選択</b>を押してラインを作ってください。",
+  "{b}보다 나으려면 필요한 승률 <b>{n}</b>": "{b}より良くするのに必要な勝率 <b>{n}</b>",
+  "→ 충분해요": "→ 十分です",
+  "→ 부족해요": "→ 足りません",
+  "스트리트별 내 결정": "ストリート別の判断",
+  "각 선택을 폴드, 그리고 네가 만든 다른 라인과 비교해요. 금액은 모두 상금 기준 기대값이고, 상대 핸드는 모른다고 보고(레인지) 계산해요.": "各選択をフォールドや自分で作った別のラインと比較します。金額はすべて賞金ベースの期待値で、相手のハンドは分からないもの（レンジ）として計算します。",
+  "아직 안 끝남": "未完了",
+  "{s}에서 갈라짐": "{s}で分岐",
+  "라인 한눈에 비교": "ラインの比較",
+  "각 라인이 실제 라인과 갈라지는 스트리트 시점에서, 같은 기준으로 실제 라인과 비교한 판단 기준 기대값이에요.": "各ラインが実際のラインと分かれるストリートの時点で、同じ基準で比較した期待値です。",
+  "다른 테이블 평균 가정": "他テーブルは平均と仮定",
+  "정확 계산": "正確な計算",
+  "실제 라인이 아직 끝나지 않았어요. 라인 화면에서 핸드 끝까지 넣어주세요.": "実際のラインがまだ終わっていません。ライン画面でハンドの最後まで入力してください。",
+  "인머니까지 {n}명 남음": "インマネまであと{n}人",
+  "{n}명이 더 탈락하면 최소 {x}을 받아요.": "あと{n}人飛べば最低{x}を獲得します。",
+  "인머니 진입": "インマネ",
+  "지금 탈락하면 {a} · 한 명만 더 버티면 {b}": "今飛ぶと{a} · あと1人粘れば{b}",
+  "다른 테이블 {n}명": "他テーブル{n}人",
+  "모두 평균 {x}이라고 보고 계산했어요.": "全員アベレージ{x}として計算しました。",
+  "파이널 테이블": "ファイナルテーブル",
+  "남은 인원이 모두 이 테이블이라 정확하게 계산했어요.": "残り全員がこのテーブルにいるので正確に計算しました。",
+  "상금 순위 정리": "賞金順位の整理",
+  "남은 인원보다 상금 순위가 많아서 위에서 {n}개만 사용했어요.": "残り人数より賞金順位が多いため、上位{n}個だけ使いました。",
+  "핸드 전 내 칩의 상금 가치": "ハンド前の自分のチップの賞金価値",
+  "내 스택": "自分のスタック",
+  "칩 비율": "チップ比率",
+  "상금 비율": "賞金比率",
+  "칩 비율대로 나누면 {x}": "チップ比率で分けると{x}",
+  "ICM 차이": "ICM差",
+  "테이블 전체": "テーブル全体",
+  "수정하기": "修正する",
+  "설정": "設定",
+  "언어": "言語",
+  "이용 중인 요금제": "現在のプラン",
+  "프리미엄": "プレミアム",
+  "무료": "無料",
+  "프리미엄 보기 ›": "プレミアムを見る ›",
+  "테스트 모드: 프리미엄 켜기": "テストモード：プレミアムをオン",
+  "결제 연결 전까지 프리미엄 화면을 확인하는 용도예요.": "決済の導入前に、プレミアムの画面を確認するためのものです。",
+  "무료 버전은 라인을 {n}개까지 비교할 수 있어요.": "無料版ではラインを{n}つまで比較できます。",
+  "광고 없이 결과 보기": "広告なしで結果を見る",
+  "라인 무제한 비교 (최대 6개)": "ライン比較が無制限（最大6つ）",
+  "{p}% 할인": "{p}%オフ",
+  "연간": "年額",
+  "월 {x}꼴": "月あたり{x}",
+  "월간": "月額",
+  "매달 결제": "毎月のお支払い",
+  "구독하기": "登録する",
+  "결제 기능은 준비 중이에요.": "決済機能は準備中です。",
+  "광고": "広告",
+  "광고 자리 (테스트)": "広告枠（テスト）",
+  "광고 없이 쓰기 · 프리미엄 ›": "広告なしで使う · プレミアム ›",
+  "대회": "大会",
+  "테이블": "卓",
+  "다음": "次へ",
+  "결과 보기": "結果を見る",
+  "처음 화면으로": "最初の画面へ",
+  "프리플랍": "プリフロップ",
+  "타이트": "タイト",
+  "보통": "普通",
+  "콜링": "コーリング",
+  "탑페어 이상만 콜": "トップペア以上のみコール",
+  "원페어·드로우까지 콜": "ワンペア・ドローまでコール",
+  "에이스 하이도 콜": "エースハイでもコール",
+  "레인지 상위 40%만 계속": "レンジ上位40%のみ続行",
+  "레인지 상위 55%만 계속": "レンジ上位55%のみ続行",
+  "레인지 상위 70%까지 계속": "レンジ上位70%まで続行"
+ },
+ "en": {
+  "결과 이미지 저장·공유": "Save / share result image",
+  "이미지를 만들지 못했어요.": "Couldn't create the image.",
+  "이미지를 저장했어요.": "Image saved.",
+  "남은 {n}명": "{n} left",
+  "실제 라인": "Actual line",
+  "라인 {x}": "Line {x}",
+  "칩": "Chips",
+  "SB를 입력해주세요.": "Enter the SB.",
+  "BB를 입력해주세요.": "Enter the BB.",
+  "앤티를 확인해주세요.": "Check the ante.",
+  "남은 인원은 2명 이상으로 입력해주세요.": "Players left must be 2 or more.",
+  "에버리지 스택을 입력해주세요.": "Enter the average stack.",
+  "상금을 한 개 이상 입력해주세요.": "Enter at least one prize.",
+  "{r}위 상금을 입력해주세요.": "Enter the prize for #{r}.",
+  "남은 인원({n}명)보다 테이블 인원이 많아요.": "More players at the table than players left ({n}).",
+  "{p} 스택을 확인해주세요.": "Check {p}'s stack.",
+  "테이블 칩 합계가 전체 칩(남은 인원 × 에버리지)보다 많아요.": "Table chips exceed total chips (players left × average).",
+  "내 핸드 2장을 모두 골라주세요.": "Pick both of your cards.",
+  "플랍은 3장을 모두 골라주세요.": "Pick all 3 flop cards.",
+  "턴 전에 플랍 3장을 먼저 골라주세요.": "Pick the flop before the turn.",
+  "리버 전에 턴을 먼저 골라주세요.": "Pick the turn before the river.",
+  "팟에 들어온 상대를 한 명 이상 골라주세요.": "Pick at least one opponent in the pot.",
+  "{p} 핸드 2장을 모두 골라주세요.": "Pick both of {p}'s cards.",
+  "{p} 레인지가 비어 있어요.": "{p}'s range is empty.",
+  "ICM 계산기": "ICM Calculator",
+  "토너먼트 ICM 계산기": "Tournament ICM Calculator",
+  "라인 수정": "Edit line",
+  "이전": "Back",
+  "대회 정보": "Tournament",
+  "지금 블라인드와 남은 상금을 알려주세요.": "Enter the current blinds and remaining prizes.",
+  "블라인드": "Blinds",
+  "앤티": "Ante",
+  "없음": "None",
+  "앤티 방식": "Ante type",
+  "BB 앤티": "BB ante",
+  "모두 앤티": "All players",
+  "BB 앤티는 BB 자리가 앤티를 한 번에 내요. <b>5만, 1.2억</b>처럼 입력해도 돼요.": "With a BB ante, the BB pays the whole ante. You can type <b>50k, 1.2m</b> too.",
+  "대회 현황": "Tournament status",
+  "남은 총 인원": "Players left",
+  "명": "players",
+  "에버리지 스택": "Average stack",
+  "남은 상금": "Remaining prizes",
+  "순위": "Place",
+  "상금": "Prize",
+  "인원": "Count",
+  "+ 순위 추가": "+ Add place",
+  "같은 금액을 받는 순위가 여러 개면 <b>인원</b>만 늘리면 돼요.<br>예: 10~18위가 모두 30만원 → 30만원, 인원 9": "If several places pay the same, just raise the <b>count</b>.<br>e.g. 10th–18th all pay $300 → $300, count 9",
+  "금액": "Amount",
+  "상금은 최소 한 줄이 필요해요.": "You need at least one prize row.",
+  "{a}~{b}위": "#{a}–{b}",
+  "{r}위": "#{r}",
+  "{n}개 순위 · 총 {sum}": "{n} places · total {sum}",
+  "테이블 인원": "Table size",
+  "그 핸드 때 내 테이블에 몇 명이 앉아 있었나요?": "How many players were at your table for that hand?",
+  "남은 {n}명이 모두 이 테이블에 있어요. <b>파이널 테이블</b>로 정확하게 계산해요.": "All {n} players are at this table. Calculated exactly as a <b>final table</b>.",
+  "남은 {n}명 중 다른 테이블 <b>{o}명</b>은 에버리지 스택으로 계산해요.": "Of {n} players left, the <b>{o}</b> at other tables use the average stack.",
+  "내 테이블": "Your table",
+  "자리를 눌러 <b>내 자리</b>와 기억나는 스택만 바꿔주세요. 나머지는 에버리지로 계산해요.": "Tap a seat to set <b>your seat</b> and any stacks you remember. The rest use the average.",
+  "나": "Me",
+  "직접 입력": "Entered",
+  "에버리지": "Average",
+  "<b>남은 {n}명</b>에버리지 {avg}": "<b>{n} left</b>Average {avg}",
+  "직접 입력한 스택": "Stack entered",
+  "에버리지로 계산 중": "Using the average",
+  "✓ 내 자리": "✓ My seat",
+  "여기가 내 자리": "This is my seat",
+  "스택": "Stack",
+  "에버리지로": "Average",
+  "‹ 이전 자리": "‹ Previous seat",
+  "다음 자리 ›": "Next seat ›",
+  "상대 레인지에 가능한 핸드가 없어요. (내 카드·보드와 모두 겹쳐요)": "No possible hands in the opponent's range (all blocked by your cards/board).",
+  "상대 두 명의 레인지가 서로 겹쳐서 계산할 수 없어요.": "The two opponents' ranges overlap too much to calculate.",
+  "핸드": "Hand",
+  "내 카드와 상대, 보드를 넣으면 에퀴티를 계산해요. ICM만 볼 거면 비워두고 넘어가도 돼요.": "Enter your cards, opponents and board to get equity. Leave it empty to see ICM only.",
+  "내 핸드": "Your hand",
+  "팟에 들어온 상대": "Opponents in the pot",
+  "최대 2명": "Up to 2",
+  "보드": "Board",
+  "비워둔 칸은 나올 수 있는 모든 카드를 고려해서 평균을 내요.": "Empty slots are averaged over every possible card.",
+  "플랍": "Flop",
+  "턴": "Turn",
+  "리버": "River",
+  "위에서 상대 자리를 눌러주세요.": "Tap an opponent's seat above.",
+  "쇼다운이나 오픈으로 본 상대 핸드를 넣어주세요. 실제 결과 계산에 써요.": "Enter the hand you saw at showdown. Used for the actual result.",
+  "결정할 때 예상한 레인지": "Range you expected at the time",
+  "결정 평가에 써요": "used to grade decisions",
+  "{p} 기본값 {d}%": "{p} default {d}%",
+  "레인지 접기 ▴": "Hide range ▴",
+  "레인지 보기·수정 ▾": "View/edit range ▾",
+  "칸을 눌러 핸드를 넣거나 뺄 수 있어요.": "Tap cells to add or remove hands.",
+  "레인지": "Range",
+  "핸드 알아요": "Known hand",
+  "기본값은 포지션별 <b>대략적인 평균 오픈 레인지</b>예요. 3벳이나 콜 상황이면 더 좁게 줄여주세요.": "Defaults are <b>rough average open ranges</b> by position. Narrow them for 3-bet or calling spots.",
+  "{a}종류 · {b}조합": "{a} hands · {b} combos",
+  "직접 수정함": "edited",
+  "강한 순서로 상위 {p}%": "top {p}% by strength",
+  "{n}번째 카드": "Card {n}",
+  "{p} 핸드": "{p}'s hand",
+  "닫기": "Close",
+  "숫자를 고르고 무늬를 눌러주세요": "Pick a rank, then a suit",
+  "이 칸 비우기": "Clear this slot",
+  "에퀴티": "Equity",
+  "레인지 {p}% · {c}조합": "Range {p}% · {c} combos",
+  "모든 경우 계산": "Exact",
+  "{n}번 시뮬레이션": "{n} simulations",
+  "끝까지 갔을 때 내가 팟을 가져가는 몫": "your share of the pot if it goes to showdown",
+  "지금은 이 사람 차례가 아니에요.": "It's not this player's turn.",
+  "콜할 금액이 있어서 체크할 수 없어요.": "You can't check when facing a bet.",
+  "콜할 금액이 없어요.": "Nothing to call.",
+  "금액을 입력해주세요.": "Enter an amount.",
+  "{x}보다 크게 입력해주세요.": "Enter more than {x}.",
+  "최소 {x}까지는 올려야 해요.": "Minimum raise is to {x}.",
+  "알 수 없는 액션이에요.": "Unknown action.",
+  "상대 레인지에 가능한 핸드가 없어요.": "No possible hands in the opponent's range.",
+  "폴드": "Fold",
+  "체크": "Check",
+  "콜": "Call",
+  "올인": "All-in",
+  "벳": "Bet",
+  "레이즈": "Raise",
+  "팟": "Pot",
+  "1.5팟": "1.5 pot",
+  "미니멈": "Min",
+  "{x}배": "{x}x",
+  "라인": "Line",
+  "베팅 라인을 넣으면 선택마다 상금 기준 EV를 비교해요.": "Enter the betting line to compare prize-based EV for each choice.",
+  "핸드 단계에서 <b>팟에 들어온 상대</b>를 먼저 골라주세요. 라인 없이 결과만 봐도 돼요.": "First pick the <b>opponents in the pot</b> on the Hand step. You can also skip lines and just see results.",
+  "핸드 단계로 가기": "Go to Hand step",
+  "실제로 있었던 액션을 순서대로 넣어주세요. 액션 옆 <b>↳ 다르게</b>를 누르면 그 지점부터 다른 선택을 한 라인을 만들 수 있어요. 내 베팅을 상대가 받은 자리에는 <b>반응</b> 버튼이 생겨요.": "Enter what actually happened, in order. Tap <b>↳ What if</b> next to any action to branch a different line from there. Spots where an opponent responded to your bet get a <b>Response</b> button.",
+  "앞 단계 입력이 바뀌어서 맞지 않는 액션을 지웠어요.": "Earlier inputs changed, so actions that no longer fit were removed.",
+  "+ 빈 라인": "+ Empty line",
+  "라인은 6개까지 만들 수 있어요.": "You can make up to 6 lines.",
+  "내 베팅에 이 상대는 얼마나 접었을까?": "How often would this opponent fold to your bet?",
+  "폴드율 직접 입력": "Enter fold %",
+  "모르겠으면 <b>보통</b>으로 두면 돼요. 접은 부분은 내가 팟을 가져가고, 콜한 부분은 강한 핸드만 남겨서 다음 스트리트를 계산해요.": "Not sure? Leave it on <b>Normal</b>. Folds give you the pot; calls keep only the stronger hands for the next street.",
+  "실제": "Actual",
+  "라인 삭제": "Delete line",
+  "블라인드·앤티": "Blinds & ante",
+  "반응": "Response",
+  "↳ 다르게": "↳ What if",
+  "{p}가 팟 {x}을 가져가요": "{p} wins the {x} pot",
+  "쇼다운 · 팟 {x}": "Showdown · pot {x}",
+  "↶ 마지막 액션 취소": "↶ Undo last action",
+  "{n}개 액션": "{n} actions",
+  "폴드 {p}%": "Fold {p}%",
+  "핸드 끝": "Hand over",
+  "다른 선택을 해보고 싶으면 위 액션 옆 <b>↳ 다르게</b>를 눌러주세요. 다 넣었으면 <b>결과 보기</b>를 눌러주세요.": "To try a different choice, tap <b>↳ What if</b> next to an action above. When you're done, tap <b>See results</b>.",
+  "{p} 차례": "{p} to act",
+  "남은 스택": "Stack behind",
+  "콜 금액": "To call",
+  "{v} 금액": "{v} size",
+  "이번 스트리트에 총 얼마까지 넣었는지": "total put in on this street",
+  "최소 {x} · 미니멈 3벳, 오버벳처럼 자유롭게 넣어도 돼요.": "Min {x} · min 3-bets, overbets, any size is fine.",
+  "금액을 입력하거나 위 버튼을 눌러주세요.": "Enter an amount or tap a size above.",
+  "상대가 콜했을 경우를 계산할 수 없어요.": "Can't calculate the case where the opponent calls.",
+  "쇼다운까지 가는 라인이라 내 핸드가 필요해요.": "This line goes to showdown, so your hand is needed.",
+  "상대 정보를 찾을 수 없어요.": "Opponent not found.",
+  "{p} 핸드 2장을 모두 넣어주세요.": "Enter both of {p}'s cards.",
+  "상대 핸드": "Opponent's hand",
+  "보드 5장": "All 5 board cards",
+  "결과": "Results",
+  "내 결정을 상금 기준으로 복기해요.": "Review your decisions in prize money.",
+  "계산 중...": "Calculating...",
+  "에퀴티 계산 중... {p}%": "Calculating equity... {p}%",
+  "라인 계산 중... ({a}/{b})": "Calculating lines... ({a}/{b})",
+  "내 결정 분석 중... ({a}/{b})": "Analyzing decisions... ({a}/{b})",
+  "상대가 한 번도 안 접어도 {a}보다 나아요.": "Better than {a} even if they never fold.",
+  "상대가 80% 넘게 접어도 {a}보다 못해요.": "Worse than {a} even if they fold over 80%.",
+  "{a}보다 나으려면 상대가 <b>{p}%</b> 이상 접어야 해요.": "To beat {a}, they need to fold <b>{p}%</b> or more.",
+  "상대 반응 <b>{r}</b> → 예상 폴드율 <b>{p}</b>": "Response <b>{r}</b> → expected folds <b>{p}</b>",
+  "충분": "Enough",
+  "부족": "Not enough",
+  "상대 폴드율별로 {a}보다 얼마나 나은지예요.": "How much better than {a} at each fold rate.",
+  "상대 폴드율별 기대값이에요.": "EV at each fold rate.",
+  "콜 받았을 때 (콜한 강한 쪽 레인지 상대로) 내 승률 <b>{p}</b>": "Your equity when called (vs the stronger calling range) <b>{p}</b>",
+  "폴드했다면": "If you folded",
+  "남은 두 명이 팟을 반씩 가져간다고 가정": "assumes the other two split the pot",
+  "콜했다면": "If you called",
+  "콜하고 체크다운 가정 (근사)": "assumes call then check down (approx.)",
+  "콜하면 바로 쇼다운": "call goes straight to showdown",
+  "체크했다면": "If you checked",
+  "체크하고 바로 쇼다운": "check straight to showdown",
+  "라인이 아직 안 끝났어요": "line isn't finished",
+  "판단할 수 있는 결정이 없어요": "No decision to grade",
+  "마지막 결정과 비교할 다른 선택이 없어요. 라인 화면에서 <b>↳ 다르게</b>로 다른 선택을 만들어보세요.": "There's nothing to compare your last decision with. Make one with <b>↳ What if</b> on the Line step.",
+  "{s} {a}에서 {x} 손해": "{x} lost on {s} {a}",
+  "결정이 좋았어요": "Good decision",
+  "결정에 손해가 있었어요": "A decision cost you",
+  "운이 끼어들 여지가 없는 결정이었고, ICM까지 따져봤을 때 가장 좋은 선택이었어요.": "No luck involved, and with ICM accounted for it was the best choice.",
+  "{w}가 있었어요.": "{w}.",
+  "결정은 좋았어요": "Decisions were good",
+  "믿을 수 있는 결정들이 모두 가장 좋은 선택이거나 비슷했어요.": "Every reliable decision was the best option or close to it.",
+  "결과는 나빴지만, 결정은 좋았어요": "Bad result, good decision",
+  "운이 나빴던 핸드예요. 같은 상황이 오면 같은 선택을 해도 돼요.": "Unlucky hand. Make the same choice next time.",
+  "결정도 좋고, 결과도 좋았어요": "Good decision, good result",
+  "좋은 선택이 좋은 결과로 이어졌어요.": "A good choice paid off.",
+  "결과는 좋았지만, 결정은 −였어요": "Good result, but a −EV decision",
+  "운이 좋았던 핸드예요. {w}가 있었어요.": "Lucky hand. {w}.",
+  "결정도 −, 결과도 −": "−EV decision, bad result",
+  "결정의 가치": "Decision value",
+  "놓친 기대값": "EV lost",
+  "다음 선택보다": "vs next best",
+  "비교 대상 없음": "Nothing to compare",
+  "운": "Luck",
+  "실제 − 기대값": "actual − expected",
+  "{x} 필요": "needs {x}",
+  "계산 불가": "n/a",
+  "실제 결과": "Actual result",
+  "핸드 전 대비": "vs before the hand",
+  "판단 기준: {s} {a}부터": "Graded from: {s} {a}",
+  "그 전 결정은 참고용": "earlier decisions are for reference",
+  "콜이 맞아요": "Calling is right",
+  "칩으로는 콜이지만, ICM 때문에 폴드가 맞아요": "A call in chips, but ICM makes it a fold",
+  "폴드가 맞아요": "Folding is right",
+  "콜 받았을 때 내 승률 <b>{p}</b>": "Your equity when called <b>{p}</b>",
+  "콜에 필요한 승률 · ICM 기준 <b>{a}</b> · 칩으로만 보면 <b>{b}</b>": "Equity needed to call · ICM <b>{a}</b> · chips only <b>{b}</b>",
+  "참고": "Reference",
+  "비교 없음": "No comparison",
+  "{x} 놓침": "{x} lost",
+  "✓ 최선": "✓ Best",
+  "≈ 비슷해요": "≈ About equal",
+  "✗ {x} 손해": "✗ {x} lost",
+  "이후 스트리트의 내 행동을 모든 카드에서 똑같다고 보고 계산한 값이에요. 드로우·커넥터처럼 맞았을 때만 크게 이기는 핸드는 낮게 나올 수 있어요.": "Assumes your later actions are the same on every card. Hands that win big only when they hit, like draws and connectors, may look worse than they are.",
+  "이렇게 했을 때 (실제)": "What you did",
+  "가장 좋은 다른 선택({a})과 차이가 오차 범위 안이라, 어느 쪽이 낫다고 말하기 어려워요.": "The gap to the best alternative ({a}) is within the margin of error, so it's too close to call.",
+  "다른 선택과 비교하려면 라인 화면에서 이 액션 옆 <b>↳ 다르게</b>를 눌러 라인을 만들어보세요.": "To compare, tap <b>↳ What if</b> next to this action on the Line step.",
+  "{b}보다 나으려면 필요한 승률 <b>{n}</b>": "equity needed to beat {b} <b>{n}</b>",
+  "→ 충분해요": "→ Enough",
+  "→ 부족해요": "→ Not enough",
+  "스트리트별 내 결정": "Decisions by street",
+  "각 선택을 폴드, 그리고 네가 만든 다른 라인과 비교해요. 금액은 모두 상금 기준 기대값이고, 상대 핸드는 모른다고 보고(레인지) 계산해요.": "Each choice is compared with folding and with the lines you made. All amounts are prize-money EV, treating the opponent's hand as unknown (range).",
+  "아직 안 끝남": "unfinished",
+  "{s}에서 갈라짐": "splits on {s}",
+  "라인 한눈에 비교": "Line comparison",
+  "각 라인이 실제 라인과 갈라지는 스트리트 시점에서, 같은 기준으로 실제 라인과 비교한 판단 기준 기대값이에요.": "Each line is compared with the actual line, at the street where they split, on the same basis.",
+  "다른 테이블 평균 가정": "Other tables averaged",
+  "정확 계산": "Exact",
+  "실제 라인이 아직 끝나지 않았어요. 라인 화면에서 핸드 끝까지 넣어주세요.": "The actual line isn't finished. Enter the hand to the end on the Line step.",
+  "인머니까지 {n}명 남음": "{n} from the money",
+  "{n}명이 더 탈락하면 최소 {x}을 받아요.": "{n} more busts and you get at least {x}.",
+  "인머니 진입": "In the money",
+  "지금 탈락하면 {a} · 한 명만 더 버티면 {b}": "Bust now: {a} · outlast one more: {b}",
+  "다른 테이블 {n}명": "{n} at other tables",
+  "모두 평균 {x}이라고 보고 계산했어요.": "All assumed to have the average {x}.",
+  "파이널 테이블": "Final table",
+  "남은 인원이 모두 이 테이블이라 정확하게 계산했어요.": "Everyone left is at this table, so it's exact.",
+  "상금 순위 정리": "Prize places trimmed",
+  "남은 인원보다 상금 순위가 많아서 위에서 {n}개만 사용했어요.": "More prize places than players left, so only the top {n} were used.",
+  "핸드 전 내 칩의 상금 가치": "Your stack's prize value before the hand",
+  "내 스택": "Your stack",
+  "칩 비율": "Chip share",
+  "상금 비율": "Prize share",
+  "칩 비율대로 나누면 {x}": "By chip share: {x}",
+  "ICM 차이": "ICM difference",
+  "테이블 전체": "Whole table",
+  "수정하기": "Edit",
+  "설정": "Settings",
+  "언어": "Language",
+  "이용 중인 요금제": "Current plan",
+  "프리미엄": "Premium",
+  "무료": "Free",
+  "프리미엄 보기 ›": "See Premium ›",
+  "테스트 모드: 프리미엄 켜기": "Test mode: turn on Premium",
+  "결제 연결 전까지 프리미엄 화면을 확인하는 용도예요.": "For checking Premium screens until payments are connected.",
+  "무료 버전은 라인을 {n}개까지 비교할 수 있어요.": "The free version compares up to {n} lines.",
+  "광고 없이 결과 보기": "Results without ads",
+  "라인 무제한 비교 (최대 6개)": "Unlimited line comparisons (up to 6)",
+  "{p}% 할인": "{p}% off",
+  "연간": "Yearly",
+  "월 {x}꼴": "{x}/mo",
+  "월간": "Monthly",
+  "매달 결제": "billed monthly",
+  "구독하기": "Subscribe",
+  "결제 기능은 준비 중이에요.": "Payments are coming soon.",
+  "광고": "Ad",
+  "광고 자리 (테스트)": "Ad slot (test)",
+  "광고 없이 쓰기 · 프리미엄 ›": "Go ad-free · Premium ›",
+  "대회": "Event",
+  "테이블": "Table",
+  "다음": "Next",
+  "결과 보기": "See results",
+  "처음 화면으로": "Start over",
+  "프리플랍": "Preflop",
+  "타이트": "Tight",
+  "보통": "Normal",
+  "콜링": "Calling station",
+  "탑페어 이상만 콜": "calls top pair+",
+  "원페어·드로우까지 콜": "calls any pair or draw",
+  "에이스 하이도 콜": "calls even with ace-high",
+  "레인지 상위 40%만 계속": "continues with top 40%",
+  "레인지 상위 55%만 계속": "continues with top 55%",
+  "레인지 상위 70%까지 계속": "continues with top 70%"
+ }
+};
+
+/* ================= 언어 · 통화 ================= */
+const LANGS = { ko: "한국어", ja: "日本語", en: "English" };
+function detectLang(){ const l = (navigator.language || "ko").slice(0, 2); return LANGS[l] ? l : "en"; }
+if (!LANGS[S.lang]) S.lang = detectLang();
+const DEF_CUR = { ko: "KRW", ja: "JPY", en: "USD" };
+const CUR_SYM = { KRW: "₩", JPY: "¥", USD: "$" };
+const curCode = () => S.cur || DEF_CUR[S.lang];
+// 번역: 한국어 문장을 열쇠로 써요. 번역이 없으면 한국어 그대로
+function t(key, vars){
+  let out = (S.lang !== "ko" && I18N[S.lang] && I18N[S.lang][key]) || key;
+  if (vars) out = out.replace(/\{(\w+)\}/g, (m, k) => (vars[k] != null ? vars[k] : m));
+  return out;
+}
+function money(n){
+  const v = fmt(n), c = curCode();
+  if (c === "KRW") return S.lang === "ko" ? v + "원" : "₩" + v;
+  if (c === "JPY") return S.lang === "ja" ? v + "円" : "¥" + v;
+  return "$" + v;
+}
+const chipWord = () => ({ ko: "칩", ja: "チップ", en: " chips" })[S.lang];
+function lineName(name){
+  if (name === "실제 라인") return t("실제 라인");
+  const m = /^라인 ([A-Z])$/.exec(name);
+  return m ? t("라인 {x}", { x: m[1] }) : name;
+}
+
 /* ================= 숫자 도우미 ================= */
 const ok = v => typeof v === "number" && isFinite(v);
 // "5만", "1.2억", "50k", "1,000" → 숫자
 function parseNum(s){
   if (s == null) return NaN;
-  s = String(s).replace(/[,\s원칩]/g, "");
+  s = String(s).replace(/[,\s원칩円¥₩$]|チップ|chips?/gi, "");
   if (!s) return NaN;
   let mult = 1;
-  if (/억$/.test(s)) { mult = 1e8; s = s.slice(0, -1); }
-  else if (/천$/.test(s)) { mult = 1e3; s = s.slice(0, -1); }
-  else if (/만$/.test(s)) { mult = 1e4; s = s.slice(0, -1); }
+  if (/[억億]$/.test(s)) { mult = 1e8; s = s.slice(0, -1); }
+  else if (/[천千]$/.test(s)) { mult = 1e3; s = s.slice(0, -1); }
+  else if (/[만万]$/.test(s)) { mult = 1e4; s = s.slice(0, -1); }
+  else if (/[mM]$/.test(s)) { mult = 1e6; s = s.slice(0, -1); }
   else if (/[kK]$/.test(s)) { mult = 1e3; s = s.slice(0, -1); }
   if (!/^\d*\.?\d+$|^\d+\.?$/.test(s)) return NaN;
   return parseFloat(s) * mult;
 }
 const fmt = n => Math.round(n).toLocaleString("ko-KR");
-const won = n => fmt(n) + "원";
+const won = n => money(n);
+function fmtShort(n){
+  const a = Math.abs(n), sg = n < 0 ? "-" : "";
+  const r = (x, d) => (x).toFixed(d).replace(/\.0+$/, "");
+  if (S.lang === "en") return a >= 1e9 ? sg + r(a / 1e9, 1) + "B" : a >= 1e6 ? sg + r(a / 1e6, 1) + "M" : a >= 1e3 ? sg + r(a / 1e3, 1) + "K" : fmt(n);
+  const [man, eok] = S.lang === "ja" ? ["万", "億"] : ["만", "억"];
+  return a >= 1e8 ? sg + r(a / 1e8, 1) + eok : a >= 1e4 ? sg + r(a / 1e4, a >= 1e6 ? 0 : 1) + man : fmt(n);
+}
 const pct = x => (x * 100).toFixed(1) + "%";
 function bbStr(x){
   const v = Math.round(x * 10) / 10;
   return v.toLocaleString("ko-KR", { maximumFractionDigits: 1 });
 }
 const useBB = () => S.unit === "bb" && ok(S.bb) && S.bb > 0;
-const unitLabel = () => useBB() ? "BB" : "칩";
-function stackText(chips){ return useBB() ? bbStr(chips / S.bb) + "BB" : fmt(chips) + "칩"; }
+const unitLabel = () => useBB() ? "BB" : t("칩");
+function stackText(chips){ return useBB() ? bbStr(chips / S.bb) + "BB" : fmt(chips) + chipWord(); }
 function toInputUnit(chips){ return !ok(chips) ? "" : useBB() ? bbStr(chips / S.bb).replace(/,/g, "") : fmt(chips); }
 function fromInputUnit(v){ return !ok(v) ? NaN : useBB() ? v * S.bb : v; }
 const chipVal = v => ok(v) ? fmt(v) : "";
@@ -523,46 +1185,46 @@ function icmValue(stacks, idx, others, otherStack, prizes, M = 3000){
 /* ================= 단계별 확인 ================= */
 function validate(step){
   if (step === 1) {
-    if (!ok(S.sb) || S.sb <= 0) return "SB를 입력해주세요.";
-    if (!ok(S.bb) || S.bb <= 0) return "BB를 입력해주세요.";
-    if (ok(S.ante) && S.ante < 0) return "앤티를 확인해주세요.";
-    if (!ok(S.total) || S.total < 2 || S.total % 1) return "남은 인원은 2명 이상으로 입력해주세요.";
-    if (!ok(S.avg) || S.avg <= 0) return "에버리지 스택을 입력해주세요.";
-    if (!S.groups.length) return "상금을 한 개 이상 입력해주세요.";
+    if (!ok(S.sb) || S.sb <= 0) return t("SB를 입력해주세요.");
+    if (!ok(S.bb) || S.bb <= 0) return t("BB를 입력해주세요.");
+    if (ok(S.ante) && S.ante < 0) return t("앤티를 확인해주세요.");
+    if (!ok(S.total) || S.total < 2 || S.total % 1) return t("남은 인원은 2명 이상으로 입력해주세요.");
+    if (!ok(S.avg) || S.avg <= 0) return t("에버리지 스택을 입력해주세요.");
+    if (!S.groups.length) return t("상금을 한 개 이상 입력해주세요.");
     let r = 1;
     for (const g of S.groups) {
-      if (!ok(g.a) || g.a < 0) return `${r}위 상금을 입력해주세요.`;
+      if (!ok(g.a) || g.a < 0) return t("{r}위 상금을 입력해주세요.", { r });
       r += Math.max(1, Math.floor(g.c || 1));
     }
     return null;
   }
   if (step === 2) {
-    if (S.seatCount > S.total) return `남은 인원(${S.total}명)보다 테이블 인원이 많아요.`;
+    if (S.seatCount > S.total) return t("남은 인원({n}명)보다 테이블 인원이 많아요.", { n: S.total });
     return null;
   }
   if (step === 3) {
-    for (let i = 0; i < S.seatCount; i++) if (!(stackOf(i) > 0)) return `${positionsFor(S.seatCount)[i]} 스택을 확인해주세요.`;
+    for (let i = 0; i < S.seatCount; i++) if (!(stackOf(i) > 0)) return t("{p} 스택을 확인해주세요.", { p: positionsFor(S.seatCount)[i] });
     const others = S.total - S.seatCount;
     if (others > 0) {
       const tableChips = S.stacks.reduce((a, _, i) => a + stackOf(i), 0);
-      if (S.total * S.avg - tableChips <= 0) return "테이블 칩 합계가 전체 칩(남은 인원 × 에버리지)보다 많아요.";
+      if (S.total * S.avg - tableChips <= 0) return t("테이블 칩 합계가 전체 칩(남은 인원 × 에버리지)보다 많아요.");
     }
     return null;
   }
   if (step === 4) {
     cleanVillains();
     const hc = S.heroCards.filter(c => c != null).length;
-    if (hc === 1) return "내 핸드 2장을 모두 골라주세요.";
+    if (hc === 1) return t("내 핸드 2장을 모두 골라주세요.");
     const fc = S.board.slice(0, 3).filter(c => c != null).length;
-    if (fc === 1 || fc === 2) return "플랍은 3장을 모두 골라주세요.";
-    if (S.board[3] != null && fc < 3) return "턴 전에 플랍 3장을 먼저 골라주세요.";
-    if (S.board[4] != null && S.board[3] == null) return "리버 전에 턴을 먼저 골라주세요.";
+    if (fc === 1 || fc === 2) return t("플랍은 3장을 모두 골라주세요.");
+    if (S.board[3] != null && fc < 3) return t("턴 전에 플랍 3장을 먼저 골라주세요.");
+    if (S.board[4] != null && S.board[3] == null) return t("리버 전에 턴을 먼저 골라주세요.");
     if (hc === 0) return null; // 핸드 없이 ICM만 보기
-    if (!S.villains.length) return "팟에 들어온 상대를 한 명 이상 골라주세요.";
+    if (!S.villains.length) return t("팟에 들어온 상대를 한 명 이상 골라주세요.");
     const pos = positionsFor(S.seatCount);
     for (const v of S.villains) {
-      if (v.mode === "hand" && v.cards.some(c => c == null)) return `${pos[v.seat]} 핸드 2장을 모두 골라주세요.`;
-      if (v.mode === "range" && !rangeSet(v).size) return `${pos[v.seat]} 레인지가 비어 있어요.`;
+      if (v.mode === "hand" && v.cards.some(c => c == null)) return t("{p} 핸드 2장을 모두 골라주세요.", { p: pos[v.seat] });
+      if (v.mode === "range" && !rangeSet(v).size) return t("{p} 레인지가 비어 있어요.", { p: pos[v.seat] });
     }
     return null;
   }
@@ -584,14 +1246,18 @@ const app = document.getElementById("app");
 function renderChrome(){
   document.getElementById("steps").innerHTML = STEP_NAMES.map((name, i) => {
     const n = i + 1, cls = n < S.step ? "done" : n === S.step ? "cur" : "";
-    return `<button class="st ${cls}" data-go="${n}"><span class="bar"></span>${n}. ${name}</button>`;
+    return `<button class="st ${cls}" data-go="${n}"><span class="bar"></span>${n}. ${STEP_SHORT[S.lang][i]}</button>`;
   }).join("");
   document.querySelectorAll("#steps .st").forEach(b => b.onclick = () => goTo(+b.dataset.go));
   document.querySelectorAll("#unitSeg button").forEach(b => b.classList.toggle("on", b.dataset.u === S.unit));
+  document.getElementById("unitChip").textContent = t("칩");
+  document.getElementById("brandName").textContent = t("ICM 계산기");
+  document.title = t("토너먼트 ICM 계산기");
+  document.documentElement.lang = S.lang;
   const prev = document.getElementById("prevBtn"), next = document.getElementById("nextBtn");
   prev.classList.toggle("hidden", S.step === 1);
-  prev.textContent = S.step === 6 ? "라인 수정" : "이전";
-  next.textContent = { 1: "다음", 2: "다음", 3: "다음", 4: "다음", 5: "결과 보기", 6: "처음 화면으로" }[S.step];
+  prev.textContent = S.step === 6 ? t("라인 수정") : t("이전");
+  next.textContent = t({ 1: "다음", 2: "다음", 3: "다음", 4: "다음", 5: "결과 보기", 6: "처음 화면으로" }[S.step]);
 }
 
 function render(){
@@ -602,44 +1268,45 @@ function render(){
 /* ---------- 1. 대회 정보 ---------- */
 function step1(){
   app.innerHTML = `
-    <h1 class="title">대회 정보</h1>
-    <p class="lead">지금 블라인드와 남은 상금을 알려주세요.</p>
+    <h1 class="title">${t("대회 정보")}</h1>
+    <p class="lead">${t("지금 블라인드와 남은 상금을 알려주세요.")}</p>
 
     <section class="card">
-      <h2>블라인드</h2>
+      <h2>${t("블라인드")}</h2>
       <div class="grid3">
         <div><span class="lbl">SB</span><div class="inp"><input id="sb" inputmode="numeric" value="${chipVal(S.sb)}"></div></div>
         <div><span class="lbl">BB</span><div class="inp"><input id="bb" inputmode="numeric" value="${chipVal(S.bb)}"></div></div>
-        <div><span class="lbl">앤티</span><div class="inp"><input id="ante" inputmode="numeric" placeholder="없음" value="${chipVal(S.ante)}"></div></div>
+        <div><span class="lbl">${t("앤티")}</span><div class="inp"><input id="ante" inputmode="numeric" placeholder="${t("없음")}" value="${chipVal(S.ante)}"></div></div>
       </div>
-      <div class="ante-row"><span class="lbl" style="margin:0">앤티 방식</span>
-        <div class="seg" id="anteSeg"><button data-t="bb" class="${S.anteType !== "each" ? "on" : ""}">BB 앤티</button><button data-t="each" class="${S.anteType === "each" ? "on" : ""}">모두 앤티</button></div></div>
-      <p class="help">BB 앤티는 BB 자리가 앤티를 한 번에 내요. <b>5만, 1.2억</b>처럼 입력해도 돼요.</p>
+      <div class="ante-row"><span class="lbl" style="margin:0">${t("앤티 방식")}</span>
+        <div class="seg" id="anteSeg"><button data-t="bb" class="${S.anteType !== "each" ? "on" : ""}">${t("BB 앤티")}</button><button data-t="each" class="${S.anteType === "each" ? "on" : ""}">${t("모두 앤티")}</button></div></div>
+      <p class="help">${t("BB 앤티는 BB 자리가 앤티를 한 번에 내요. <b>5만, 1.2억</b>처럼 입력해도 돼요.")}</p>
     </section>
 
     <section class="card">
-      <h2>대회 현황</h2>
+      <h2>${t("대회 현황")}</h2>
       <div class="field">
-        <label>남은 총 인원</label>
+        <label>${t("남은 총 인원")}</label>
         <div class="stepper">
-          <button class="sbtn" data-d="-1" aria-label="한 명 빼기">−</button>
-          <div class="inp"><input id="total" inputmode="numeric" value="${ok(S.total) ? S.total : ""}"><span class="suf">명</span></div>
-          <button class="sbtn" data-d="1" aria-label="한 명 더하기">+</button>
+          <button class="sbtn" data-d="-1" aria-label="-1">−</button>
+          <div class="inp"><input id="total" inputmode="numeric" value="${ok(S.total) ? S.total : ""}"><span class="suf">${t("명")}</span></div>
+          <button class="sbtn" data-d="1" aria-label="+1">+</button>
         </div>
       </div>
       <div class="field">
-        <label>에버리지 스택</label>
+        <label>${t("에버리지 스택")}</label>
         <div class="inp"><input id="avg" inputmode="decimal" value="${toInputUnit(S.avg)}"><span class="suf" id="avgSuf">${unitLabel()}</span></div>
         <p class="help" id="avgHelp"></p>
       </div>
     </section>
 
     <section class="card">
-      <div class="card-head"><h2>남은 상금</h2><span class="pill" id="prizeSum"></span></div>
-      <div class="phead"><span>순위</span><span>상금</span><span style="text-align:center">인원</span><span></span></div>
+      <div class="card-head"><h2>${t("남은 상금")}</h2><div class="seg sm" id="curSeg">${["KRW","JPY","USD"].map(c => `<button data-c="${c}" class="${curCode() === c ? "on" : ""}">${CUR_SYM[c]}</button>`).join("")}</div></div>
+      <p class="pill" id="prizeSum" style="display:inline-block;margin:0 0 10px"></p>
+      <div class="phead"><span>${t("순위")}</span><span>${t("상금")}</span><span style="text-align:center">${t("인원")}</span><span></span></div>
       <div id="prows"></div>
-      <button class="btn-add" id="addP">+ 순위 추가</button>
-      <p class="help">같은 금액을 받는 순위가 여러 개면 <b>인원</b>만 늘리면 돼요.<br>예: 10~18위가 모두 30만원 → 30만원, 인원 9</p>
+      <button class="btn-add" id="addP">${t("+ 순위 추가")}</button>
+      <p class="help">${t("같은 금액을 받는 순위가 여러 개면 <b>인원</b>만 늘리면 돼요.<br>예: 10~18위가 모두 30만원 → 30만원, 인원 9")}</p>
     </section>`;
 
   bindNum(document.getElementById("sb"), v => S.sb = v);
@@ -664,23 +1331,24 @@ function step1(){
     void last;
   };
   avgHelp(); prizeRows();
+  document.querySelectorAll("#curSeg button").forEach(b => b.onclick = () => { S.cur = b.dataset.c; save(); render(); });
 }
 function avgHelp(){
   const el = document.getElementById("avgHelp"); if (!el) return;
   document.getElementById("avgSuf").textContent = unitLabel();
   if (!ok(S.avg)) { el.textContent = ""; return; }
   el.innerHTML = ok(S.bb) && S.bb > 0
-    ? `= <b>${fmt(S.avg)}칩</b> · <b>${bbStr(S.avg / S.bb)}BB</b>`
-    : `= <b>${fmt(S.avg)}칩</b>`;
+    ? `= <b>${fmt(S.avg)}${chipWord()}</b> · <b>${bbStr(S.avg / S.bb)}BB</b>`
+    : `= <b>${fmt(S.avg)}${chipWord()}</b>`;
 }
 function prizeRows(){
   const box = document.getElementById("prows");
   box.innerHTML = S.groups.map((g, i) => `
     <div class="prow" data-i="${i}">
       <div class="rank"></div>
-      <div class="inp"><input class="pamt" inputmode="numeric" placeholder="금액" value="${chipVal(g.a)}"><span class="suf">원</span></div>
-      <div class="cnt"><button class="cm" aria-label="인원 빼기">−</button><input class="pcnt" inputmode="numeric" value="${g.c || 1}"><button class="cp" aria-label="인원 더하기">+</button></div>
-      <button class="del" aria-label="삭제">✕</button>
+      <div class="inp"><input class="pamt" inputmode="numeric" placeholder="${t("금액")}" value="${chipVal(g.a)}"><span class="suf">${CUR_SYM[curCode()]}</span></div>
+      <div class="cnt"><button class="cm" aria-label="-">−</button><input class="pcnt" inputmode="numeric" value="${g.c || 1}"><button class="cp" aria-label="+">+</button></div>
+      <button class="del" aria-label="x">✕</button>
     </div>`).join("");
   box.querySelectorAll(".prow").forEach(row => {
     const i = +row.dataset.i, g = S.groups[i];
@@ -690,7 +1358,7 @@ function prizeRows(){
     row.querySelector(".cm").onclick = () => { g.c = Math.max(1, (g.c || 1) - 1); cntIn.value = g.c; save(); prizeMeta(); };
     row.querySelector(".cp").onclick = () => { g.c = (g.c || 1) + 1; cntIn.value = g.c; save(); prizeMeta(); };
     row.querySelector(".del").onclick = () => {
-      if (S.groups.length === 1) return toast("상금은 최소 한 줄이 필요해요.");
+      if (S.groups.length === 1) return toast(t("상금은 최소 한 줄이 필요해요."));
       S.groups.splice(i, 1); save(); prizeRows();
     };
   });
@@ -700,22 +1368,22 @@ function prizeMeta(){
   let r = 1, sum = 0, count = 0;
   document.querySelectorAll(".prow").forEach((row, i) => {
     const g = S.groups[i], c = Math.max(1, Math.floor(g.c || 1));
-    row.querySelector(".rank").textContent = c > 1 ? `${r}~${r + c - 1}위` : `${r}위`;
+    row.querySelector(".rank").textContent = c > 1 ? t("{a}~{b}위", { a: r, b: r + c - 1 }) : t("{r}위", { r });
     if (ok(g.a)) sum += g.a * c;
     r += c; count += c;
   });
-  document.getElementById("prizeSum").textContent = `${count}개 순위 · 총 ${won(sum)}`;
+  document.getElementById("prizeSum").textContent = t("{n}개 순위 · 총 {sum}", { n: count, sum: won(sum) });
 }
 
 /* ---------- 2. 인원 ---------- */
 function step2(){
   const n = S.seatCount;
   app.innerHTML = `
-    <h1 class="title">테이블 인원</h1>
-    <p class="lead">그 핸드 때 내 테이블에 몇 명이 앉아 있었나요?</p>
+    <h1 class="title">${t("테이블 인원")}</h1>
+    <p class="lead">${t("그 핸드 때 내 테이블에 몇 명이 앉아 있었나요?")}</p>
     <section class="card">
       <div class="count-grid">
-        ${[2,3,4,5,6,7,8,9].map(k => `<button class="cnt-btn ${k === n ? "on" : ""}" data-n="${k}" ${k > S.total ? "disabled" : ""}><b>${k}</b><span>명</span></button>`).join("")}
+        ${[2,3,4,5,6,7,8,9].map(k => `<button class="cnt-btn ${k === n ? "on" : ""}" data-n="${k}" ${k > S.total ? "disabled" : ""}><b>${k}</b><span>${t("명")}</span></button>`).join("")}
       </div>
       <p class="help" id="seatHelp"></p>
     </section>`;
@@ -729,8 +1397,8 @@ function step2(){
 function seatHelp(){
   const o = S.total - S.seatCount;
   document.getElementById("seatHelp").innerHTML = o <= 0
-    ? `남은 ${S.total}명이 모두 이 테이블에 있어요. <b>파이널 테이블</b>로 정확하게 계산해요.`
-    : `남은 ${S.total}명 중 다른 테이블 <b>${o}명</b>은 에버리지 스택으로 계산해요.`;
+    ? t("남은 {n}명이 모두 이 테이블에 있어요. <b>파이널 테이블</b>로 정확하게 계산해요.", { n: S.total })
+    : t("남은 {n}명 중 다른 테이블 <b>{o}명</b>은 에버리지 스택으로 계산해요.", { n: S.total, o });
 }
 function setSeatCount(n){
   if (n === S.seatCount) return;
@@ -744,11 +1412,11 @@ function step3(){
   if (S.stacks.length !== S.seatCount) S.stacks = Array(S.seatCount).fill(null);
   if (S.sel >= S.seatCount) S.sel = S.hero;
   app.innerHTML = `
-    <h1 class="title">내 테이블</h1>
-    <p class="lead">자리를 눌러 <b>내 자리</b>와 기억나는 스택만 바꿔주세요. 나머지는 에버리지로 계산해요.</p>
+    <h1 class="title">${t("내 테이블")}</h1>
+    <p class="lead">${t("자리를 눌러 <b>내 자리</b>와 기억나는 스택만 바꿔주세요. 나머지는 에버리지로 계산해요.")}</p>
     <section class="card table-card">
       <div class="table-wrap" id="tw"><div class="felt"><div class="felt-in" id="feltTxt"></div></div></div>
-      <div class="legend"><span><i class="d-hero"></i>나</span><span><i class="d-ed"></i>직접 입력</span><span><i class="d-avg"></i>에버리지</span></div>
+      <div class="legend"><span><i class="d-hero"></i>${t("나")}</span><span><i class="d-ed"></i>${t("직접 입력")}</span><span><i class="d-avg"></i>${t("에버리지")}</span></div>
     </section>
     <section class="card" id="editor"></section>`;
   seats(); editor();
@@ -767,7 +1435,7 @@ function seats(showEq){
     const edited = ok(S.stacks[i]);
     el.className = "seat" + (i === S.hero ? " hero" : "") + (i === S.sel ? " sel" : "") + (edited ? " edited" : " avg");
     el.style.left = x + "%"; el.style.top = y + "%";
-    el.innerHTML = `<b>${pos[i]}${i === S.hero ? " · 나" : ""}</b><span>${stackText(stackOf(i))}</span>`;
+    el.innerHTML = `<b>${pos[i]}${i === S.hero ? " · " + t("나") : ""}</b><span>${stackText(stackOf(i))}</span>`;
     el.onclick = () => { S.sel = i; save(); seats(); editor(); };
     tw.appendChild(el);
   }
@@ -776,27 +1444,27 @@ function seats(showEq){
   d.className = "dealer"; d.textContent = "D";
   d.style.left = (dx + 7) + "%"; d.style.top = dy + "%";
   tw.appendChild(d);
-  document.getElementById("feltTxt").innerHTML = `<b>남은 ${S.total}명</b>에버리지 ${stackText(S.avg)}`;
+  document.getElementById("feltTxt").innerHTML = t("<b>남은 {n}명</b>에버리지 {avg}", { n: S.total, avg: stackText(S.avg) });
 }
 function editor(){
   const i = S.sel, pos = positionsFor(S.seatCount)[i], isHero = i === S.hero, edited = ok(S.stacks[i]);
   const box = document.getElementById("editor");
   box.innerHTML = `
     <div class="ed-head">
-      <div><div class="ed-pos">${pos}${isHero ? '<span class="tag">나</span>' : ""}</div>
-        <div class="ed-sub" id="edSub">${edited ? "직접 입력한 스택" : "에버리지로 계산 중"}</div></div>
-      <button class="toggle ${isHero ? "on" : ""}" id="heroBtn">${isHero ? "✓ 내 자리" : "여기가 내 자리"}</button>
+      <div><div class="ed-pos">${pos}${isHero ? `<span class="tag">${t("나")}</span>` : ""}</div>
+        <div class="ed-sub" id="edSub">${edited ? t("직접 입력한 스택") : t("에버리지로 계산 중")}</div></div>
+      <button class="toggle ${isHero ? "on" : ""}" id="heroBtn">${isHero ? t("✓ 내 자리") : t("여기가 내 자리")}</button>
     </div>
     <div class="field">
-      <label>스택</label>
-      <div class="inp"><input id="stackIn" inputmode="decimal" placeholder="${toInputUnit(S.avg)} (에버리지)" value="${edited ? toInputUnit(S.stacks[i]) : ""}"><span class="suf">${unitLabel()}</span></div>
+      <label>${t("스택")}</label>
+      <div class="inp"><input id="stackIn" inputmode="decimal" placeholder="${toInputUnit(S.avg)} (${t("에버리지")})" value="${edited ? toInputUnit(S.stacks[i]) : ""}"><span class="suf">${unitLabel()}</span></div>
       <p class="help" id="stackHelp"></p>
       <div class="quick">
         ${[10,15,20,30,40,60].map(b => `<button class="qb" data-bb="${b}">${b}BB</button>`).join("")}
-        <button class="qb" data-avg="1">에버리지로</button>
+        <button class="qb" data-avg="1">${t("에버리지로")}</button>
       </div>
     </div>
-    <div class="ed-nav"><button class="link" id="prevSeat">‹ 이전 자리</button><button class="link" id="nextSeat">다음 자리 ›</button></div>`;
+    <div class="ed-nav"><button class="link" id="prevSeat">${t("‹ 이전 자리")}</button><button class="link" id="nextSeat">${t("다음 자리 ›")}</button></div>`;
   const input = document.getElementById("stackIn");
   bindNum(input, v => { S.stacks[i] = ok(v) && v > 0 ? fromInputUnit(v) : null; seats(); stackHelp(); });
   box.querySelectorAll(".qb").forEach(b => b.onclick = () => {
@@ -810,8 +1478,8 @@ function editor(){
 }
 function stackHelp(){
   const i = S.sel, st = stackOf(i), edited = ok(S.stacks[i]);
-  document.getElementById("edSub").textContent = edited ? "직접 입력한 스택" : "에버리지로 계산 중";
-  document.getElementById("stackHelp").innerHTML = `= <b>${fmt(st)}칩</b> · <b>${bbStr(st / S.bb)}BB</b>`;
+  document.getElementById("edSub").textContent = edited ? t("직접 입력한 스택") : t("에버리지로 계산 중");
+  document.getElementById("stackHelp").innerHTML = `= <b>${fmt(st)}${chipWord()}</b> · <b>${bbStr(st / S.bb)}BB</b>`;
 }
 
 /* ================= 카드 · 레인지 · 에퀴티 ================= */
@@ -891,7 +1559,7 @@ function equityCalc(heroCards, villains, board, onProgress){
       for (const name of rangeSet(v)) for (const cb of combosOf(name)) if (!dead.has(cb[0]) && !dead.has(cb[1])) combos.push(cb);
       return { combos };
     });
-    if (players.some(p => p.combos && !p.combos.length)) return resolve({ error: "상대 레인지에 가능한 핸드가 없어요. (내 카드·보드와 모두 겹쳐요)" });
+    if (players.some(p => p.combos && !p.combos.length)) return resolve({ error: t("상대 레인지에 가능한 핸드가 없어요. (내 카드·보드와 모두 겹쳐요)") });
     const nP = players.length + 1, share = new Float64Array(nP);
     const need = 5 - board.length;
     const allFixed = players.every(p => p.fixed);
@@ -916,11 +1584,11 @@ function equityCalc(heroCards, villains, board, onProgress){
       else { for (let x = 0; x < deck.length; x++) for (let y = x + 1; y < deck.length; y++) { b[3] = deck[x]; b[4] = deck[y]; score(); trials++; } }
       return resolve({ share: Array.from(share, v => v / trials), trials, exact: true });
     }
-    const TRIALS = 60000; let t = 0, done = 0;
+    const TRIALS = 60000; let tr = 0, done = 0;
     (function run(){
-      const end = Math.min(TRIALS, t + 15000);
-      while (t < end) {
-        t++;
+      const end = Math.min(TRIALS, tr + 15000);
+      while (tr < end) {
+        tr++;
         used.fill(0);
         let okDeal = true;
         for (let i = 0; i < players.length && okDeal; i++) {
@@ -938,9 +1606,9 @@ function equityCalc(heroCards, villains, board, onProgress){
         }
         score(); done++;
       }
-      onProgress && onProgress(t / TRIALS);
-      if (t < TRIALS) nextTick().then(run);
-      else resolve(done ? { share: Array.from(share, v => v / done), trials: done, exact: false } : { error: "상대 두 명의 레인지가 서로 겹쳐서 계산할 수 없어요." });
+      onProgress && onProgress(tr / TRIALS);
+      if (tr < TRIALS) nextTick().then(run);
+      else resolve(done ? { share: Array.from(share, v => v / done), trials: done, exact: false } : { error: t("상대 두 명의 레인지가 서로 겹쳐서 계산할 수 없어요.") });
     })();
   });
 }
@@ -970,7 +1638,7 @@ function slotSet(key, c){
 const NEXT_SLOT = { h0: "h1", b0: "b1", b1: "b2" };
 function slotHTML(key){
   const c = slotGet(key);
-  return `<button class="cslot ${c != null ? "filled" : ""}" data-key="${key}" aria-label="카드 고르기">${c != null ? cardHTML(c) : '<span class="plus">+</span>'}</button>`;
+  return `<button class="cslot ${c != null ? "filled" : ""}" data-key="${key}" aria-label="card">${c != null ? cardHTML(c) : '<span class="plus">+</span>'}</button>`;
 }
 function bindSlots(root){ root.querySelectorAll(".cslot").forEach(b => b.onclick = () => openSheet(b.dataset.key)); }
 
@@ -978,21 +1646,21 @@ function step4(){
   cleanVillains();
   const pos = positionsFor(S.seatCount);
   app.innerHTML = `
-    <h1 class="title">핸드</h1>
-    <p class="lead">내 카드와 상대, 보드를 넣으면 에퀴티를 계산해요. ICM만 볼 거면 비워두고 넘어가도 돼요.</p>
+    <h1 class="title">${t("핸드")}</h1>
+    <p class="lead">${t("내 카드와 상대, 보드를 넣으면 에퀴티를 계산해요. ICM만 볼 거면 비워두고 넘어가도 돼요.")}</p>
     <section class="card">
-      <div class="card-head"><h2>내 핸드</h2><span class="pill">${pos[S.hero]} · ${stackText(stackOf(S.hero))}</span></div>
+      <div class="card-head"><h2>${t("내 핸드")}</h2><span class="pill">${pos[S.hero]} · ${stackText(stackOf(S.hero))}</span></div>
       <div class="cards" id="heroSlots"></div>
     </section>
     <section class="card">
-      <div class="card-head"><h2>팟에 들어온 상대</h2><span class="pill">최대 2명</span></div>
+      <div class="card-head"><h2>${t("팟에 들어온 상대")}</h2><span class="pill">${t("최대 2명")}</span></div>
       <div class="vchips" id="vchips"></div>
       <div id="vboxes"></div>
     </section>
     <section class="card">
-      <h2>보드</h2>
+      <h2>${t("보드")}</h2>
       <div class="board" id="boardSlots"></div>
-      <p class="help">비워둔 칸은 나올 수 있는 모든 카드를 고려해서 평균을 내요.</p>
+      <p class="help">${t("비워둔 칸은 나올 수 있는 모든 카드를 고려해서 평균을 내요.")}</p>
     </section>`;
   drawHandAll();
 }
@@ -1001,9 +1669,9 @@ function drawHero(){ const el = document.getElementById("heroSlots"); if (!el) r
 function drawBoard(){
   const el = document.getElementById("boardSlots"); if (!el) return;
   el.innerHTML = `
-    <div class="bgrp"><span class="lbl">플랍</span><div class="cards">${slotHTML("b0")}${slotHTML("b1")}${slotHTML("b2")}</div></div>
-    <div class="bgrp"><span class="lbl">턴</span><div class="cards">${slotHTML("b3")}</div></div>
-    <div class="bgrp"><span class="lbl">리버</span><div class="cards">${slotHTML("b4")}</div></div>`;
+    <div class="bgrp"><span class="lbl">${t("플랍")}</span><div class="cards">${slotHTML("b0")}${slotHTML("b1")}${slotHTML("b2")}</div></div>
+    <div class="bgrp"><span class="lbl">${t("턴")}</span><div class="cards">${slotHTML("b3")}</div></div>
+    <div class="bgrp"><span class="lbl">${t("리버")}</span><div class="cards">${slotHTML("b4")}</div></div>`;
   bindSlots(el);
 }
 function drawVChips(){
@@ -1027,26 +1695,26 @@ function drawVChips(){
 function drawVBoxes(){
   const el = document.getElementById("vboxes"); if (!el) return;
   const pos = positionsFor(S.seatCount);
-  if (!S.villains.length) { el.innerHTML = `<p class="help">위에서 상대 자리를 눌러주세요.</p>`; return; }
+  if (!S.villains.length) { el.innerHTML = `<p class="help">${t("위에서 상대 자리를 눌러주세요.")}</p>`; return; }
   el.innerHTML = S.villains.map((v, vi) => {
     const p = pos[v.seat], def = POS_PCT[p] || 25;
     const body = (v.mode === "hand"
       ? `<div class="cards">${slotHTML(`v${vi}c0`)}${slotHTML(`v${vi}c1`)}</div>
-         <p class="help">쇼다운이나 오픈으로 본 상대 핸드를 넣어주세요. 실제 결과 계산에 써요.</p>
-         <span class="lbl" style="margin-top:14px">결정할 때 예상한 레인지 <small style="font-weight:500;color:var(--muted)">결정 평가에 써요</small></span>`
-      : "") + `<div class="slider-row"><input type="range" min="1" max="100" step="1" value="${v.pct}" aria-label="레인지 비율"><span class="pct"></span></div>
+         <p class="help">${t("쇼다운이나 오픈으로 본 상대 핸드를 넣어주세요. 실제 결과 계산에 써요.")}</p>
+         <span class="lbl" style="margin-top:14px">${t("결정할 때 예상한 레인지")} <small style="font-weight:500;color:var(--muted)">${t("결정 평가에 써요")}</small></span>`
+      : "") + `<div class="slider-row"><input type="range" min="1" max="100" step="1" value="${v.pct}" aria-label="range %"><span class="pct"></span></div>
          <p class="help rinfo"></p>
          <div class="row-between">
-           <button class="mini" data-act="def">${p} 기본값 ${def}%</button>
-           <button class="mini" data-act="grid">${v.open ? "레인지 접기 ▴" : "레인지 보기·수정 ▾"}</button>
+           <button class="mini" data-act="def">${t("{p} 기본값 {d}%", { p, d: def })}</button>
+           <button class="mini" data-act="grid">${v.open ? t("레인지 접기 ▴") : t("레인지 보기·수정 ▾")}</button>
          </div>
          ${v.open ? `<div class="rgrid">${GRID.map((n, k) => `<button data-k="${k}">${n}</button>`).join("")}</div>
-           <p class="help">칸을 눌러 핸드를 넣거나 뺄 수 있어요.</p>` : ""}`;
+           <p class="help">${t("칸을 눌러 핸드를 넣거나 뺄 수 있어요.")}</p>` : ""}`;
     return `<div class="vbox" data-vi="${vi}">
       <div class="vhead"><div><b>${p}</b><small>${stackText(stackOf(v.seat))}</small></div>
-        <div class="seg sm"><button data-m="range" class="${v.mode === "range" ? "on" : ""}">레인지</button><button data-m="hand" class="${v.mode === "hand" ? "on" : ""}">핸드 알아요</button></div>
+        <div class="seg sm"><button data-m="range" class="${v.mode === "range" ? "on" : ""}">${t("레인지")}</button><button data-m="hand" class="${v.mode === "hand" ? "on" : ""}">${t("핸드 알아요")}</button></div>
       </div>${body}</div>`;
-  }).join("") + `<p class="help">기본값은 포지션별 <b>대략적인 평균 오픈 레인지</b>예요. 3벳이나 콜 상황이면 더 좁게 줄여주세요.</p>`;
+  }).join("") + `<p class="help">${t("기본값은 포지션별 <b>대략적인 평균 오픈 레인지</b>예요. 3벳이나 콜 상황이면 더 좁게 줄여주세요.")}</p>`;
   el.querySelectorAll(".vbox").forEach(box => {
     const vi = +box.dataset.vi, v = S.villains[vi];
     box.querySelectorAll(".seg button").forEach(b => b.onclick = () => { v.mode = b.dataset.m; save(); drawVBoxes(); });
@@ -1068,7 +1736,7 @@ function drawVBoxes(){
 function updateRange(box, v){
   const set = rangeSet(v), combos = rangeCombos(set), real = combos / 1326 * 100;
   box.querySelector(".pct").textContent = (v.custom ? real.toFixed(1) : v.pct) + "%";
-  box.querySelector(".rinfo").innerHTML = `<b>${set.size}종류 · ${combos}조합</b>${v.custom ? " · 직접 수정함" : ` · 강한 순서로 상위 ${v.pct}%`}`;
+  box.querySelector(".rinfo").innerHTML = `<b>${t("{a}종류 · {b}조합", { a: set.size, b: combos })}</b>${v.custom ? " · " + t("직접 수정함") : " · " + t("강한 순서로 상위 {p}%", { p: v.pct })}`;
   box.querySelectorAll(".rgrid button").forEach(b => b.classList.toggle("in", set.has(GRID[+b.dataset.k])));
 }
 
@@ -1076,9 +1744,10 @@ function updateRange(box, v){
 let sheetKey = null, sheetRank = null;
 function sheetTitle(key){
   const pos = positionsFor(S.seatCount);
-  if (key[0] === "h") return ["내 핸드", `${+key[1] + 1}번째 카드`];
-  if (key[0] === "b") return +key[1] < 3 ? ["플랍", `${+key[1] + 1}번째 카드`] : [+key[1] === 3 ? "턴" : "리버", ""];
-  return [`${pos[S.villains[+key[1]].seat]} 핸드`, `${+key[3] + 1}번째 카드`];
+  const nth = n => t("{n}번째 카드", { n });
+  if (key[0] === "h") return [t("내 핸드"), nth(+key[1] + 1)];
+  if (key[0] === "b") return +key[1] < 3 ? [t("플랍"), nth(+key[1] + 1)] : [+key[1] === 3 ? t("턴") : t("리버"), ""];
+  return [t("{p} 핸드", { p: pos[S.villains[+key[1]].seat] }), nth(+key[3] + 1)];
 }
 function openSheet(key){
   sheetKey = key; const c = slotGet(key); sheetRank = c != null ? c >> 2 : null;
@@ -1092,17 +1761,17 @@ function closeSheet(){
   document.getElementById("sheetBg").classList.remove("show");
 }
 function renderSheet(){
-  const used = usedCards(sheetKey), [t, sub] = sheetTitle(sheetKey);
+  const used = usedCards(sheetKey), [ttl, sub] = sheetTitle(sheetKey);
   const ranks = [12,11,10,9,8,7,6,5,4,3,2,1,0];
   document.getElementById("sheetIn").innerHTML = `
-    <div class="sheet-head"><b>${t}</b><button class="mini" id="shClose">닫기</button></div>
-    <p class="sheet-sub">${sub ? sub + " · " : ""}숫자를 고르고 무늬를 눌러주세요</p>
+    <div class="sheet-head"><b>${ttl}</b><button class="mini" id="shClose">${t("닫기")}</button></div>
+    <p class="sheet-sub">${sub ? sub + " · " : ""}${t("숫자를 고르고 무늬를 눌러주세요")}</p>
     <div class="rank-grid">${ranks.map(r => {
       const full = [0,1,2,3].every(s => used.has(r * 4 + s));
       return `<button data-r="${r}" class="${r === sheetRank ? "on" : ""}" ${full ? "disabled" : ""}>${RANKS[r]}</button>`;
     }).join("")}</div>
-    <div class="suit-grid">${[0,1,2,3].map(s => `<button class="s${s}" data-s="${s}" ${sheetRank == null || used.has(sheetRank * 4 + s) ? "disabled" : ""} aria-label="${"스페이드 하트 다이아 클로버".split(" ")[s]}">${SUITS[s]}</button>`).join("")}</div>
-    <div class="sheet-foot"><button class="mini" id="shClear" style="color:var(--neg)">이 칸 비우기</button></div>`;
+    <div class="suit-grid">${[0,1,2,3].map(s => `<button class="s${s}" data-s="${s}" ${sheetRank == null || used.has(sheetRank * 4 + s) ? "disabled" : ""} aria-label="${"spade heart diamond club".split(" ")[s]}">${SUITS[s]}</button>`).join("")}</div>
+    <div class="sheet-foot"><button class="mini" id="shClear" style="color:var(--neg)">${t("이 칸 비우기")}</button></div>`;
   const box = document.getElementById("sheetIn");
   box.querySelectorAll(".rank-grid button").forEach(b => b.onclick = () => { sheetRank = +b.dataset.r; renderSheet(); });
   box.querySelectorAll(".suit-grid button").forEach(b => b.onclick = () => {
@@ -1119,18 +1788,18 @@ document.getElementById("sheetBg").onclick = closeSheet;
 
 function equitySection(E){
   if (!E) return "";
-  if (E.error) return `<section class="card"><h2>에퀴티</h2><p class="help" style="color:var(--neg)">${E.error}</p></section>`;
+  if (E.error) return `<section class="card"><h2>${t("에퀴티")}</h2><p class="help" style="color:var(--neg)">${E.error}</p></section>`;
   const pos = positionsFor(S.seatCount), board = S.board.filter(c => c != null);
-  const street = board.length === 0 ? "프리플랍" : board.length === 3 ? "플랍" : board.length === 4 ? "턴" : "리버";
+  const street = STREETS[board.length === 0 ? 0 : board.length - 2];
   const colors = ["var(--pri)", "#8b95a1", "#c4cad1"];
-  const names = [`${pos[S.hero]} (나)`, ...S.villains.map(v => pos[v.seat])];
+  const names = [`${pos[S.hero]} (${t("나")})`, ...S.villains.map(v => pos[v.seat])];
   const descs = [S.heroCards.map(miniCard).join(""),
-    ...S.villains.map(v => v.mode === "hand" ? v.cards.map(miniCard).join("") : `레인지 ${v.custom ? (rangeCombos(rangeSet(v)) / 13.26).toFixed(1) : v.pct}% · ${rangeCombos(rangeSet(v))}조합`)];
+    ...S.villains.map(v => v.mode === "hand" ? v.cards.map(miniCard).join("") : t("레인지 {p}% · {c}조합", { p: v.custom ? (rangeCombos(rangeSet(v)) / 13.26).toFixed(1) : v.pct, c: rangeCombos(rangeSet(v)) }))];
   return `
     <section class="card">
-      <div class="card-head"><h2>에퀴티</h2><span class="pill">${E.exact ? "모든 경우 계산" : `${fmt(E.trials)}번 시뮬레이션`}</span></div>
+      <div class="card-head"><h2>${t("에퀴티")}</h2><span class="pill">${E.exact ? t("모든 경우 계산") : t("{n}번 시뮬레이션", { n: fmt(E.trials) })}</span></div>
       <div class="eq-big">${pct(E.share[0])}</div>
-      <p class="help" style="margin-top:2px">${street}${board.length ? " " + board.map(miniCard).join("") : ""} · 끝까지 갔을 때 내가 팟을 가져가는 몫</p>
+      <p class="help" style="margin-top:2px">${street}${board.length ? " " + board.map(miniCard).join("") : ""} · ${t("끝까지 갔을 때 내가 팟을 가져가는 몫")}</p>
       <div class="eq-bar">${E.share.map((v, i) => `<i style="width:${(v * 100).toFixed(2)}%;background:${colors[i]}"></i>`).join("")}</div>
       ${E.share.map((v, i) => `
         <div class="erow ${i === 0 ? "me" : ""}">
@@ -1141,7 +1810,8 @@ function equitySection(E){
 }
 
 /* ================= 핸드 진행 엔진 ================= */
-const STREETS = ["프리플랍", "플랍", "턴", "리버"];
+const STREETS_KO = ["프리플랍", "플랍", "턴", "리버"];
+const STREETS = new Proxy([], { get: (o, k) => k === "length" ? 4 : (/^\d$/.test(k) ? t(STREETS_KO[+k]) : o[k]) });
 function blindSeats(n){ return n === 2 ? [0, 1] : [n - 2, n - 1]; }
 function orderFor(n, street){
   if (n === 2) return street === 0 ? [0, 1] : [1, 0];
@@ -1196,23 +1866,23 @@ function advance(H){
 }
 function applyAct(H, act){
   const i = act.p;
-  if (H.end || i !== H.toAct) return "지금은 이 사람 차례가 아니에요.";
+  if (H.end || i !== H.toAct) return t("지금은 이 사람 차례가 아니에요.");
   const toCall = H.cur - H.bet[i];
   const put = amt => { const x = Math.min(amt, H.stack[i]); H.stack[i] -= x; H.bet[i] += x; H.commit[i] += x; if (H.stack[i] <= 0) H.allin[i] = true; };
   if (act.a === "f") H.folded[i] = true;
-  else if (act.a === "x") { if (toCall > 0) return "콜할 금액이 있어서 체크할 수 없어요."; }
-  else if (act.a === "c") { if (toCall <= 0) return "콜할 금액이 없어요."; put(toCall); }
+  else if (act.a === "x") { if (toCall > 0) return t("콜할 금액이 있어서 체크할 수 없어요."); }
+  else if (act.a === "c") { if (toCall <= 0) return t("콜할 금액이 없어요."); put(toCall); }
   else if (act.a === "r") {
     const max = H.bet[i] + H.stack[i], to = Math.min(act.to, max);
-    if (!(to > 0)) return "금액을 입력해주세요.";
-    if (to <= H.cur) { if (to === max && toCall > 0) put(toCall); else return `${stackText(H.cur)}보다 크게 입력해주세요.`; }
+    if (!(to > 0)) return t("금액을 입력해주세요.");
+    if (to <= H.cur) { if (to === max && toCall > 0) put(toCall); else return t("{x}보다 크게 입력해주세요.", { x: stackText(H.cur) }); }
     else {
       const minTo = H.cur + H.lastRaise;
-      if (to < minTo - 1e-6 && to !== max) return `최소 ${stackText(minTo)}까지는 올려야 해요.`;
+      if (to < minTo - 1e-6 && to !== max) return t("최소 {x}까지는 올려야 해요.", { x: stackText(minTo) });
       if (to - H.cur >= H.lastRaise) H.lastRaise = to - H.cur;
       H.cur = to; put(to - H.bet[i]); H.acted = []; H.aggr = i;
     }
-  } else return "알 수 없는 액션이에요.";
+  } else return t("알 수 없는 액션이에요.");
   H.acted.push(i);
   H.pos = orderFor(H.n, H.street).indexOf(i);
   advance(H);
@@ -1252,7 +1922,7 @@ function showdownDist(H, specs, board, dead, trials){
   const deadSet = new Set([...board, ...dead]);
   live.forEach(i => specs[i].fixed && specs[i].fixed.forEach(c => deadSet.add(c)));
   const ps = live.map(i => specs[i].fixed ? { fixed: specs[i].fixed } : { combos: specs[i].combos.filter(cb => !deadSet.has(cb[0]) && !deadSet.has(cb[1])) });
-  if (ps.some(p => p.combos && !p.combos.length)) return { error: "상대 레인지에 가능한 핸드가 없어요." };
+  if (ps.some(p => p.combos && !p.combos.length)) return { error: t("상대 레인지에 가능한 핸드가 없어요.") };
   const deck = []; for (let c = 0; c < 52; c++) if (!deadSet.has(c)) deck.push(c);
   const need = 5 - board.length, b = [...board, -1, -1, -1, -1, -1].slice(0, 5);
   const hands = new Array(live.length), sc = new Array(live.length), used = new Uint8Array(52), win = new Float64Array(H.n);
@@ -1294,25 +1964,25 @@ function showdownDist(H, specs, board, dead, trials){
       settle();
     }
   }
-  if (!total) return { error: "상대 두 명의 레인지가 서로 겹쳐서 계산할 수 없어요." };
+  if (!total) return { error: t("상대 두 명의 레인지가 서로 겹쳐서 계산할 수 없어요.") };
   return { outs: [...map.values()].map(e => ({ p: e.w / total, fs: H.stack.map((s, i) => s + e.win[i]) })), exact, n: total };
 }
 
 /* ---------- 액션 표시 ---------- */
 function actText(entry){
   const a = entry.act, b = entry.before;
-  if (a.a === "f") return "폴드";
-  if (a.a === "x") return "체크";
-  if (a.a === "c") return `콜 ${stackText(entry.betAfter)}${entry.allin ? " (올인)" : ""}`;
-  if (entry.allin) return `올인 ${stackText(entry.betAfter)}`;
-  return `${b.cur === 0 ? "벳" : "레이즈"} ${stackText(entry.betAfter)}`;
+  if (a.a === "f") return t("폴드");
+  if (a.a === "x") return t("체크");
+  if (a.a === "c") return `${t("콜")} ${stackText(entry.betAfter)}${entry.allin ? ` (${t("올인")})` : ""}`;
+  if (entry.allin) return `${t("올인")} ${stackText(entry.betAfter)}`;
+  return `${b.cur === 0 ? t("벳") : t("레이즈")} ${stackText(entry.betAfter)}`;
 }
 function sizeOptions(H, i){
   const pot = potOf(H), toCall = H.cur - H.bet[i], minTo = H.cur + H.lastRaise, max = H.bet[i] + H.stack[i], BB = S.bb;
   let out = [];
-  if (H.street === 0 && H.cur <= BB) { [2, 2.2, 2.5, 3].forEach(x => out.push([`${x}BB`, x * BB])); out.push(["팟", H.cur + pot + toCall]); }
-  else if (H.cur === 0) { [["1/3", 1 / 3], ["1/2", .5], ["3/4", .75], ["팟", 1], ["1.5팟", 1.5]].forEach(([l, f]) => out.push([l, pot * f])); }
-  else { out.push(["미니멈", minTo]); [2.5, 3, 4].forEach(x => out.push([`${x}배`, H.cur * x])); out.push(["팟", H.cur + pot + toCall]); }
+  if (H.street === 0 && H.cur <= BB) { [2, 2.2, 2.5, 3].forEach(x => out.push([`${x}BB`, x * BB])); out.push([t("팟"), H.cur + pot + toCall]); }
+  else if (H.cur === 0) { [["1/3", 1 / 3], ["1/2", .5], ["3/4", .75], [t("팟"), 1], [t("1.5팟"), 1.5]].forEach(([l, f]) => out.push([l, pot * f])); }
+  else { out.push([t("미니멈"), minTo]); [2.5, 3, 4].forEach(x => out.push([t("{x}배", { x }), H.cur * x])); out.push([t("팟"), H.cur + pot + toCall]); }
   out = out.map(([l, to]) => [l, Math.round(to)]).filter(([, to]) => to >= minTo && to < max);
   return out;
 }
@@ -1323,16 +1993,16 @@ function step5(){
   cleanVillains();
   if (!S.villains.length) {
     app.innerHTML = `
-      <h1 class="title">라인</h1>
-      <p class="lead">베팅 라인을 넣으면 선택마다 상금 기준 EV를 비교해요.</p>
-      <section class="card"><p class="help" style="margin:0">핸드 단계에서 <b>팟에 들어온 상대</b>를 먼저 골라주세요. 라인 없이 결과만 봐도 돼요.</p>
-      <button class="btn-add" id="toHand" style="margin-top:12px">핸드 단계로 가기</button></section>`;
+      <h1 class="title">${t("라인")}</h1>
+      <p class="lead">${t("베팅 라인을 넣으면 선택마다 상금 기준 EV를 비교해요.")}</p>
+      <section class="card"><p class="help" style="margin:0">${t("핸드 단계에서 <b>팟에 들어온 상대</b>를 먼저 골라주세요. 라인 없이 결과만 봐도 돼요.")}</p>
+      <button class="btn-add" id="toHand" style="margin-top:12px">${t("핸드 단계로 가기")}</button></section>`;
     document.getElementById("toHand").onclick = () => goTo(4);
     return;
   }
   app.innerHTML = `
-    <h1 class="title">라인</h1>
-    <p class="lead">실제로 있었던 액션을 순서대로 넣어주세요. 액션 옆 <b>↳ 다르게</b>를 누르면 그 지점부터 다른 선택을 한 라인을 만들 수 있어요. 내 베팅을 상대가 받은 자리에는 <b>반응</b> 버튼이 생겨요.</p>
+    <h1 class="title">${t("라인")}</h1>
+    <p class="lead">${t("실제로 있었던 액션을 순서대로 넣어주세요. 액션 옆 <b>↳ 다르게</b>를 누르면 그 지점부터 다른 선택을 한 라인을 만들 수 있어요. 내 베팅을 상대가 받은 자리에는 <b>반응</b> 버튼이 생겨요.")}</p>
     <div class="ltabs" id="ltabs"></div>
     <section class="card" id="lineLog"></section>
     <section class="card" id="actor"></section>`;
@@ -1341,19 +2011,20 @@ function step5(){
 function drawLines(){
   if (S.lineSel >= S.lines.length) S.lineSel = 0;
   const line = curLine(), R = replay(handCfg(), line.acts);
-  if (R.valid < line.acts.length) { line.acts.length = R.valid; save(); toast("앞 단계 입력이 바뀌어서 맞지 않는 액션을 지웠어요."); }
+  if (R.valid < line.acts.length) { line.acts.length = R.valid; save(); toast(t("앞 단계 입력이 바뀌어서 맞지 않는 액션을 지웠어요.")); }
   drawTabs(); drawLog(R); drawActor(R.H);
 }
 function drawTabs(){
   const el = document.getElementById("ltabs");
-  el.innerHTML = S.lines.map((l, k) => `<button class="ltab ${k === S.lineSel ? "on" : ""}" data-k="${k}">${l.name}</button>`).join("") +
-    `<button class="ltab add" id="newLine">+ 빈 라인</button>`;
+  el.innerHTML = S.lines.map((l, k) => `<button class="ltab ${k === S.lineSel ? "on" : ""}" data-k="${k}">${lineName(l.name)}</button>`).join("") +
+    `<button class="ltab add" id="newLine">${!S.premium && S.lines.length >= FREE_LINES ? "🔒 " : ""}${t("+ 빈 라인")}</button>`;
   el.querySelectorAll(".ltab[data-k]").forEach(b => b.onclick = () => { S.lineSel = +b.dataset.k; save(); drawLines(); });
   document.getElementById("newLine").onclick = () => addLine([]);
 }
 let openResp = null;
 function addLine(acts, resp){
-  if (S.lines.length >= 6) return toast("라인은 6개까지 만들 수 있어요.");
+  if (!S.premium && S.lines.length >= FREE_LINES) return openPaywall("lines");
+  if (S.lines.length >= 6) return toast(t("라인은 6개까지 만들 수 있어요."));
   const used = new Set(S.lines.map(l => l.name));
   let k = 1, name; do { name = "라인 " + String.fromCharCode(65 + k); k++; } while (used.has(name));
   const r2 = {}; Object.entries(resp || {}).forEach(([k2, v2]) => { if (+k2 < acts.length) r2[k2] = { ...v2 }; });
@@ -1365,19 +2036,19 @@ function addLine(acts, resp){
 function respPanel(line, k, street){
   const r = respOf(line, k), desc = street === 0 ? STYLE_PRE : STYLE_POST;
   return `<div class="rpanel" data-k="${k}">
-    <span class="lbl">내 베팅에 이 상대는 얼마나 접었을까?</span>
-    <div class="rsty">${["tight", "normal", "station"].map(t => `<button data-t="${t}" class="${r.t === t ? "on" : ""}"><b>${STYLE[t]}</b><small>${desc[t]}</small></button>`).join("")}</div>
-    <div class="rpct"><button data-t="pct" class="${r.t === "pct" ? "on" : ""}">폴드율 직접 입력</button>
+    <span class="lbl">${t("내 베팅에 이 상대는 얼마나 접었을까?")}</span>
+    <div class="rsty">${["tight", "normal", "station"].map(k => `<button data-t="${k}" class="${r.t === k ? "on" : ""}"><b>${t(STYLE[k])}</b><small>${t(desc[k])}</small></button>`).join("")}</div>
+    <div class="rpct"><button data-t="pct" class="${r.t === "pct" ? "on" : ""}">${t("폴드율 직접 입력")}</button>
       ${r.t === "pct" ? `<div class="inp"><input inputmode="numeric" value="${r.pct ?? 40}"><span class="suf">%</span></div>` : ""}</div>
-    <p class="help" style="margin:8px 0 0">모르겠으면 <b>보통</b>으로 두면 돼요. 접은 부분은 내가 팟을 가져가고, 콜한 부분은 강한 핸드만 남겨서 다음 스트리트를 계산해요.</p>
+    <p class="help" style="margin:8px 0 0">${t("모르겠으면 <b>보통</b>으로 두면 돼요. 접은 부분은 내가 팟을 가져가고, 콜한 부분은 강한 핸드만 남겨서 다음 스트리트를 계산해요.")}</p>
   </div>`;
 }
 function drawLog(R){
   const pos = positionsFor(S.seatCount), h = S.hero, line = curLine();
   const H0 = newHand(handCfg());
-  let html = `<div class="card-head"><h2>${line.name}${S.lineSel === 0 ? '<span class="pill" style="margin-left:8px">실제</span>' : ""}</h2>
-    ${S.lineSel > 0 ? '<button class="mini" id="delLine" style="color:var(--neg)">라인 삭제</button>' : ""}</div>
-    <div class="lrow sys"><span class="lpos">·</span><span class="ltxt">블라인드·앤티</span><span class="lpot">팟 ${stackText(potOf(H0))}</span></div>`;
+  let html = `<div class="card-head"><h2>${lineName(line.name)}${S.lineSel === 0 ? `<span class="pill" style="margin-left:8px">${t("실제")}</span>` : ""}</h2>
+    ${S.lineSel > 0 ? `<button class="mini" id="delLine" style="color:var(--neg)">${t("라인 삭제")}</button>` : ""}</div>
+    <div class="lrow sys"><span class="lpos">·</span><span class="ltxt">${t("블라인드·앤티")}</span><span class="lpot">${t("팟")} ${stackText(potOf(H0))}</span></div>`;
   let street = -1;
   const rpts = new Set(responsePoints(R).map(p => p.k));
   R.log.forEach((e, k) => {
@@ -1385,19 +2056,19 @@ function drawLog(R){
       street = e.before.street;
       const known = S.board.filter(c => c != null);
       const cards = street === 0 ? "" : known.slice(0, [0, 3, 4, 5][street]).map(miniCard).join("");
-      html += `<div class="lst">${STREETS[street]} ${cards}<span>팟 ${stackText(potOf(e.before))}</span></div>`;
+      html += `<div class="lst">${STREETS[street]} ${cards}<span>${t("팟")} ${stackText(potOf(e.before))}</span></div>`;
     }
     const me = e.act.p === h;
     const rp = rpts.has(k);
-    html += `<div class="lrow ${me ? "me" : ""}"><span class="lpos">${pos[e.act.p]}</span><span class="ltxt">${actText(e)}${rp ? `<button class="rsp ${openResp === k ? "on" : ""}" data-k="${k}">반응: ${respLabel(respOf(line, k))} ▾</button>` : ""}</span>
-      <button class="br" data-k="${k}">↳ 다르게</button></div>`;
+    html += `<div class="lrow ${me ? "me" : ""}"><span class="lpos">${pos[e.act.p]}</span><span class="ltxt">${actText(e)}${rp ? `<button class="rsp ${openResp === k ? "on" : ""}" data-k="${k}">${t("반응")}: ${respLabel(respOf(line, k))} ▾</button>` : ""}</span>
+      <button class="br" data-k="${k}">${t("↳ 다르게")}</button></div>`;
     if (rp && openResp === k) html += respPanel(line, k, e.before.street);
   });
   if (R.H.end) {
     const w = R.H.end.winner;
-    html += `<div class="lend">🏁 ${R.H.end.type === "fold" ? `${pos[w]}${w === h ? "(나)" : ""}가 팟 ${stackText(potOf(R.H))}을 가져가요` : `쇼다운 · 팟 ${stackText(potOf(R.H))}`}</div>`;
+    html += `<div class="lend">🏁 ${R.H.end.type === "fold" ? t("{p}가 팟 {x}을 가져가요", { p: pos[w] + (w === h ? `(${t("나")})` : ""), x: stackText(potOf(R.H)) }) : t("쇼다운 · 팟 {x}", { x: stackText(potOf(R.H)) })}</div>`;
   }
-  if (line.acts.length) html += `<div class="row-between"><button class="mini" id="undo">↶ 마지막 액션 취소</button><span class="help" style="margin:0">${line.acts.length}개 액션</span></div>`;
+  if (line.acts.length) html += `<div class="row-between"><button class="mini" id="undo">${t("↶ 마지막 액션 취소")}</button><span class="help" style="margin:0">${t("{n}개 액션", { n: line.acts.length })}</span></div>`;
   const el = document.getElementById("lineLog");
   el.innerHTML = html;
   el.querySelectorAll(".br").forEach(b => b.onclick = () => addLine(line.acts.slice(0, +b.dataset.k), line.resp));
@@ -1408,7 +2079,7 @@ function drawLog(R){
     pn.querySelectorAll("[data-t]").forEach(b => b.onclick = () => { setR({ t: b.dataset.t }); drawLines(); });
     const inp = pn.querySelector("input");
     if (inp) inp.oninput = () => { const v = Math.max(0, Math.min(100, parseInt(inp.value, 10) || 0)); setR({ t: "pct", pct: v });
-      const chip = el.querySelector(`.rsp[data-k="${k}"]`); if (chip) chip.textContent = `반응: 폴드 ${v}% ▾`; };
+      const chip = el.querySelector(`.rsp[data-k="${k}"]`); if (chip) chip.textContent = `${t("반응")}: ${t("폴드 {p}%", { p: v })} ▾`; };
   });
   const undo = document.getElementById("undo"); if (undo) undo.onclick = () => { line.acts.pop(); if (line.resp) delete line.resp[line.acts.length]; save(); drawLines(); };
   const del = document.getElementById("delLine");
@@ -1417,32 +2088,32 @@ function drawLog(R){
 function drawActor(H){
   const el = document.getElementById("actor"), pos = positionsFor(S.seatCount), h = S.hero;
   if (H.end) {
-    el.innerHTML = `<h2>핸드 끝</h2><p class="help" style="margin:0">다른 선택을 해보고 싶으면 위 액션 옆 <b>↳ 다르게</b>를 눌러주세요. 다 넣었으면 <b>결과 보기</b>를 눌러주세요.</p>`;
+    el.innerHTML = `<h2>${t("핸드 끝")}</h2><p class="help" style="margin:0">${t("다른 선택을 해보고 싶으면 위 액션 옆 <b>↳ 다르게</b>를 눌러주세요. 다 넣었으면 <b>결과 보기</b>를 눌러주세요.")}</p>`;
     return;
   }
   const i = H.toAct, toCall = Math.min(H.cur - H.bet[i], H.stack[i]), pot = potOf(H), max = H.bet[i] + H.stack[i], minTo = Math.min(H.cur + H.lastRaise, max);
-  const verb = H.cur === 0 ? "벳" : "레이즈";
+  const verb = H.cur === 0 ? t("벳") : t("레이즈");
   el.innerHTML = `
-    <div class="card-head"><h2>${pos[i]}${i === h ? '<span class="tag">나</span>' : ""} 차례</h2><span class="pill">${STREETS[H.street]}</span></div>
+    <div class="card-head"><h2>${t("{p} 차례", { p: pos[i] + (i === h ? `<span class="tag">${t("나")}</span>` : "") })}</h2><span class="pill">${STREETS[H.street]}</span></div>
     <div class="ainfo">
-      <div><span>팟</span><b>${stackText(pot)}</b></div>
-      <div><span>남은 스택</span><b>${stackText(H.stack[i])}</b></div>
-      <div><span>콜 금액</span><b>${toCall > 0 ? stackText(toCall) : "-"}</b></div>
+      <div><span>${t("팟")}</span><b>${stackText(pot)}</b></div>
+      <div><span>${t("남은 스택")}</span><b>${stackText(H.stack[i])}</b></div>
+      <div><span>${t("콜 금액")}</span><b>${toCall > 0 ? stackText(toCall) : "-"}</b></div>
     </div>
     <div class="abtns">
-      ${toCall > 0 ? `<button class="abtn fold" data-a="f">폴드</button><button class="abtn" data-a="c">콜 ${stackText(toCall)}${toCall >= H.stack[i] ? " (올인)" : ""}</button>`
-                   : `<button class="abtn" data-a="x">체크</button>`}
+      ${toCall > 0 ? `<button class="abtn fold" data-a="f">${t("폴드")}</button><button class="abtn" data-a="c">${t("콜")} ${stackText(toCall)}${toCall >= H.stack[i] ? ` (${t("올인")})` : ""}</button>`
+                   : `<button class="abtn" data-a="x">${t("체크")}</button>`}
     </div>
     ${max > H.cur ? `
       <div class="raise">
-        <span class="lbl">${verb} 금액 <small>이번 스트리트에 총 얼마까지 넣었는지</small></span>
+        <span class="lbl">${t("{v} 금액", { v: verb })} <small>${t("이번 스트리트에 총 얼마까지 넣었는지")}</small></span>
         <div class="quick">${sizeOptions(H, i).map(([l, to]) => `<button class="qb" data-to="${to}">${l}</button>`).join("")}</div>
         <div class="rrow2">
           <div class="inp"><input id="raiseIn" inputmode="decimal" placeholder="${toInputUnit(minTo)}"><span class="suf">${unitLabel()}</span></div>
           <button class="abtn pri" id="raiseBtn">${verb}</button>
         </div>
-        <p class="help">최소 ${stackText(minTo)} · 미니멈 3벳, 오버벳처럼 자유롭게 넣어도 돼요.</p>
-        <button class="abtn allin" data-a="allin">올인 ${stackText(max)}</button>
+        <p class="help">${t("최소 {x} · 미니멈 3벳, 오버벳처럼 자유롭게 넣어도 돼요.", { x: stackText(minTo) })}</p>
+        <button class="abtn allin" data-a="allin">${t("올인")} ${stackText(max)}</button>
       </div>` : ""}`;
   const input = document.getElementById("raiseIn"), rb = document.getElementById("raiseBtn");
   const doAct = act => {
@@ -1461,7 +2132,7 @@ function drawActor(H){
     el.querySelectorAll(".qb").forEach(b => b.onclick = () => { input.value = toInputUnit(+b.dataset.to); upd(); });
     rb.onclick = () => {
       const v = fromInputUnit(parseNum(input.value));
-      if (!ok(v)) return toast("금액을 입력하거나 위 버튼을 눌러주세요.");
+      if (!ok(v)) return toast(t("금액을 입력하거나 위 버튼을 눌러주세요."));
       doAct({ p: i, a: "r", to: Math.round(v) });
     };
   }
@@ -1504,7 +2175,7 @@ const STYLE_POST = { tight: "탑페어 이상만 콜", normal: "원페어·드�
 const PRE_CONT = { tight: 0.40, normal: 0.55, station: 0.70 };
 const STYLE_PRE = { tight: "레인지 상위 40%만 계속", normal: "레인지 상위 55%만 계속", station: "레인지 상위 70%까지 계속" };
 function respOf(line, k){ return (line.resp && line.resp[k]) || { t: "normal", pct: 40 }; }
-function respLabel(r){ return r.t === "pct" ? `폴드 ${r.pct}%` : STYLE[r.t]; }
+function respLabel(r){ return r.t === "pct" ? t("폴드 {p}%", { p: r.pct }) : t(STYLE[r.t]); }
 // 내가 벳·레이즈한 뒤 상대(한 명)가 콜/레이즈로 받은 자리들
 function responsePoints(R){
   const h = S.hero, pts = [];
@@ -1580,17 +2251,17 @@ function evalMix(ctx, R, line, atStreet, override, trials = 200000){
   let term = H, approx = false;
   if (lastPt.folded) {
     const ct = callThrough(R.snaps[lastPt.k], lastPt.seat);
-    if (!ct) return { error: "상대가 콜했을 경우를 계산할 수 없어요." };
+    if (!ct) return { error: t("상대가 콜했을 경우를 계산할 수 없어요.") };
     term = ct.H; approx = ct.approx;
   }
   const sd = term.end.type === "showdown";
   const heroCards = specs[h] && specs[h].fixed;
-  if (sd && !heroCards) return { error: "쇼다운까지 가는 라인이라 내 핸드가 필요해요." };
-  if (!vObj) return { error: "상대 정보를 찾을 수 없어요." };
+  if (sd && !heroCards) return { error: t("쇼다운까지 가는 라인이라 내 핸드가 필요해요.") };
+  if (!vObj) return { error: t("상대 정보를 찾을 수 없어요.") };
   const known = S.board.filter(c => c != null), vis = known.slice(0, [0, 3, 4, 5][atStreet]);
   const dead = new Set([...(heroCards || []), ...vis]);
   const combos = specs[v].combos.filter(cb => !dead.has(cb[0]) && !dead.has(cb[1]));
-  if (!combos.length) return { error: "상대 레인지에 가능한 핸드가 없어요." };
+  if (!combos.length) return { error: t("상대 레인지에 가능한 핸드가 없어요.") };
   const rangeNames = [...rangeSet(vObj)];
   pts.forEach(p => {
     if (p.street === 0) p.pre = topShare(rangeNames, p.rule.t === "pct" ? 1 - p.rule.pct / 100 : PRE_CONT[p.rule.t]);
@@ -1739,7 +2410,7 @@ function evaluateLine(ctx, line, atStreet = 0, override = null, trials = 80000){
   else {
     const specs = specsFor("decision"), live = H.parts.filter(i => !H.folded[i]);
     const missing = live.find(i => !specs[i]);
-    if (missing != null) return { error: missing === h ? "쇼다운까지 가는 라인이라 내 핸드가 필요해요." : `${positionsFor(S.seatCount)[missing]} 핸드 2장을 모두 넣어주세요.` };
+    if (missing != null) return { error: missing === h ? t("쇼다운까지 가는 라인이라 내 핸드가 필요해요.") : t("{p} 핸드 2장을 모두 넣어주세요.", { p: positionsFor(S.seatCount)[missing] }) };
     const known = S.board.filter(c => c != null);
     const vis = known.slice(0, [0, 3, 4, 5][Math.min(H.street, atStreet)]);
     const dead = [];
@@ -1761,9 +2432,9 @@ function actualResult(ctx, line){
   if (!H.end) return null;
   if (H.end.type === "fold") { const fs = H.stack.slice(); fs[H.end.winner] += potOf(H); return { v: heroValue(ctx, fs), fs }; }
   const specs = specsFor("actual"), live = H.parts.filter(i => !H.folded[i]);
-  if (live.some(i => !specs[i] || !specs[i].fixed)) return { need: "상대 핸드" };
+  if (live.some(i => !specs[i] || !specs[i].fixed)) return { need: t("상대 핸드") };
   const known = S.board.filter(c => c != null);
-  if (known.length < 5) return { need: "보드 5장" };
+  if (known.length < 5) return { need: t("보드 5장") };
   const d = showdownDist(H, specs, known, [], 1);
   if (d.error) return null;
   const o = d.outs[0];
@@ -1772,9 +2443,9 @@ function actualResult(ctx, line){
 async function step6(){
   const token = ++calcToken;
   app.innerHTML = `
-    <h1 class="title">결과</h1>
-    <p class="lead">내 결정을 상금 기준으로 복기해요.</p>
-    <section class="card loading"><div class="spinner"></div><div id="prog">계산 중...</div></section>`;
+    <h1 class="title">${t("결과")}</h1>
+    <p class="lead">${t("내 결정을 상금 기준으로 복기해요.")}</p>
+    <section class="card loading"><div class="spinner"></div><div id="prog">${t("계산 중...")}</div></section>`;
   await paint();
   const ctx = icmCtx();
   const eq = ctx.stacks.map((_, i) => icmValue(ctx.stacks, i, ctx.others, ctx.otherStack, ctx.prizes));
@@ -1783,14 +2454,14 @@ async function step6(){
   let equity = null;
   if (S.heroCards.every(c => c != null) && S.villains.length) {
     equity = await equityCalc(S.heroCards, S.villains, S.board.filter(c => c != null), p => {
-      const el = document.getElementById("prog"); if (el && token === calcToken) el.textContent = `에퀴티 계산 중... ${Math.round(p * 100)}%`;
+      const el = document.getElementById("prog"); if (el && token === calcToken) el.textContent = t("에퀴티 계산 중... {p}%", { p: Math.round(p * 100) });
     });
     if (token !== calcToken || S.step !== 6) return;
   }
   lastRes = { ctx, eq, equity, lines: [], cache: new Map() };
   if (S.villains.length) {
     for (let k = 0; k < S.lines.length; k++) {
-      const el = document.getElementById("prog"); if (el) el.textContent = `라인 계산 중... (${k + 1}/${S.lines.length})`;
+      const el = document.getElementById("prog"); if (el) el.textContent = t("라인 계산 중... ({a}/{b})", { a: k + 1, b: S.lines.length });
       await nextTick();
       if (token !== calcToken) return;
       lastRes.lines.push({ line: S.lines[k], r: evalAt(k, firstStreet()) });
@@ -1800,6 +2471,7 @@ async function step6(){
   }
   if (token !== calcToken || S.step !== 6) return;
   result();
+  maybeShowAd();
 }
 
 function evalAt(k, st){
@@ -1812,7 +2484,8 @@ function firstStreet(){
   const k = R.log.findIndex(e => e.act.p === S.hero);
   return k >= 0 ? R.log[k].before.street : 0;
 }
-const sgnWon = v => (Math.abs(v) < 10 ? "±0원" : (v < 0 ? "−" : "+") + won(Math.abs(v)));
+const sgnWon = v => (Math.abs(v) < 10 ? "±" + won(0) : (v < 0 ? "−" : "+") + won(Math.abs(v)));
+const sgnNum = v => (Math.abs(v) < 10 ? "±0" : (v < 0 ? "−" : "+") + fmt(Math.abs(v)));
 const cls = v => (Math.abs(v) < 10 ? "" : v < 0 ? "neg" : "pos");
 const sameAct = (a, b) => a && b && a.p === b.p && a.a === b.a && (a.a !== "r" || Math.round(a.to) === Math.round(b.to));
 
@@ -1829,8 +2502,8 @@ function allinInfo(r, d, cb){
   let win = 0, tie = 0;
   r.outs.forEach(o => { if (o.fs[h] === top) win += o.p; else if (o.fs[h] !== bot) tie += o.p; });
   // 손익분기 승률: 이 선택의 기대값 = 비교 대상의 기대값이 되는 승률
-  let W0 = d.foldEV, L0 = d.foldEV, base = "폴드";
-  if (d.toCall <= 0 && cb) { if (!cb.outs) return null; const v0 = cb.outs.map(o => o.v); W0 = Math.max(...v0); L0 = Math.min(...v0); base = "체크"; }
+  let W0 = d.foldEV, L0 = d.foldEV, base = t("폴드");
+  if (d.toCall <= 0 && cb) { if (!cb.outs) return null; const v0 = cb.outs.map(o => o.v); W0 = Math.max(...v0); L0 = Math.min(...v0); base = t("체크"); }
   const denom = (vWin - vLose) - (W0 - L0);
   if (denom <= 0) return null;
   const need = (L0 - vLose) / denom;
@@ -1844,7 +2517,7 @@ async function precomputeDecisions(token){
   const decs = first.r.decisions, tick = nextTick;
   for (let i = 0; i < decs.length; i++) {
     const d = decs[i], st = d.snap.street;
-    const el = document.getElementById("prog"); if (el) el.textContent = `내 결정 분석 중... (${i + 1}/${decs.length})`;
+    const el = document.getElementById("prog"); if (el) el.textContent = t("내 결정 분석 중... ({a}/{b})", { a: i + 1, b: decs.length });
     await tick(); if (token !== calcToken) return;
     const mine = evalAt(0, st);
     if (d.e.act.a !== "x") checkBackLine(d, st);
@@ -1882,19 +2555,19 @@ function foldInfo(mine, d, st, bestAlt){
   return { p, grid, be, calledEq: mine.showdown ? mine.calledEq : null, last: mine.pts[mine.pts.length - 1].k === p.k };
 }
 function feHTML(fe, bestAlt){
-  const altName = bestAlt ? bestAlt.label.replace("했다면", "").replace(/^라인 [A-Z] · /, "") : "";
+  const altName = bestAlt ? bestAlt.short : "";
   const est = fe.p.foldRate;
-  const verdict = fe.be == null ? "" : fe.be <= 0 ? `상대가 한 번도 안 접어도 ${altName}보다 나아요.`
-    : fe.be >= 100 ? `상대가 80% 넘게 접어도 ${altName}보다 못해요.`
-    : `${altName}보다 나으려면 상대가 <b>${Math.round(fe.be)}%</b> 이상 접어야 해요.`;
+  const verdict = fe.be == null ? "" : fe.be <= 0 ? t("상대가 한 번도 안 접어도 {a}보다 나아요.", { a: altName })
+    : fe.be >= 100 ? t("상대가 80% 넘게 접어도 {a}보다 못해요.", { a: altName })
+    : t("{a}보다 나으려면 상대가 <b>{p}%</b> 이상 접어야 해요.", { a: altName, p: Math.round(fe.be) });
   return `
     <div class="fe">
-      <div class="fe-top"><span>상대 반응 <b>${respLabel(fe.p.rule)}</b> → 예상 폴드율 <b>${pct(est)}</b></span>
-        ${fe.be != null && fe.be > 0 && fe.be < 100 ? `<span class="${est * 100 >= fe.be ? "pos" : "neg"}">${est * 100 >= fe.be ? "충분" : "부족"}</span>` : ""}</div>
+      <div class="fe-top"><span>${t("상대 반응 <b>{r}</b> → 예상 폴드율 <b>{p}</b>", { r: respLabel(fe.p.rule), p: pct(est) })}</span>
+        ${fe.be != null && fe.be > 0 && fe.be < 100 ? `<span class="${est * 100 >= fe.be ? "pos" : "neg"}">${est * 100 >= fe.be ? t("충분") : t("부족")}</span>` : ""}</div>
       ${verdict ? `<p class="fe-v">${verdict}</p>` : ""}
-      <div class="fgrid">${fe.grid.map(g => `<div><span>${g.f}%</span><b class="${bestAlt ? cls(g.ev - bestAlt.ev) : ""}">${bestAlt ? sgnWon(g.ev - bestAlt.ev).replace("원", "") : fmtShort(g.ev)}</b></div>`).join("")}</div>
-      <p class="help" style="margin:4px 0 0">상대 폴드율별로 ${bestAlt ? altName + "보다 얼마나 나은지(원)" : "기대값"}예요.</p>
-      ${fe.calledEq != null && fe.last ? `<p class="help" style="margin:2px 0 0">콜 받았을 때 (콜한 강한 쪽 레인지 상대로) 내 승률 <b>${pct(fe.calledEq)}</b></p>` : ""}
+      <div class="fgrid">${fe.grid.map(g => `<div><span>${g.f}%</span><b class="${bestAlt ? cls(g.ev - bestAlt.ev) : ""}">${bestAlt ? sgnNum(g.ev - bestAlt.ev) : fmtShort(g.ev)}</b></div>`).join("")}</div>
+      <p class="help" style="margin:4px 0 0">${bestAlt ? t("상대 폴드율별로 {a}보다 얼마나 나은지예요.", { a: altName }) : t("상대 폴드율별 기대값이에요.")}</p>
+      ${fe.calledEq != null && fe.last ? `<p class="help" style="margin:2px 0 0">${t("콜 받았을 때 (콜한 강한 쪽 레인지 상대로) 내 승률 <b>{p}</b>", { p: pct(fe.calledEq) })}</p>` : ""}
     </div>`;
 }
 // 내가 폴드한 자리에서 "콜했다면": 실제 라인을 그 자리까지 가져와서 콜 → (남으면) 체크다운
@@ -1941,22 +2614,22 @@ function buildDecisions(){
     const st = d.snap.street, mine = evalAt(0, st);
     const reliable = !r.decisions.some(x => x.k > d.k && x.snap.street > st);
     const list = [];
-    if (d.toCall > 0 && d.e.act.a !== "f") list.push({ label: "폴드했다면", ev: d.foldEV, se: 0, note: d.multi ? "남은 두 명이 팟을 반씩 가져간다고 가정" : "" });
+    if (d.toCall > 0 && d.e.act.a !== "f") list.push({ label: t("폴드했다면"), short: t("폴드"), ev: d.foldEV, se: 0, note: d.multi ? t("남은 두 명이 팟을 반씩 가져간다고 가정") : "" });
     let callInfo = null;
     if (d.e.act.a === "f" && d.toCall > 0) {
       const cl = callLine(d, st);
       if (cl && ok(cl.r.ev)) {
-        list.push({ label: "콜했다면", ev: cl.r.ev, se: cl.r.se || 0, note: cl.approx ? "콜하고 체크다운 가정 (근사)" : "콜하면 바로 쇼다운" });
+        list.push({ label: t("콜했다면"), short: t("콜"), ev: cl.r.ev, se: cl.r.se || 0, note: cl.approx ? t("콜하고 체크다운 가정 (근사)") : t("콜하면 바로 쇼다운") });
         callInfo = callNeedInfo(cl.r, d);
-      } else if (cl && cl.r.error) list.push({ label: "콜했다면", ev: null, note: cl.r.error });
+      } else if (cl && cl.r.error) list.push({ label: t("콜했다면"), short: t("콜"), ev: null, note: cl.r.error });
     }
     const cb = d.e.act.a !== "x" ? checkBackLine(d, st) : null;
-    if (cb) list.push({ label: "체크했다면", ev: cb.ev, se: cb.se, note: "체크하고 바로 쇼다운", outs: cb.outs });
+    if (cb) list.push({ label: t("체크했다면"), short: t("체크"), ev: cb.ev, se: cb.se, note: t("체크하고 바로 쇼다운"), outs: cb.outs });
     (alts[d.k] || []).forEach(a => {
-      const txt = a.act.a === "f" ? "폴드" : a.act.a === "x" ? "체크" : a.act.a === "c" ? "콜" : `${a.act.to >= d.snap.bet[S.hero] + d.snap.stack[S.hero] ? "올인" : "레이즈"} ${stackText(Math.min(a.act.to, d.snap.bet[S.hero] + d.snap.stack[S.hero]))}`;
+      const txt = a.act.a === "f" ? t("폴드") : a.act.a === "x" ? t("체크") : a.act.a === "c" ? t("콜") : `${a.act.to >= d.snap.bet[S.hero] + d.snap.stack[S.hero] ? t("올인") : t("레이즈")} ${stackText(Math.min(a.act.to, d.snap.bet[S.hero] + d.snap.stack[S.hero]))}`;
       const ar = evalAt(a.li, st);
-      if (ok(ar.ev)) list.push({ label: `${a.name} · ${txt}`, ev: ar.ev, se: ar.se });
-      else list.push({ label: `${a.name} · ${txt}`, ev: null, note: ar.incomplete ? "라인이 아직 안 끝났어요" : ar.error || "" });
+      if (ok(ar.ev)) list.push({ label: `${lineName(a.name)} · ${txt}`, short: txt, ev: ar.ev, se: ar.se });
+      else list.push({ label: `${lineName(a.name)} · ${txt}`, short: txt, ev: null, note: ar.incomplete ? t("라인이 아직 안 끝났어요") : ar.error || "" });
     });
     const valid = list.filter(x => ok(x.ev));
     const bestAlt = valid.length ? valid.reduce((a, b) => (b.ev > a.ev ? b : a)) : null;
@@ -1971,55 +2644,172 @@ function buildDecisions(){
   return { r, items };
 }
 
-function verdictSection(D){
-  if (!D) return "";
-  const pos = positionsFor(S.seatCount), h = S.hero;
-  const rel = D.items.filter(x => x.reliable);
-  const judged = rel.filter(x => x.impact != null);
-  const base = lastRes.eq[h];
-  const A = lastRes.actual, hasActual = A && ok(A.v);
-  // 기대값은 믿을 수 있는 첫 결정 시점 기준
-  const anchor = rel[0] || D.items[D.items.length - 1];
-  const expect = anchor.mineEV;
+/* ================= 결과 이미지 저장 · 공유 ================= */
+// 결론 카드 계산 (화면과 공유 이미지가 같이 써요)
+function verdictData(D){
+  if (!D) return null;
+  const h = S.hero, rel = D.items.filter(x => x.reliable), judged = rel.filter(x => x.impact != null);
+  const base = lastRes.eq[h], A = lastRes.actual, hasActual = A && ok(A.v);
+  const anchor = rel[0] || D.items[D.items.length - 1], expect = anchor.mineEV;
   const badList = judged.filter(x => x.impact < -10);
-  // 실수가 있으면 놓친 금액 합계, 없으면 마지막 핵심 결정이 다음 선택보다 얼마나 나았는지
   const decVal = !judged.length ? null : badList.length ? badList.reduce((a, x) => a + x.impact, 0) : judged[judged.length - 1].impact;
   const luck = hasActual ? A.v - expect : null, res = hasActual ? A.v - base : null;
-  const bad = judged.filter(x => x.impact < -10);
-  const good = decVal != null && !bad.length;
+  const good = decVal != null && !badList.length;
   let title, text, tone;
   if (decVal == null) {
-    title = "판단할 수 있는 결정이 없어요"; tone = "neutral";
-    text = "마지막 결정과 비교할 다른 선택이 없어요. 라인 화면에서 <b>↳ 다르게</b>로 다른 선택을 만들어보세요.";
+    title = t("판단할 수 있는 결정이 없어요"); tone = "neutral";
+    text = t("마지막 결정과 비교할 다른 선택이 없어요. 라인 화면에서 <b>↳ 다르게</b>로 다른 선택을 만들어보세요.");
   } else {
-    const worst = bad.slice().sort((a, b) => a.impact - b.impact)[0];
-    const where = worst ? `${STREETS[worst.st]} ${actText(worst.d.e)}에서 ${won(-worst.impact)} 손해` : "";
-    if (hasActual && Math.abs(luck) < 10) { title = good ? "결정이 좋았어요" : "결정에 손해가 있었어요"; tone = good ? "good" : "bad"; text = good ? "운이 끼어들 여지가 없는 결정이었고, ICM까지 따져봤을 때 가장 좋은 선택이었어요." : where + "가 있었어요."; }
-    else if (!hasActual) { title = good ? "결정은 좋았어요" : "결정에 손해가 있었어요"; tone = good ? "good" : "bad"; text = good ? "믿을 수 있는 결정들이 모두 가장 좋은 선택이거나 비슷했어요." : where + "가 있었어요."; }
-    else if (good && luck < -10) { title = "결과는 나빴지만, 결정은 좋았어요"; tone = "good"; text = "운이 나빴던 핸드예요. 같은 상황이 오면 같은 선택을 해도 돼요."; }
-    else if (good) { title = "결정도 좋고, 결과도 좋았어요"; tone = "good"; text = "좋은 선택이 좋은 결과로 이어졌어요."; }
-    else if (luck >= -10) { title = "결과는 좋았지만, 결정은 −였어요"; tone = "bad"; text = `운이 좋았던 핸드예요. ${where}가 있었어요.`; }
-    else { title = "결정도 −, 결과도 −"; tone = "bad"; text = `${where}가 있었어요.`; }
+    const worst = badList.slice().sort((a, b) => a.impact - b.impact)[0];
+    const where = worst ? t("{s} {a}에서 {x} 손해", { s: STREETS[worst.st], a: actText(worst.d.e), x: won(-worst.impact) }) : "";
+    if (hasActual && Math.abs(luck) < 10) { title = good ? t("결정이 좋았어요") : t("결정에 손해가 있었어요"); tone = good ? "good" : "bad"; text = good ? t("운이 끼어들 여지가 없는 결정이었고, ICM까지 따져봤을 때 가장 좋은 선택이었어요.") : t("{w}가 있었어요.", { w: where }); }
+    else if (!hasActual) { title = good ? t("결정은 좋았어요") : t("결정에 손해가 있었어요"); tone = good ? "good" : "bad"; text = good ? t("믿을 수 있는 결정들이 모두 가장 좋은 선택이거나 비슷했어요.") : t("{w}가 있었어요.", { w: where }); }
+    else if (good && luck < -10) { title = t("결과는 나빴지만, 결정은 좋았어요"); tone = "good"; text = t("운이 나빴던 핸드예요. 같은 상황이 오면 같은 선택을 해도 돼요."); }
+    else if (good) { title = t("결정도 좋고, 결과도 좋았어요"); tone = "good"; text = t("좋은 선택이 좋은 결과로 이어졌어요."); }
+    else if (luck >= -10) { title = t("결과는 좋았지만, 결정은 −였어요"); tone = "bad"; text = t("운이 좋았던 핸드예요. {w}가 있었어요.", { w: where }); }
+    else { title = t("결정도 −, 결과도 −"); tone = "bad"; text = t("{w}가 있었어요.", { w: where }); }
   }
+  return { title, text, tone, decVal, luck, res, hasActual, A, anchor, badList, refs: D.items.some(x => !x.reliable) };
+}
+
+// 공유용 세로 카드 이미지 그리기 (1080×1350)
+function drawShareCard(){
+  const W = 1080, H = 1350, cv = document.createElement("canvas");
+  cv.width = W; cv.height = H;
+  const g = cv.getContext("2d"), C = lastRes.ctx, h = S.hero, pos = positionsFor(S.seatCount);
+  const FONT = '"Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Hiragino Sans", "Noto Sans KR", "Noto Sans JP", sans-serif';
+  const font = (w, s) => { g.font = `${w} ${s}px ${FONT}`; };
+  const strip = s => String(s).replace(/<[^>]+>/g, "");
+  // 줄바꿈: 일본어는 글자 단위, 한국어·영어는 띄어쓰기 단위
+  const wrap = (txt, x, y, maxW, lh, maxLines = 3) => {
+    const units = S.lang === "ja" ? [...strip(txt)] : strip(txt).split(/(?<= )/);
+    let line = "", lines = 0;
+    for (const u of units) {
+      const test = line + u;
+      if (g.measureText(test.trimEnd()).width > maxW && line) {
+        if (lines === maxLines - 1) {
+          let cut = line.trimEnd(); while (cut && g.measureText(cut + "…").width > maxW) cut = cut.slice(0, -1);
+          g.fillText(cut + "…", x, y); return y + lh;
+        }
+        g.fillText(line.trimEnd(), x, y); y += lh; lines++; line = u.trimStart();
+      } else line = test;
+    }
+    if (line) { g.fillText(line.trimEnd(), x, y); y += lh; }
+    return y;
+  };
+  const rr = (x, y, w, hh, r, fill) => { g.beginPath(); g.roundRect(x, y, w, hh, r); g.fillStyle = fill; g.fill(); };
+  const V = verdictData(lastRes.D);
+  const tone = V ? V.tone : "neutral";
+  // 배경
+  const bg = g.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, tone === "bad" ? "#3d1512" : "#0b3d2c"); bg.addColorStop(1, "#0b0f12");
+  g.fillStyle = bg; g.fillRect(0, 0, W, H);
+  // 머리말
+  rr(72, 72, 76, 76, 22, "#0e9f6e");
+  g.fillStyle = "#fff"; font(800, 46); g.textBaseline = "middle"; g.textAlign = "center"; g.fillText("♠", 110, 112);
+  g.textAlign = "left"; font(800, 44); g.fillText(t("ICM 계산기"), 172, 112);
+  g.textBaseline = "alphabetic";
+  // 상황 요약
+  const N = S.total, paid = C.prizes.length;
+  const stage = N > paid ? t("인머니까지 {n}명 남음", { n: N - paid }) : N <= S.seatCount ? t("파이널 테이블") : t("인머니 진입");
+  font(600, 34); g.fillStyle = "rgba(255,255,255,.72)";
+  g.fillText(`${t("남은 {n}명", { n: N })} · ${stage}`, 72, 230);
+  font(800, 52); g.fillStyle = "#fff";
+  g.fillText(`${pos[h]} · ${stackText(C.stacks[h])}`, 72, 300);
+  // 카드
+  let cx = 72;
+  const drawCard = (c, x, y, w, hh, fs) => {
+    rr(x, y, w, hh, 14, "#fff");
+    const col = ["#1f2937", "#e5484d", "#2f6fed", "#0e9f6e"][c & 3];
+    g.fillStyle = col; font(800, fs); g.textAlign = "center";
+    g.fillText(RANKS[c >> 2], x + w / 2, y + hh * 0.48);
+    font(700, fs * 0.8); g.fillText(SUITS[c & 3], x + w / 2, y + hh * 0.88);
+    g.textAlign = "left";
+  };
+  let y = 340;
+  if (S.heroCards.every(c => c != null)) { S.heroCards.forEach(c => { drawCard(c, cx, y, 96, 130, 56); cx += 108; }); }
+  const villains = S.villains.map(v => pos[v.seat]).join(", ");
+  if (villains) { font(700, 36); g.fillStyle = "rgba(255,255,255,.8)"; g.fillText(`vs ${villains}`, cx + 20, y + 80); }
+  const board = S.board.filter(c => c != null);
+  if (board.length) { let bx = W - 72 - board.length * 82 + 10; board.forEach(c => { drawCard(c, bx, y + 22, 72, 98, 40); bx += 82; }); }
+  // 결론
+  y = 540;
+  rr(56, y, W - 112, 520, 36, "rgba(255,255,255,.08)");
+  const icon = tone === "good" ? "👍" : tone === "bad" ? "🤔" : "💡";
+  g.fillStyle = "#fff"; font(800, 54);
+  let ty = wrap(`${icon} ${V ? V.title : t("핸드 전 내 칩의 상금 가치")}`, 100, y + 92, W - 200, 66, 2);
+  font(500, 34); g.fillStyle = "rgba(255,255,255,.8)";
+  ty = wrap(V ? V.text : won(lastRes.eq[h]), 100, ty + 6, W - 200, 46, 2);
+  // 숫자 3개
+  const sy = Math.max(ty + 30, y + 300), cw = (W - 200) / 3;
+  const cells = V ? [
+    [t("결정의 가치"), V.decVal != null ? sgnWon(V.decVal) : "-", V.decVal],
+    [t("운"), V.hasActual ? sgnWon(V.luck) : "-", V.luck],
+    [t("실제 결과"), V.hasActual ? sgnWon(V.res) : "-", V.res],
+  ] : [[t("내 스택"), stackText(C.stacks[h]), 0], [t("칩 비율"), pct(C.stacks[h] / C.totalChips), 0], [t("상금 비율"), pct(lastRes.eq[h] / C.prizes.reduce((a, b) => a + b, 0)), 0]];
+  cells.forEach(([lab, val, num], i) => {
+    const x = 100 + i * cw;
+    font(600, 30); g.fillStyle = "rgba(255,255,255,.65)"; g.fillText(lab, x, sy);
+    font(800, 42); g.fillStyle = num == null || Math.abs(num) < 10 ? "#fff" : num > 0 ? "#46d49f" : "#ff8a8d";
+    wrap(val, x, sy + 58, cw - 16, 48, 1);
+  });
+  if (V && V.anchor) { font(500, 28); g.fillStyle = "rgba(255,255,255,.55)"; wrap(t("판단 기준: {s} {a}부터", { s: STREETS[V.anchor.st], a: actText(V.anchor.d.e) }), 100, y + 480, W - 200, 36, 1); }
+  // 핵심 결정 한 줄
+  const D = lastRes.D;
+  const key = D && (D.items.filter(x => x.reliable && x.impact != null).slice(-1)[0]);
+  if (key) {
+    font(700, 36); g.fillStyle = "#fff";
+    const verdict = key.close ? t("≈ 비슷해요") : key.impact >= -10 ? `${t("✓ 최선")}` : t("✗ {x} 손해", { x: won(-key.impact) });
+    wrap(`${STREETS[key.st]} ${actText(key.d.e)} → ${verdict}`, 72, 1140, W - 144, 46, 1);
+    if (key.callInfo) { font(500, 30); g.fillStyle = "rgba(255,255,255,.75)"; wrap(strip(t("콜에 필요한 승률 · ICM 기준 <b>{a}</b> · 칩으로만 보면 <b>{b}</b>", { a: pct(key.callInfo.need), b: pct(key.callInfo.chipNeed) })), 72, 1188, W - 144, 40, 1); }
+    else if (key.fe && key.fe.be != null && key.fe.be > 0 && key.fe.be < 100) { font(500, 30); g.fillStyle = "rgba(255,255,255,.75)"; wrap(strip(t("{a}보다 나으려면 상대가 <b>{p}%</b> 이상 접어야 해요.", { a: key.bestAlt ? key.bestAlt.short : "", p: Math.round(key.fe.be) })), 72, 1188, W - 144, 40, 1); }
+  }
+  // 바닥 워터마크
+  g.fillStyle = "rgba(255,255,255,.12)"; g.fillRect(0, H - 96, W, 96);
+  font(700, 30); g.fillStyle = "rgba(255,255,255,.85)";
+  const host = /^https?:/.test(location.protocol) ? location.host : "";
+  g.fillText(`♠ ${t("ICM 계산기")}${host ? " · " + host : ""}`, 72, H - 36);
+  return cv;
+}
+async function shareResult(){
+  let cv;
+  try { cv = drawShareCard(); } catch (e) { return toast(t("이미지를 만들지 못했어요.")); }
+  const blob = await new Promise(r => cv.toBlob(r, "image/png"));
+  if (!blob) return toast(t("이미지를 만들지 못했어요."));
+  const file = new File([blob], "icm-result.png", { type: "image/png" });
+  try {
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: t("ICM 계산기") }); return; }
+  } catch (e) { if (e && e.name === "AbortError") return; }
+  // 공유창이 안 되면 파일로 저장
+  const url = URL.createObjectURL(blob), a = document.createElement("a");
+  a.href = url; a.download = "icm-result.png"; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+  toast(t("이미지를 저장했어요."));
+}
+
+function verdictSection(D){
+  if (!D) return "";
+  const V = verdictData(D);
+  const { title, text, tone, decVal, luck, res, hasActual, A, anchor, badList } = V;
   return `
     <section class="verdict ${tone}">
       <div class="vd-title">${tone === "good" ? "👍" : tone === "bad" ? "🤔" : "💡"} ${title}</div>
       <p class="vd-text">${text}</p>
       <div class="vd-grid">
-        <div><span>결정의 가치</span>${decVal != null ? `<b class="${cls(decVal)}">${sgnWon(decVal)}</b><small>${badList.length ? "놓친 기대값" : "다음 선택보다"}</small>` : `<b class="muted">-</b><small>비교 대상 없음</small>`}</div>
-        <div><span>운</span>${hasActual ? `<b class="${cls(luck)}">${sgnWon(luck)}</b><small>실제 − 기대값</small>` : `<b class="muted">-</b><small>${A && A.need ? A.need + " 필요" : "계산 불가"}</small>`}</div>
-        <div><span>실제 결과</span>${hasActual ? `<b class="${cls(res)}">${sgnWon(res)}</b><small>핸드 전 대비</small>` : `<b class="muted">-</b><small>&nbsp;</small>`}</div>
+        <div><span>${t("결정의 가치")}</span>${decVal != null ? `<b class="${cls(decVal)}">${sgnWon(decVal)}</b><small>${badList.length ? t("놓친 기대값") : t("다음 선택보다")}</small>` : `<b class="muted">-</b><small>${t("비교 대상 없음")}</small>`}</div>
+        <div><span>${t("운")}</span>${hasActual ? `<b class="${cls(luck)}">${sgnWon(luck)}</b><small>${t("실제 − 기대값")}</small>` : `<b class="muted">-</b><small>${A && A.need ? t("{x} 필요", { x: A.need }) : t("계산 불가")}</small>`}</div>
+        <div><span>${t("실제 결과")}</span>${hasActual ? `<b class="${cls(res)}">${sgnWon(res)}</b><small>${t("핸드 전 대비")}</small>` : `<b class="muted">-</b><small>&nbsp;</small>`}</div>
       </div>
-      <p class="vd-foot">판단 기준: ${STREETS[anchor.st]} ${actText(anchor.d.e)}부터${D.items.some(x => !x.reliable) ? " · 그 전 결정은 참고용" : ""}</p>
+      <p class="vd-foot">${t("판단 기준: {s} {a}부터", { s: STREETS[anchor.st], a: actText(anchor.d.e) })}${V.refs ? " · " + t("그 전 결정은 참고용") : ""}</p>
     </section>`;
 }
 
 function callInfoHTML(ci){
   const icmCall = ci.eq >= ci.need, chipCall = ci.eq >= ci.chipNeed;
-  const msg = icmCall ? "콜이 맞아요" : chipCall ? "칩으로는 콜이지만, ICM 때문에 폴드가 맞아요" : "폴드가 맞아요";
+  const msg = icmCall ? t("콜이 맞아요") : chipCall ? t("칩으로는 콜이지만, ICM 때문에 폴드가 맞아요") : t("폴드가 맞아요");
   return `<div class="eqline">
-    <div>콜 받았을 때 내 승률 <b>${pct(ci.eq)}</b></div>
-    <div>콜에 필요한 승률 · ICM 기준 <b>${pct(ci.need)}</b> · 칩으로만 보면 <b>${pct(ci.chipNeed)}</b></div>
+    <div>${t("콜 받았을 때 내 승률 <b>{p}</b>", { p: pct(ci.eq) })}</div>
+    <div>${t("콜에 필요한 승률 · ICM 기준 <b>{a}</b> · 칩으로만 보면 <b>{b}</b>", { a: pct(ci.need), b: pct(ci.chipNeed) })}</div>
     <div class="${icmCall ? "pos" : "neg"}" style="font-weight:800;margin-top:2px">→ ${msg}</div>
   </div>`;
 }
@@ -2032,35 +2822,35 @@ function decisionSection(D){
     const rel = items.filter(x => x.reliable);
     const lost = rel.filter(x => x.impact != null && x.impact < -10).reduce((a, x) => a + x.impact, 0);
     const any = rel.some(x => x.impact != null);
-    const head = !rel.length ? `<span class="muted">참고</span>` : !any ? `<span class="muted">비교 없음</span>` : lost < 0 ? `<span class="neg">${won(-lost)} 놓침</span>` : `<span class="pos">✓ 최선</span>`;
+    const head = !rel.length ? `<span class="muted">${t("참고")}</span>` : !any ? `<span class="muted">${t("비교 없음")}</span>` : lost < 0 ? `<span class="neg">${t("{x} 놓침", { x: won(-lost) })}</span>` : `<span class="pos">${t("✓ 최선")}</span>`;
     return `
       <div class="sgrp">
         <div class="sg-head"><b>${STREETS[st]}</b>${head}</div>
         ${items.map(({ d, reliable, list, bestAlt, impact, close, info, callInfo, fe, mineEV }) => `
           <div class="dcard ${reliable ? "" : "ref"}">
             <div class="dc-top"><b>${actText(d.e)}</b>
-              ${!reliable ? `<span class="chip">참고</span>`
-                : impact == null ? `<span class="chip">비교 대상 없음</span>`
-                : close ? `<span class="chip">≈ 비슷해요</span>`
-                : impact >= -10 ? `<span class="chip good">✓ 최선 ${Math.abs(impact) >= 10 ? "+" + won(impact) : ""}</span>`
-                : `<span class="chip bad">✗ ${won(-impact)} 손해</span>`}
+              ${!reliable ? `<span class="chip">${t("참고")}</span>`
+                : impact == null ? `<span class="chip">${t("비교 대상 없음")}</span>`
+                : close ? `<span class="chip">${t("≈ 비슷해요")}</span>`
+                : impact >= -10 ? `<span class="chip good">${t("✓ 최선")} ${Math.abs(impact) >= 10 ? "+" + won(impact) : ""}</span>`
+                : `<span class="chip bad">${t("✗ {x} 손해", { x: won(-impact) })}</span>`}
             </div>
-            ${!reliable ? `<p class="help" style="margin:0 0 6px">이후 스트리트의 내 행동을 모든 카드에서 똑같다고 보고 계산한 값이에요. 드로우·커넥터처럼 맞았을 때만 크게 이기는 핸드는 낮게 나올 수 있어요.</p>` : ""}
-            <div class="alt me"><span>이렇게 했을 때 (실제)</span><span>${won(mineEV)}</span></div>
+            ${!reliable ? `<p class="help" style="margin:0 0 6px">${t("이후 스트리트의 내 행동을 모든 카드에서 똑같다고 보고 계산한 값이에요. 드로우·커넥터처럼 맞았을 때만 크게 이기는 핸드는 낮게 나올 수 있어요.")}</p>` : ""}
+            <div class="alt me"><span>${t("이렇게 했을 때 (실제)")}</span><span>${won(mineEV)}</span></div>
             ${list.map(x => `<div class="alt"><span>${x.label}${x.note ? `<small>${x.note}</small>` : ""}</span>${ok(x.ev) ? `<span>${won(x.ev)} <em class="${cls(x.ev - mineEV)}">${sgnWon(x.ev - mineEV)}</em></span>` : "<span>-</span>"}</div>`).join("")}
-            ${reliable && close ? `<p class="help" style="margin:6px 0 0">가장 좋은 다른 선택(${bestAlt.label.replace("했다면", "")})과 차이가 오차 범위 안이라, 어느 쪽이 낫다고 말하기 어려워요.</p>` : ""}
-            ${reliable && !list.length ? `<p class="help" style="margin:6px 0 0">다른 선택과 비교하려면 라인 화면에서 이 액션 옆 <b>↳ 다르게</b>를 눌러 라인을 만들어보세요.</p>` : ""}
+            ${reliable && close ? `<p class="help" style="margin:6px 0 0">${t("가장 좋은 다른 선택({a})과 차이가 오차 범위 안이라, 어느 쪽이 낫다고 말하기 어려워요.", { a: bestAlt.short })}</p>` : ""}
+            ${reliable && !list.length ? `<p class="help" style="margin:6px 0 0">${t("다른 선택과 비교하려면 라인 화면에서 이 액션 옆 <b>↳ 다르게</b>를 눌러 라인을 만들어보세요.")}</p>` : ""}
             ${fe ? feHTML(fe, bestAlt) : ""}
             ${callInfo ? callInfoHTML(callInfo) : ""}
-            ${info ? `<div class="eqline">콜 받았을 때 내 승률 <b>${pct(info.eq)}</b> · ${info.base}보다 나으려면 필요한 승률 <b>${pct(info.need)}</b>
-              <span class="${info.eq >= info.need ? "pos" : "neg"}">${info.eq >= info.need ? "→ 충분해요" : "→ 부족해요"}</span></div>` : ""}
+            ${info ? `<div class="eqline">${t("콜 받았을 때 내 승률 <b>{p}</b>", { p: pct(info.eq) })} · ${t("{b}보다 나으려면 필요한 승률 <b>{n}</b>", { b: info.base, n: pct(info.need) })}
+              <span class="${info.eq >= info.need ? "pos" : "neg"}">${info.eq >= info.need ? t("→ 충분해요") : t("→ 부족해요")}</span></div>` : ""}
           </div>`).join("")}
       </div>`;
   }).join("");
   return `
     <section class="card">
-      <h2>스트리트별 내 결정</h2>
-      <p class="help" style="margin:-8px 0 12px">각 선택을 폴드, 그리고 네가 만든 다른 라인과 비교해요. 금액은 모두 상금 기준 기대값이고, 상대 핸드는 모른다고 보고(레인지) 계산해요.</p>
+      <h2>${t("스트리트별 내 결정")}</h2>
+      <p class="help" style="margin:-8px 0 12px">${t("각 선택을 폴드, 그리고 네가 만든 다른 라인과 비교해요. 금액은 모두 상금 기준 기대값이고, 상대 핸드는 모른다고 보고(레인지) 계산해요.")}</p>
       ${sgroups}
     </section>`;
 }
@@ -2078,78 +2868,159 @@ function linesSection(){
     const mine = evalAt(0, st), rr = evalAt(k, st);
     const val = ok(rr.ev) && ok(mine.ev)
       ? `<b>${won(rr.ev)}</b><em class="${cls(rr.ev - mine.ev)}">${sgnWon(rr.ev - mine.ev)}</em>`
-      : `<span class="muted">${rr.incomplete ? "아직 안 끝남" : rr.error || "-"}</span>`;
-    return `<div class="lsum"><span>${line.name}<small class="lsub">${STREETS[st]}에서 갈라짐${who ? ` · ${who}` : ""} · 실제 ${ok(mine.ev) ? won(mine.ev) : "-"}</small></span><span>${val}</span></div>`;
+      : `<span class="muted">${rr.incomplete ? t("아직 안 끝남") : rr.error || "-"}</span>`;
+    return `<div class="lsum"><span>${lineName(line.name)}<small class="lsub">${t("{s}에서 갈라짐", { s: STREETS[st] })}${who ? ` · ${who}` : ""} · ${t("실제")} ${ok(mine.ev) ? won(mine.ev) : "-"}</small></span><span>${val}</span></div>`;
   }).join("");
   return `
     <section class="card">
-      <h2>라인 한눈에 비교</h2>
+      <h2>${t("라인 한눈에 비교")}</h2>
       ${rows}
-      <p class="help">각 라인이 실제 라인과 갈라지는 스트리트 시점에서, 같은 기준으로 실제 라인과 비교한 판단 기준 기대값이에요.</p>
+      <p class="help">${t("각 라인이 실제 라인과 갈라지는 스트리트 시점에서, 같은 기준으로 실제 라인과 비교한 판단 기준 기대값이에요.")}</p>
     </section>`;
 }
 
 function result(){
   const D = buildDecisions();
+  lastRes.D = D;
   const R = lastRes, C = R.ctx, n = S.seatCount, N = S.total, pos = positionsFor(n), h = S.hero;
   const pool = C.prizes.reduce((a, b) => a + b, 0);
   const heroEq = R.eq[h], fair = pool * C.stacks[h] / C.totalChips, diff = heroEq - fair;
   const paid = C.prizes.length, maxEq = Math.max(...R.eq);
-  const method = C.others > 0 ? "다른 테이블 평균 가정" : "정확 계산";
+  const method = C.others > 0 ? t("다른 테이블 평균 가정") : t("정확 계산");
   const first = R.lines[0];
-  const lineErr = first && (first.r.error || first.r.incomplete) ? `<section class="card"><h2>라인</h2><p class="help" style="margin:0;color:var(--neg)">${first.r.incomplete ? "실제 라인이 아직 끝나지 않았어요. 라인 화면에서 핸드 끝까지 넣어주세요." : first.r.error}</p></section>` : "";
+  const lineErr = first && (first.r.error || first.r.incomplete) ? `<section class="card"><h2>${t("라인")}</h2><p class="help" style="margin:0;color:var(--neg)">${first.r.incomplete ? t("실제 라인이 아직 끝나지 않았어요. 라인 화면에서 핸드 끝까지 넣어주세요.") : first.r.error}</p></section>` : "";
 
   let status = "";
-  if (N > paid) status += row("🫧", `인머니까지 ${N - paid}명 남음`, `${N - paid}명이 더 탈락하면 최소 ${won(C.prizes[paid - 1])}을 받아요.`);
-  else if (N >= 2) status += row("💰", "인머니 진입", `지금 탈락하면 ${won(C.prizes[N - 1])} · 한 명만 더 버티면 ${won(C.prizes[N - 2])} <b style="display:inline;color:var(--pos)">(+${fmt(C.prizes[N - 2] - C.prizes[N - 1])}원)</b>`);
-  if (C.others > 0) status += row("🪑", `다른 테이블 ${C.others}명`, `모두 평균 ${stackText(C.otherStack)}이라고 보고 계산했어요.`);
-  else status += row("🏆", "파이널 테이블", "남은 인원이 모두 이 테이블이라 정확하게 계산했어요.");
-  if (C.trimmed) status += row("✂️", "상금 순위 정리", `남은 인원보다 상금 순위가 많아서 위에서 ${N}개만 사용했어요.`);
+  if (N > paid) status += row("🫧", t("인머니까지 {n}명 남음", { n: N - paid }), t("{n}명이 더 탈락하면 최소 {x}을 받아요.", { n: N - paid, x: won(C.prizes[paid - 1]) }));
+  else if (N >= 2) status += row("💰", t("인머니 진입"), t("지금 탈락하면 {a} · 한 명만 더 버티면 {b}", { a: won(C.prizes[N - 1]), b: won(C.prizes[N - 2]) }) + ` <b style="display:inline;color:var(--pos)">(+${won(C.prizes[N - 2] - C.prizes[N - 1])})</b>`);
+  if (C.others > 0) status += row("🪑", t("다른 테이블 {n}명", { n: C.others }), t("모두 평균 {x}이라고 보고 계산했어요.", { x: stackText(C.otherStack) }));
+  else status += row("🏆", t("파이널 테이블"), t("남은 인원이 모두 이 테이블이라 정확하게 계산했어요."));
+  if (C.trimmed) status += row("✂️", t("상금 순위 정리"), t("남은 인원보다 상금 순위가 많아서 위에서 {n}개만 사용했어요.", { n: N }));
 
   app.innerHTML = `
-    <h1 class="title">결과</h1>
-    <p class="lead">내 결정을 상금 기준으로 복기해요.</p>
+    <h1 class="title">${t("결과")}</h1>
+    <p class="lead">${t("내 결정을 상금 기준으로 복기해요.")}</p>
 
     ${verdictSection(D)}
+    <button class="sharebtn" id="shareBtn">📷 ${t("결과 이미지 저장·공유")}</button>
     ${decisionSection(D)}
     ${lineErr}
     ${linesSection()}
     ${equitySection(R.equity)}
 
     <section class="card icm-card">
-      <div class="card-head"><h2>핸드 전 내 칩의 상금 가치</h2><span class="pill">${method}</span></div>
+      <div class="card-head"><h2>${t("핸드 전 내 칩의 상금 가치")}</h2><span class="pill">${method}</span></div>
       <div class="icm-big">${won(heroEq)}</div>
       <div class="icm-grid">
-        <div><span>내 스택</span><b>${stackText(C.stacks[h])}</b></div>
-        <div><span>칩 비율</span><b>${pct(C.stacks[h] / C.totalChips)}</b></div>
-        <div><span>상금 비율</span><b>${pct(heroEq / pool)}</b></div>
+        <div><span>${t("내 스택")}</span><b>${stackText(C.stacks[h])}</b></div>
+        <div><span>${t("칩 비율")}</span><b>${pct(C.stacks[h] / C.totalChips)}</b></div>
+        <div><span>${t("상금 비율")}</span><b>${pct(heroEq / pool)}</b></div>
       </div>
-      <p class="help">칩 비율대로 나누면 ${won(fair)} · ICM 차이 <b class="${cls(diff)}">${sgnWon(diff)}</b></p>
+      <p class="help">${t("칩 비율대로 나누면 {x}", { x: won(fair) })} · ${t("ICM 차이")} <b class="${cls(diff)}">${sgnWon(diff)}</b></p>
       <div class="icm-status">${status}</div>
     </section>
 
     <section class="card">
-      <h2>테이블 전체</h2>
+      <h2>${t("테이블 전체")}</h2>
       ${R.eq.map((v, i) => `
         <div class="rrow ${i === h ? "me" : ""}">
-          <div class="rpos">${pos[i]}${i === h ? " (나)" : ""}<small>${stackText(C.stacks[i])}</small></div>
+          <div class="rpos">${pos[i]}${i === h ? ` (${t("나")})` : ""}<small>${stackText(C.stacks[i])}</small></div>
           <div class="rval">${won(v)}<small>${pct(v / pool)}</small></div>
           <div class="rbar"><i style="width:${(v / maxEq * 100).toFixed(1)}%"></i></div>
         </div>`).join("")}
     </section>
 
     <section class="card">
-      <h2>수정하기</h2>
+      <h2>${t("수정하기")}</h2>
       <div class="edit-grid">
-        <button data-go="1">대회 정보</button><button data-go="2">인원</button><button data-go="3">스택</button><button data-go="4">핸드</button><button data-go="5">라인</button>
+        <button data-go="1">${t("대회 정보")}</button><button data-go="2">${t("인원")}</button><button data-go="3">${t("스택")}</button><button data-go="4">${t("핸드")}</button><button data-go="5">${t("라인")}</button>
       </div>
     </section>`;
   app.querySelectorAll(".edit-grid button").forEach(b => b.onclick = () => goTo(+b.dataset.go));
+  document.getElementById("shareBtn").onclick = shareResult;
 }
 
 function row(ic, title, text){
   return `<div class="info-row"><div class="info-ic">${ic}</div><div><b>${title}</b><p>${text}</p></div></div>`;
 }
+
+/* ================= 설정 · 프리미엄 · 광고 ================= */
+// 가격: 원 기준. 일본·영어권 가격이 정해지면 여기만 바꾸면 돼요
+const PRICE = { month: 3990, year: 19900 };
+const FREE_LINES = 2;          // 무료는 라인 2개까지 (실제 라인 + 1개)
+const AD_FREE_VIEWS = 2;       // 결과 화면 처음 2번은 광고 없음, 그 뒤로 한 번 걸러 광고
+const AD_CODE = "";            // 실제 광고 코드(예: 애드센스)를 받으면 여기에 넣어요
+function priceText(n){ return S.lang === "ko" ? fmt(n) + "원" : "₩" + fmt(n); }
+function openModal(html){
+  document.getElementById("mIn").innerHTML = html;
+  document.getElementById("mSheet").classList.add("show");
+  document.getElementById("mBg").classList.add("show");
+}
+function closeModal(){
+  document.getElementById("mSheet").classList.remove("show");
+  document.getElementById("mBg").classList.remove("show");
+}
+function openSettings(){
+  openModal(`
+    <div class="sheet-head"><b>${t("설정")}</b><button class="mini" id="mClose">${t("닫기")}</button></div>
+    <span class="lbl">${t("언어")}</span>
+    <div class="langs">${Object.entries(LANGS).map(([k, v]) => `<button data-l="${k}" class="${S.lang === k ? "on" : ""}">${v}</button>`).join("")}</div>
+    <span class="lbl" style="margin-top:16px">${t("이용 중인 요금제")}</span>
+    <div class="planrow"><b>${S.premium ? t("프리미엄") : t("무료")}</b>${S.premium ? "" : `<button class="mini" id="goPrem">${t("프리미엄 보기 ›")}</button>`}</div>
+    <div class="devrow"><span>${t("테스트 모드: 프리미엄 켜기")}</span><button class="switch ${S.premium ? "on" : ""}" id="devPrem" aria-label="premium test"><i></i></button></div>
+    <p class="help" style="margin-top:4px">${t("결제 연결 전까지 프리미엄 화면을 확인하는 용도예요.")}</p>`);
+  document.getElementById("mClose").onclick = closeModal;
+  document.querySelectorAll(".langs button").forEach(b => b.onclick = () => {
+    S.lang = b.dataset.l; save(); closeModal();
+    if (S.step === 6 && lastRes) { renderChrome(); result(); } else render();
+  });
+  const gp = document.getElementById("goPrem"); if (gp) gp.onclick = () => openPaywall();
+  document.getElementById("devPrem").onclick = () => {
+    S.premium = !S.premium; save(); openSettings();
+    if (S.step === 5) drawLines();
+  };
+}
+function openPaywall(reason){
+  const perMonth = Math.round(PRICE.year / 12), off = Math.round((1 - perMonth / PRICE.month) * 100);
+  openModal(`
+    <div class="sheet-head"><b>⭐ ${t("프리미엄")}</b><button class="mini" id="mClose">${t("닫기")}</button></div>
+    ${reason === "lines" ? `<p class="pw-reason">${t("무료 버전은 라인을 {n}개까지 비교할 수 있어요.", { n: FREE_LINES })}</p>` : ""}
+    <ul class="pw-list">
+      <li>✓ ${t("광고 없이 결과 보기")}</li>
+      <li>✓ ${t("라인 무제한 비교 (최대 6개)")}</li>
+    </ul>
+    <div class="plans">
+      <button class="plan on" data-p="year"><span class="badge3">${t("{p}% 할인", { p: off })}</span><b>${t("연간")}</b><span>${priceText(PRICE.year)}</span><small>${t("월 {x}꼴", { x: priceText(perMonth) })}</small></button>
+      <button class="plan" data-p="month"><b>${t("월간")}</b><span>${priceText(PRICE.month)}</span><small>${t("매달 결제")}</small></button>
+    </div>
+    <button class="btn primary" id="buyBtn" style="width:100%;margin-top:12px">${t("구독하기")}</button>
+    <p class="help" style="text-align:center">${t("결제 기능은 준비 중이에요.")}</p>`);
+  document.getElementById("mClose").onclick = closeModal;
+  document.querySelectorAll(".plan").forEach(b => b.onclick = () => document.querySelectorAll(".plan").forEach(x => x.classList.toggle("on", x === b)));
+  document.getElementById("buyBtn").onclick = () => toast(t("결제 기능은 준비 중이에요."));
+}
+// 결과를 볼 때마다 횟수를 세고, 무료면 2회 이후 한 번 걸러 광고
+function maybeShowAd(){
+  S.resultViews = (S.resultViews || 0) + 1; save();
+  if (S.premium) return;
+  const v = S.resultViews;
+  if (v <= AD_FREE_VIEWS || (v - AD_FREE_VIEWS - 1) % 2 !== 0) return;
+  const ov = document.getElementById("adOv");
+  ov.innerHTML = `
+    <div class="adbox">
+      <div class="ad-top"><span class="adtag">${t("광고")}</span><button class="mini" id="adClose" disabled>${t("닫기")} (3)</button></div>
+      <div class="ad-slot">${AD_CODE || `<span>${t("광고 자리 (테스트)")}</span>`}</div>
+      <button class="mini" id="adPrem" style="margin-top:10px">${t("광고 없이 쓰기 · 프리미엄 ›")}</button>
+    </div>`;
+  ov.classList.add("show");
+  let n = 3; const btn = document.getElementById("adClose");
+  const tick = () => { n--; if (n > 0) { btn.textContent = `${t("닫기")} (${n})`; setTimeout(tick, 1000); } else { btn.textContent = t("닫기"); btn.disabled = false; } };
+  setTimeout(tick, 1000);
+  btn.onclick = () => ov.classList.remove("show");
+  document.getElementById("adPrem").onclick = () => { ov.classList.remove("show"); openPaywall(); };
+}
+document.getElementById("setBtn").onclick = openSettings;
+document.getElementById("mBg").onclick = closeModal;
 
 /* ================= 공통 버튼 ================= */
 document.getElementById("prevBtn").onclick = () => goTo(S.step === 6 ? 5 : S.step - 1);
