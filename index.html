@@ -209,6 +209,8 @@ main{max-width:560px;margin:0 auto;padding:4px 16px 120px}
 /* 카드 고르기 창 */
 .sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
 .sheet-bg.show{opacity:1;pointer-events:auto}
+.doclinks{display:flex;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.docframe{display:block;width:100%;height:65vh;border:0;background:var(--card)}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;background:var(--card);border-radius:22px 22px 0 0;
   padding:18px 16px calc(18px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .22s}
 .sheet.show{transform:none;visibility:visible}
@@ -460,6 +462,8 @@ const I18N = {
  "ja": {
   "결과 이미지 저장·공유": "結果画像を保存・共有",
   "이미지를 만들지 못했어요.": "画像を作成できませんでした。",
+  "개인정보처리방침": "プライバシーポリシー",
+  "이용약관": "利用規約",
   "이미지를 저장했어요.": "画像を保存しました。",
   "한 번 더 누르면 종료돼요.": "もう一度押すと終了します。",
   "남은 {n}명": "残り{n}人",
@@ -756,6 +760,8 @@ const I18N = {
  "en": {
   "결과 이미지 저장·공유": "Save / share result image",
   "이미지를 만들지 못했어요.": "Couldn't create the image.",
+  "개인정보처리방침": "Privacy Policy",
+  "이용약관": "Terms of Service",
   "이미지를 저장했어요.": "Image saved.",
   "한 번 더 누르면 종료돼요.": "Press back again to exit.",
   "남은 {n}명": "{n} left",
@@ -2982,7 +2988,9 @@ function openSettings(){
     <span class="lbl" style="margin-top:16px">${t("이용 중인 요금제")}</span>
     <div class="planrow"><b>${S.premium ? t("프리미엄") : t("무료")}</b>${S.premium ? "" : `<button class="mini" id="goPrem">${t("프리미엄 보기 ›")}</button>`}</div>
     <div class="devrow"><span>${t("테스트 모드: 프리미엄 켜기")}</span><button class="switch ${S.premium ? "on" : ""}" id="devPrem" aria-label="premium test"><i></i></button></div>
-    <p class="help" style="margin-top:4px">${t("결제 연결 전까지 프리미엄 화면을 확인하는 용도예요.")}</p>`);
+    <p class="help" style="margin-top:4px">${t("결제 연결 전까지 프리미엄 화면을 확인하는 용도예요.")}</p>
+    <div class="doclinks"><button class="mini" data-doc="privacy">${t("개인정보처리방침")} ›</button><button class="mini" data-doc="terms">${t("이용약관")} ›</button></div>`);
+  document.querySelectorAll("[data-doc]").forEach(b => b.onclick = () => openDoc(b.dataset.doc));
   document.getElementById("mClose").onclick = closeModal;
   document.querySelectorAll(".langs button").forEach(b => b.onclick = () => {
     S.lang = b.dataset.l; save(); closeModal();
@@ -2993,6 +3001,13 @@ function openSettings(){
     S.premium = !S.premium; save(); openSettings();
     if (S.step === 5) drawLines();
   };
+}
+// 개인정보처리방침 · 이용약관 (앱 안에서 바로 보기)
+function openDoc(name){
+  openModal(`
+    <div class="sheet-head"><b>${t(name === "privacy" ? "개인정보처리방침" : "이용약관")}</b><button class="mini" id="mClose">${t("닫기")}</button></div>
+    <iframe class="docframe" src="${name}.html?embed=1&lang=${S.lang}" title="${name}"></iframe>`);
+  document.getElementById("mClose").onclick = closeModal;
 }
 function openPaywall(reason){
   const perMonth = Math.round(PRICE.year / 12), off = Math.round((1 - perMonth / PRICE.month) * 100);

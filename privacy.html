@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>개인정보처리방침 · ICM 계산기</title>
+<style>
+:root{--bg:#f2f4f6;--card:#fff;--text:#191f28;--sub:#4e5968;--muted:#8b95a1;--line:#e5e8eb;--pri:#0e9f6e;--pri-soft:#e3f6ee}
+@media (prefers-color-scheme: dark){:root{--bg:#101214;--card:#1b1e22;--text:#eceef0;--sub:#b0b8c1;--muted:#7f8893;--line:#2b2f34;--pri:#2fbf8a;--pri-soft:#143a2d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Noto Sans KR","Hiragino Sans","Noto Sans JP",sans-serif;-webkit-text-size-adjust:100%}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.brand{font-weight:800;font-size:16px;color:var(--pri);text-decoration:none}
+.tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px}
+.tabs button{border:0;background:none;color:var(--sub);font:inherit;font-size:13px;font-weight:700;padding:5px 11px;border-radius:999px;cursor:pointer}
+.tabs button.on{background:var(--pri);color:#fff}
+article{display:none;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 20px}
+article.on{display:block}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.02em}
+.date{color:var(--muted);font-size:13px;margin:0 0 18px}
+.lead{background:var(--pri-soft);border-radius:12px;padding:12px 14px;margin:0 0 18px;font-weight:600}
+h2{font-size:16px;margin:22px 0 6px}
+p,li{color:var(--sub)}
+p{margin:0 0 8px}
+ul{margin:0 0 8px;padding-left:20px}
+a{color:var(--pri)}
+body.embed{background:var(--card)}
+body.embed .top,body.embed h1{display:none}
+body.embed .wrap{padding:0}
+body.embed article{border:0;padding:4px 2px 16px;background:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="./">♠ ICM 계산기</a>
+    <div class="tabs"><button data-l="ko">한국어</button><button data-l="ja">日本語</button><button data-l="en">English</button></div>
+  </div>
+
+  <article data-l="ko">
+    <h1>개인정보처리방침</h1>
+    <p class="date">시행일: 2026년 10월 2일</p>
+    <p class="lead">ICM 계산기는 회원가입이 없고, 입력한 핸드 정보를 운영자 서버로 보내지 않아요. 모든 계산은 사용자의 기기 안에서 이루어져요.</p>
+
+    <h2>1. 수집하는 정보</h2>
+    <p>운영자는 이름, 전화번호, 이메일 같은 개인정보를 직접 수집하지 않아요.</p>
+    <ul>
+      <li>앱에 입력한 대회·스택·핸드·라인 정보와 설정(언어, 통화, 화면 단위)은 <b>사용자의 기기 안에만</b> 저장돼요.</li>
+      <li>이 정보는 앱을 삭제하거나 브라우저 데이터를 지우면 함께 지워져요.</li>
+    </ul>
+
+    <h2>2. 광고</h2>
+    <p>무료 버전에는 광고가 표시될 수 있어요. 광고는 Google(AdMob·AdSense)이 제공하며, Google은 광고를 보여주고 성과를 측정하기 위해 광고 식별자, 기기 정보, 대략적인 위치, 쿠키 등을 수집·이용할 수 있어요.</p>
+    <ul>
+      <li>Google의 정보 처리 방식: <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">policies.google.com/technologies/ads</a></li>
+      <li>맞춤 광고를 원하지 않으면 안드로이드 <b>설정 → Google → 광고</b>에서 광고 ID를 재설정하거나 삭제할 수 있어요.</li>
+      <li>프리미엄 이용자에게는 광고가 표시되지 않아요.</li>
+    </ul>
+
+    <h2>3. 결제</h2>
+    <p>프리미엄 구독 결제는 Google Play(앱) 또는 해당 결제 대행사(웹)를 통해 처리돼요. 운영자는 카드 번호 등 결제 정보를 받거나 저장하지 않으며, 구독 여부를 확인하는 데 필요한 정보만 결제 서비스로부터 전달받아요.</p>
+
+    <h2>4. 결과 이미지 공유</h2>
+    <p>결과 이미지는 기기 안에서 만들어지며, 사용자가 직접 공유 버튼을 누를 때에만 사용자가 고른 앱(메신저 등)으로 전달돼요.</p>
+
+    <h2>5. 웹사이트 접속 기록</h2>
+    <p>웹 버전을 호스팅하는 Vercel은 서비스 운영과 보안을 위해 접속 기록(IP 주소, 브라우저 종류, 접속 시간 등)을 처리할 수 있어요.</p>
+
+    <h2>6. 이용 대상</h2>
+    <p>이 서비스는 성인 토너먼트 포커 플레이어를 위한 학습·분석 도구이며, 만 18세 미만을 대상으로 하지 않아요.</p>
+
+    <h2>7. 방침의 변경</h2>
+    <p>방침이 바뀌면 이 페이지에 시행일과 함께 알려드려요.</p>
+
+    <h2>8. 문의</h2>
+    <p>개인정보 관련 문의: <span class="mail"></span></p>
+  </article>
+
+  <article data-l="ja">
+    <h1>プライバシーポリシー</h1>
+    <p class="date">施行日：2026年10月2日</p>
+    <p class="lead">ICM計算機は会員登録がなく、入力したハンド情報を運営者のサーバーへ送信しません。すべての計算はご利用の端末内で行われます。</p>
+
+    <h2>1. 収集する情報</h2>
+    <p>運営者は、氏名・電話番号・メールアドレスなどの個人情報を直接収集しません。</p>
+    <ul>
+      <li>アプリに入力したトーナメント・スタック・ハンド・ライン情報および設定（言語、通貨、表示単位）は、<b>ご利用の端末内にのみ</b>保存されます。</li>
+      <li>これらの情報は、アプリの削除またはブラウザデータの消去により削除されます。</li>
+    </ul>
+
+    <h2>2. 広告</h2>
+    <p>無料版には広告が表示される場合があります。広告はGoogle（AdMob・AdSense）が提供し、Googleは広告の配信および効果測定のために、広告ID、端末情報、おおよその位置情報、Cookieなどを収集・利用することがあります。</p>
+    <ul>
+      <li>Googleによる情報の取り扱い：<a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank" rel="noopener">policies.google.com/technologies/ads</a></li>
+      <li>パーソナライズ広告を希望しない場合は、Androidの<b>設定 → Google → 広告</b>から広告IDをリセットまたは削除できます。</li>
+      <li>プレミアム会員には広告は表示されません。</li>
+    </ul>
+
+    <h2>3. 決済</h2>
+    <p>プレミアムのサブスクリプション決済は、Google Play（アプリ）または各決済代行会社（Web）を通じて処理されます。運営者はカード番号などの決済情報を受け取ったり保存したりせず、購読状況の確認に必要な情報のみを決済サービスから受け取ります。</p>
+
+    <h2>4. 結果画像の共有</h2>
+    <p>結果画像は端末内で作成され、ユーザーが共有ボタンを押した場合にのみ、ユーザーが選んだアプリ（メッセンジャー等）へ渡されます。</p>
+
+    <h2>5. Webサイトのアクセス記録</h2>
+    <p>Web版をホスティングするVercelは、サービス運営とセキュリティのため、アクセス記録（IPアドレス、ブラウザの種類、アクセス日時など）を処理することがあります。</p>
+
+    <h2>6. 対象者</h2>
+    <p>本サービスは成人のトーナメントポーカープレイヤー向けの学習・分析ツールであり、18歳未満の方を対象としていません。</p>
+
+    <h2>7. ポリシーの変更</h2>
+    <p>本ポリシーを変更する場合は、施行日とともに本ページでお知らせします。</p>
+
+    <h2>8. お問い合わせ</h2>
+    <p>個人情報に関するお問い合わせ：<span class="mail"></span></p>
+  </article>
+
+  <article data-l="en">
+    <h1>Privacy Policy</h1>
+    <p class="date">Effective date: October 2, 2026</p>
+    <p class="lead">ICM Calculator has no sign-up and never sends the hands you enter to our servers. All calculations run on your own device.</p>
+
+    <h2>1. Information we collect</h2>
+    <p>We do not directly collect personal information such as your name, phone number or email address.</p>
+    <ul>
+      <li>Tournament, stack, hand and line details you enter, and your settings (language, currency, display unit), are stored <b>only on your device</b>.</li>
+      <li>This data is deleted when you uninstall the app or clear your browser data.</li>
+    </ul>
+
+    <h2>2. Advertising</h2>
+    <p>The free version may show ads. Ads are provided by Google (AdMob / AdSense), which may collect and use your advertising ID, device information, approximate location and cookies to serve and measure ads.</p>
+    <ul>
+      <li>How Google uses information: <a href="https://policies.google.com/technologies/ads?hl=en" target="_blank" rel="noopener">policies.google.com/technologies/ads</a></li>
+      <li>To opt out of personalized ads, reset or delete your advertising ID in Android <b>Settings → Google → Ads</b>.</li>
+      <li>Premium users do not see ads.</li>
+    </ul>
+
+    <h2>3. Payments</h2>
+    <p>Premium subscriptions are processed by Google Play (app) or the relevant payment provider (web). We never receive or store card numbers or other payment details; we only receive the information needed to confirm your subscription status.</p>
+
+    <h2>4. Sharing result images</h2>
+    <p>Result images are created on your device and are passed to an app you choose (e.g. a messenger) only when you tap the share button.</p>
+
+    <h2>5. Website logs</h2>
+    <p>Vercel, which hosts the web version, may process access logs (IP address, browser type, time of access, etc.) for operation and security.</p>
+
+    <h2>6. Who this service is for</h2>
+    <p>This service is a study and analysis tool for adult tournament poker players and is not directed at anyone under 18.</p>
+
+    <h2>7. Changes</h2>
+    <p>If this policy changes, we will post the update on this page with a new effective date.</p>
+
+    <h2>8. Contact</h2>
+    <p>Privacy questions: <span class="mail"></span></p>
+  </article>
+</div>
+<script>
+// ▼ 문의 이메일: 여기 한 곳만 바꾸면 돼요
+const CONTACT = "";
+const q = new URLSearchParams(location.search);
+if (q.has("embed")) document.body.classList.add("embed");
+const pick = l => {
+  document.querySelectorAll("article").forEach(a => a.classList.toggle("on", a.dataset.l === l));
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("on", b.dataset.l === l));
+  document.documentElement.lang = l;
+  document.title = document.querySelector(`article[data-l="${l}"] h1`).textContent + " · ICM";
+};
+const nav = (navigator.language || "en").slice(0, 2);
+pick(["ko", "ja", "en"].includes(q.get("lang")) ? q.get("lang") : ["ko", "ja", "en"].includes(nav) ? nav : "en");
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => pick(b.dataset.l));
+document.querySelectorAll(".mail").forEach(s => {
+  if (CONTACT) s.innerHTML = `<a href="mailto:${CONTACT}">${CONTACT}</a>`;
+  else s.textContent = "(email)";
+});
+</script>
+</body>
+</html>
