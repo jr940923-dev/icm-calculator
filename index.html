@@ -654,6 +654,7 @@ const I18N = {
   "결과는 나빴지만, 결정은 좋았어요": "結果は悪かったけど、判断は良かったです",
   "운이 나빴던 핸드예요. 같은 상황이 오면 같은 선택을 해도 돼요.": "運が悪かったハンドです。同じ状況なら同じ選択でOKです。",
   "결정도 좋고, 결과도 좋았어요": "判断も結果も良かったです",
+  "기대값보다는 조금 덜 벌었지만, 좋은 선택이 + 결과로 이어졌어요.": "期待値よりは少し少なかったですが、良い選択がプラスの結果につながりました。",
   "좋은 선택이 좋은 결과로 이어졌어요.": "良い選択が良い結果につながりました。",
   "결과는 좋았지만, 결정은 −였어요": "結果は良かったけど、判断はマイナスでした",
   "운이 좋았던 핸드예요. {w}가 있었어요.": "運が良かったハンドです。{w}がありました。",
@@ -949,6 +950,7 @@ const I18N = {
   "결과는 나빴지만, 결정은 좋았어요": "Bad result, good decision",
   "운이 나빴던 핸드예요. 같은 상황이 오면 같은 선택을 해도 돼요.": "Unlucky hand. Make the same choice next time.",
   "결정도 좋고, 결과도 좋았어요": "Good decision, good result",
+  "기대값보다는 조금 덜 벌었지만, 좋은 선택이 + 결과로 이어졌어요.": "A bit less than expected, but a good choice still led to a positive result.",
   "좋은 선택이 좋은 결과로 이어졌어요.": "A good choice paid off.",
   "결과는 좋았지만, 결정은 −였어요": "Good result, but a −EV decision",
   "운이 좋았던 핸드예요. {w}가 있었어요.": "Lucky hand. {w}.",
@@ -2666,9 +2668,9 @@ function verdictData(D){
     const where = worst ? t("{s} {a}에서 {x} 손해", { s: STREETS[worst.st], a: actText(worst.d.e), x: won(-worst.impact) }) : "";
     if (hasActual && Math.abs(luck) < 10) { title = good ? t("결정이 좋았어요") : t("결정에 손해가 있었어요"); tone = good ? "good" : "bad"; text = good ? t("운이 끼어들 여지가 없는 결정이었고, ICM까지 따져봤을 때 가장 좋은 선택이었어요.") : t("{w}가 있었어요.", { w: where }); }
     else if (!hasActual) { title = good ? t("결정은 좋았어요") : t("결정에 손해가 있었어요"); tone = good ? "good" : "bad"; text = good ? t("믿을 수 있는 결정들이 모두 가장 좋은 선택이거나 비슷했어요.") : t("{w}가 있었어요.", { w: where }); }
-    else if (good && luck < -10) { title = t("결과는 나빴지만, 결정은 좋았어요"); tone = "good"; text = t("운이 나빴던 핸드예요. 같은 상황이 오면 같은 선택을 해도 돼요."); }
-    else if (good) { title = t("결정도 좋고, 결과도 좋았어요"); tone = "good"; text = t("좋은 선택이 좋은 결과로 이어졌어요."); }
-    else if (luck >= -10) { title = t("결과는 좋았지만, 결정은 −였어요"); tone = "bad"; text = t("운이 좋았던 핸드예요. {w}가 있었어요.", { w: where }); }
+    else if (good && res >= 0) { title = t("결정도 좋고, 결과도 좋았어요"); tone = "good"; text = luck < -10 ? t("기대값보다는 조금 덜 벌었지만, 좋은 선택이 + 결과로 이어졌어요.") : t("좋은 선택이 좋은 결과로 이어졌어요."); }
+    else if (good) { title = t("결과는 나빴지만, 결정은 좋았어요"); tone = "good"; text = t("운이 나빴던 핸드예요. 같은 상황이 오면 같은 선택을 해도 돼요."); }
+    else if (res >= 0) { title = t("결과는 좋았지만, 결정은 −였어요"); tone = "bad"; text = luck > 10 ? t("운이 좋았던 핸드예요. {w}가 있었어요.", { w: where }) : t("{w}가 있었어요.", { w: where }); }
     else { title = t("결정도 −, 결과도 −"); tone = "bad"; text = t("{w}가 있었어요.", { w: where }); }
   }
   return { title, text, tone, decVal, luck, res, hasActual, A, anchor, badList, refs: D.items.some(x => !x.reliable) };
