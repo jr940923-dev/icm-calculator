@@ -515,7 +515,7 @@ const DEFAULT = {
   stacks: Array(9).fill(null),
   heroCards: [null, null], board: [null, null, null, null, null], villains: [],
   anteType: "bb", lines: [{ name: "실제 라인", acts: [] }], lineSel: 0, runout: "avg",
-  lang: null, cur: null, premium: false, resultViews: 0,
+  lang: null, cur: null, premium: false, calcDay: "", calcCount: 0,
   freeDetailUsed: false, rewardDay: "", rewardUsed: 0
 };
 const clone = o => JSON.parse(JSON.stringify(o));
@@ -621,6 +621,7 @@ const I18N = {
   "평균 기대대로 흘러간 핸드예요.": "平均的な期待どおりに進んだハンドです。",
   "평균보다 카드가 {x}어치 안 따라줬어요.": "平均よりカードが{x}分ついてきませんでした。",
   "평균보다 카드가 {x}어치 더 따라줬어요.": "平均よりカードが{x}分ついてきました。",
+  "주간 {p}이면 광고 없이 볼 수 있어요.": "週{p}で広告なしで使えます。",
   "개인정보처리방침": "プライバシーポリシー",
   "이용약관": "利用規約",
   "이미지를 저장했어요.": "画像を保存しました。",
@@ -1004,6 +1005,7 @@ const I18N = {
   "평균 기대대로 흘러간 핸드예요.": "The hand went as expected.",
   "평균보다 카드가 {x}어치 안 따라줬어요.": "The cards ran {x} worse than average.",
   "평균보다 카드가 {x}어치 더 따라줬어요.": "The cards ran {x} better than average.",
+  "주간 {p}이면 광고 없이 볼 수 있어요.": "No ads for {p}/week.",
   "개인정보처리방침": "Privacy Policy",
   "이용약관": "Terms of Service",
   "이미지를 저장했어요.": "Image saved.",
@@ -1487,6 +1489,7 @@ function validate(step){
   return null;
 }
 function goTo(n){
+  if (leaveResult(() => goTo(n))) return;
   if (n > S.step) {
     for (let k = S.step; k < n; k++) {
       const err = validate(k);
@@ -1495,7 +1498,7 @@ function goTo(n){
   }
   view = "calc"; S.step = n; save(); render(); window.scrollTo(0, 0);
 }
-function goHome(){ view = "home"; render(); window.scrollTo(0, 0); }
+function goHome(){ if (leaveResult(goHome)) return; view = "home"; render(); window.scrollTo(0, 0); }
 
 /* ================= 홈 화면 ================= */
 const GUIDES = {
@@ -2819,8 +2822,8 @@ async function step6(){
     await precomputeDecisions(token);
   }
   if (token !== calcToken || S.step !== 6) return;
+  countCalc();
   result();
-  maybeShowAd();
 }
 
 function evalAt(k, st, dk = null){
@@ -2874,7 +2877,7 @@ async function precomputeDecisions(token){
     const mine = evalAt(0, st, d.k);
     if (d.e.act.a !== "x") checkBackLine(d, st);
     else betLine(d, st);
-    if (d.e.act.a === "r" && d.toCall > 0) { await tick(); if (token !== calcToken) return; callLine(d, st); }
+    if (d.e.act.a === "r" && d.toCall > 0 && !(d.snap.street === 0 && d.snap.cur <= S.bb)) { await tick(); if (token !== calcToken) return; callLine(d, st); }
     if (d.e.act.a !== "f" && decs.some(x => x.k > d.k)) {
       await tick(); if (token !== calcToken) return;
       const sl = soloLine(d, st);
@@ -3029,9 +3032,10 @@ function buildDecisions(){
     const cb = d.e.act.a !== "x" ? checkBackLine(d, st) : null;
     if (cb) list.push({ label: t("체크했다면"), short: t("체크"), ev: cb.ev, chip: cb.chip, se: cb.se, note: cb.direct ? t("체크하고 바로 쇼다운") : t("이후 서로 체크다운 가정 (근사)"), outs: cb.outs });
     // 상대 벳에 레이즈했을 때 "콜했다면"
-    if (d.e.act.a === "r" && d.toCall > 0) {
+    // (프리플랍 오픈 상황의 "림프했다면"은 넣지 않아요. BB의 레이즈를 계산하지 못해 림프가 과대평가돼요)
+    if (d.e.act.a === "r" && d.toCall > 0 && !(d.snap.street === 0 && d.snap.cur <= S.bb)) {
       const cl2 = callLine(d, st);
-      const limp = d.snap.street === 0 && d.snap.cur <= S.bb;
+      const limp = false;
       if (cl2 && ok(cl2.r.ev)) list.push({ label: limp ? t("림프했다면") : t("콜했다면"), short: limp ? t("림프") : t("콜"), ev: cl2.r.ev, chip: cl2.r.chip, se: cl2.r.se || 0, note: cl2.approx ? t("콜하고 체크다운 가정 (근사)") : t("콜하면 바로 쇼다운") });
     }
     const bl = betLine(d, st);
@@ -3580,7 +3584,6 @@ const ADMOB = { rewarded: "ca-app-pub-3940256099942544/5224354917", interstitial
 const PREMIUM_TEST = null;
 function isPremium(){ return PREMIUM_TEST !== null ? PREMIUM_TEST : S.premium === true; }
 function setPremium(on){ S.premium = !!on; save(); }
-const AD_FREE_VIEWS = 2;       // 결과 화면 처음 2번은 광고 없음, 그 뒤로 한 번 걸러 광고
 const AD_CODE = "";            // 실제 광고 코드(예: 애드센스)를 받으면 여기에 넣어요
 function priceText(n){ return S.lang === "ko" ? fmt(n) + "원" : "₩" + fmt(n); }
 function openModal(html){
@@ -3642,25 +3645,53 @@ function openPaywall(reason){
   document.querySelectorAll(".plan").forEach(b => b.onclick = () => document.querySelectorAll(".plan").forEach(x => x.classList.toggle("on", x === b)));
   document.getElementById("buyBtn").onclick = () => toast(t("결제 기능은 준비 중이에요."));
 }
-// 결과를 볼 때마다 횟수를 세고, 무료면 2회 이후 한 번 걸러 광고
-function maybeShowAd(){
-  S.resultViews = (S.resultViews || 0) + 1; save();
-  if (isPremium()) return;
-  const v = S.resultViews;
-  if (v <= AD_FREE_VIEWS || (v - AD_FREE_VIEWS - 1) % 2 !== 0) return;
-  const ov = document.getElementById("adOv");
-  ov.innerHTML = `
-    <div class="adbox">
-      <div class="ad-top"><span class="adtag">${t("광고")}</span><button class="mini" id="adClose" disabled>${t("닫기")} (3)</button></div>
-      <div class="ad-slot">${AD_CODE || `<span>${t("광고 자리 (테스트)")}</span>`}</div>
-      <button class="mini" id="adPrem" style="margin-top:10px">${t("광고 없이 쓰기 · 프리미엄 ›")}</button>
-    </div>`;
-  ov.classList.add("show");
-  let n = 3; const btn = document.getElementById("adClose");
-  const tick = () => { n--; if (n > 0) { btn.textContent = `${t("닫기")} (${n})`; setTimeout(tick, 1000); } else { btn.textContent = t("닫기"); btn.disabled = false; } };
-  setTimeout(tick, 1000);
-  btn.onclick = () => ov.classList.remove("show");
-  document.getElementById("adPrem").onclick = () => { ov.classList.remove("show"); openPaywall(); };
+/* ---------- 전면 광고: 결과를 다 본 뒤 "다음 화면으로 넘어갈 때"만 ----------
+   하루 기준 계산 횟수: 1·2번째는 광고 없음, 3번째부터 한 번 걸러(3, 5, 7...). 밤 12시에 초기화.
+   프리미엄이면 없음. 광고 보고 해설을 연 결과에서는 건너뜀(결과 하나에 광고 1번). */
+function countCalc(){
+  if (S.calcDay !== todayKey()) { S.calcDay = todayKey(); S.calcCount = 0; }
+  S.calcCount = (S.calcCount || 0) + 1; save();
+  if (lastRes) lastRes.adDue = S.calcCount >= 3 && (S.calcCount - 3) % 2 === 0;
+}
+function leaveResult(next){
+  if (view === "home" || S.step !== 6 || !lastRes || !lastRes.adDue || lastRes.adShown || lastRes.detailByAd || isPremium()) return false;
+  lastRes.adShown = true;
+  showInterstitial().then(() => {
+    next();
+    setTimeout(() => toast(t("주간 {p}이면 광고 없이 볼 수 있어요.", { p: priceText(PRICE.week) })), 250);
+  });
+  return true;
+}
+function showInterstitial(){
+  const C = window.Capacitor, A = C && C.isNativePlatform && C.isNativePlatform() && C.Plugins && C.Plugins.AdMob;
+  if (!A) return webInterstitialTest();
+  return new Promise(async resolve => {
+    let finished = false; const hs = [];
+    const done = () => { if (finished) return; finished = true; hs.forEach(h => h && h.remove && h.remove()); resolve(); };
+    try {
+      await admobInit(A);
+      hs.push(await A.addListener("interstitialAdDismissed", done));
+      hs.push(await A.addListener("interstitialAdFailedToShow", done));
+      await A.prepareInterstitial({ adId: ADMOB.interstitial, isTesting: ADMOB.testing });
+      await A.showInterstitial();
+    } catch (e) { done(); }   // 광고를 못 불러오면 그냥 넘어가요
+  });
+}
+// 웹에서는 진짜 광고 대신 3초 뒤 닫을 수 있는 테스트 화면
+function webInterstitialTest(){
+  return new Promise(resolve => {
+    const ov = document.getElementById("adOv");
+    ov.innerHTML = `
+      <div class="adbox">
+        <div class="ad-top"><span class="adtag">${t("광고")}</span><button class="mini" id="adClose" disabled>${t("닫기")} (3)</button></div>
+        <div class="ad-slot">${AD_CODE || `<span>${t("광고 자리 (테스트)")}</span>`}</div>
+      </div>`;
+    ov.classList.add("show");
+    let n = 3; const btn = document.getElementById("adClose");
+    const tick = () => { n--; if (n > 0) { btn.textContent = `${t("닫기")} (${n})`; setTimeout(tick, 1000); } else { btn.textContent = t("닫기"); btn.disabled = false; } };
+    setTimeout(tick, 1000);
+    btn.onclick = () => { ov.classList.remove("show"); resolve(); };
+  });
 }
 document.getElementById("setBtn").onclick = openSettings;
 document.getElementById("mBg").onclick = closeModal;
