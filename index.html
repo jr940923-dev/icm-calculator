@@ -329,6 +329,30 @@ main{max-width:560px;margin:0 auto;padding:4px 16px 120px}
 .lsub{display:block;font-size:11.5px;font-weight:600;color:var(--muted)}
 /* 상대 반응 */
 .rsp{display:block;margin-top:6px;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:0 12px;min-height:36px;font-size:13px;font-weight:700}
+.detail .dt-lock{font-size:18px}
+.detail.locked{display:flex;flex-direction:column;gap:12px}
+.detail.locked .card-head{margin:0}
+.dt-unlock{border:0;border-radius:14px;background:var(--pri);color:#fff;font-weight:800;font-size:15px;min-height:46px}
+.dt-block{border-top:1px solid var(--line);padding:14px 0 6px}
+.dt-block:first-of-type{border-top:0;padding-top:4px}
+.dt-head{font-weight:800;font-size:15px;margin-bottom:10px}
+.dt-best{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dt-best>div{background:var(--field);border-radius:12px;padding:10px 12px}
+.dt-best span,.dt-need-g span{display:block;font-size:12px;color:var(--muted);font-weight:700}
+.dt-best b{font-size:16px}
+.dt-flag{margin-top:8px;background:rgba(240,180,41,.18);color:var(--text);border-radius:12px;padding:10px 12px;font-weight:800}
+.dt-need{margin-top:10px}
+.dt-need-g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.dt-need-g>div{background:var(--field);border-radius:12px;padding:8px 10px}
+.dt-need-g b{font-size:16px}
+.dt-need small{display:block;color:var(--muted);margin-top:6px;font-size:12px}
+.dt-tbl{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+.dt-tbl th{text-align:left;color:var(--muted);font-weight:700;font-size:12px;padding:4px 4px 6px}
+.dt-tbl td{padding:8px 4px;border-top:1px solid var(--line);vertical-align:top}
+.dt-tbl tr.me td{font-weight:800}
+.dt-tbl em{display:block;font-style:normal;font-size:12px}
+.dt-tbl small{color:var(--muted);font-weight:600}
+.dt-say{margin:10px 0 0;background:var(--pri-soft);border-radius:12px;padding:10px 12px;font-weight:700;font-size:14px}
 .refnote{background:var(--field);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--sub);margin:0 0 12px}
 .needbtn{display:block;border:0;background:rgba(255,255,255,.18);color:inherit;border-radius:10px;padding:4px 8px;margin-top:2px;text-align:left;font:inherit}
 .needbtn b{font-size:18px}
@@ -516,6 +540,31 @@ const I18N = {
   "상금 순위({n}개)가 남은 인원({m}명)보다 많아요. 이미 지급된 순위는 빼주세요.": "賞金の順位（{n}個）が残り人数（{m}人）より多いです。支払い済みの順位は除いてください。",
   "{x} 넣기": "{x}を入力",
   "대회 정보는 그대로 두고 스택과 핸드만 비웠어요.": "大会情報はそのままで、スタックとハンドを消去しました。",
+  "상세 해설": "詳細解説",
+  "주간권으로 보기": "週間パスで見る",
+  "칩EV 기준 최선": "チップEVでの最善",
+  "ICM 기준 최선": "ICMでの最善",
+  "상금 구조가 판단을 바꿨어요": "賞金構造が判断を変えました",
+  "콜이 이득이 되려면 필요한 승률": "コールが得になるのに必要な勝率",
+  "콜 받았을 때 필요한 승률 ({b} 대비)": "コールされた時に必要な勝率（{b}と比較）",
+  "칩 기준": "チップ基準",
+  "ICM 기준": "ICM基準",
+  "내 승률": "自分の勝率",
+  "상대가 접는 경우는 빼고, 콜 받았을 때만 따진 값이에요.": "相手が降りるケースを除き、コールされた時だけを考えた値です。",
+  "선택": "選択",
+  "기대 상금": "期待賞金",
+  "기대 칩": "期待チップ",
+  "기대 상금 차이는 그 상황에서 가장 좋은 선택(ICM 기준)과 비교한 값이에요. 기대 칩은 핸드 전 스택 대비 평균 증감이에요.": "期待賞金の差は、その場面で最善の選択（ICM基準）と比べた値です。期待チップはハンド前のスタックからの平均増減です。",
+  "비교할 다른 선택이 있는 결정이 없어요. 라인 화면에서 ↳ 다르게로 다른 선택을 만들어보세요.": "比較できる別の選択がある判断がありません。ライン画面の↳ 別の選択で作ってみてください。",
+  "상세 해설은 프리미엄에서 볼 수 있어요.": "詳細解説はプレミアムで見られます。",
+  "칩으로는 {c} 쪽이 이득이지만, 탈락 위험이 상금 기대값을 깎아서 {i} 쪽이 나아요.": "チップでは{c}が得ですが、敗退リスクが賞金期待値を削るため{i}の方が良いです。",
+  "칩으로는 {c} 쪽이 낫지만, 상금 구조상 지금 칩을 모으는 가치가 커서 {i} 쪽이 나아요.": "チップでは{c}が上ですが、賞金構造上いまチップを集める価値が大きいため{i}の方が良いです。",
+  "선택 간 차이가 계산 오차 수준이라, 어느 쪽을 골라도 큰 손해는 없어요.": "選択間の差は計算誤差の範囲なので、どちらを選んでも大きな損はありません。",
+  "ICM 때문에 필요 승률이 {p}%p 높아졌지만, 그래도 충분한 선택이었어요.": "ICMのため必要勝率が{p}%p上がりましたが、それでも十分な選択でした。",
+  "칩으로 봐도, 상금으로 봐도 같은 답이에요. 좋은 선택이었어요.": "チップで見ても賞金で見ても同じ答えです。良い選択でした。",
+  "상금 압박 때문에 필요 승률이 {p}%p 올라가서, {i} 쪽이 나았어요.": "賞金のプレッシャーで必要勝率が{p}%p上がったため、{i}の方が良かったです。",
+  "칩으로 봐도, 상금으로 봐도 {i} 쪽이 나았어요.": "チップで見ても賞金で見ても{i}の方が良かったです。",
+  "콜 받으면 불리하지만(필요 {n} · 내 승률 {e}), 상대가 충분히 자주 접어서 {i} 쪽이 나아요.": "コールされると不利ですが（必要{n}・自分の勝率{e}）、相手が十分に降りるため{i}の方が良いです。",
   "개인정보처리방침": "プライバシーポリシー",
   "이용약관": "利用規約",
   "이미지를 저장했어요.": "画像を保存しました。",
@@ -834,6 +883,31 @@ const I18N = {
   "상금 순위({n}개)가 남은 인원({m}명)보다 많아요. 이미 지급된 순위는 빼주세요.": "There are more paid places ({n}) than players left ({m}). Remove places already paid.",
   "{x} 넣기": "Add {x}",
   "대회 정보는 그대로 두고 스택과 핸드만 비웠어요.": "Kept the event info and cleared stacks and the hand.",
+  "상세 해설": "In-depth analysis",
+  "주간권으로 보기": "Unlock with a weekly pass",
+  "칩EV 기준 최선": "Best by chip EV",
+  "ICM 기준 최선": "Best by ICM",
+  "상금 구조가 판단을 바꿨어요": "The payout structure changed the decision",
+  "콜이 이득이 되려면 필요한 승률": "Equity needed for the call to profit",
+  "콜 받았을 때 필요한 승률 ({b} 대비)": "Equity needed when called (vs {b})",
+  "칩 기준": "Chips",
+  "ICM 기준": "ICM",
+  "내 승률": "Your equity",
+  "상대가 접는 경우는 빼고, 콜 받았을 때만 따진 값이에요.": "Counts only the times you get called, ignoring folds.",
+  "선택": "Option",
+  "기대 상금": "Prize EV",
+  "기대 칩": "Chip EV",
+  "기대 상금 차이는 그 상황에서 가장 좋은 선택(ICM 기준)과 비교한 값이에요. 기대 칩은 핸드 전 스택 대비 평균 증감이에요.": "Prize EV gaps are vs the best option by ICM. Chip EV is the average change from your stack before the hand.",
+  "비교할 다른 선택이 있는 결정이 없어요. 라인 화면에서 ↳ 다르게로 다른 선택을 만들어보세요.": "No decision has an alternative to compare. Create one with ↳ What if on the line screen.",
+  "상세 해설은 프리미엄에서 볼 수 있어요.": "The in-depth analysis is a Premium feature.",
+  "칩으로는 {c} 쪽이 이득이지만, 탈락 위험이 상금 기대값을 깎아서 {i} 쪽이 나아요.": "{c} wins chips, but the risk of busting eats into prize EV, so {i} is better.",
+  "칩으로는 {c} 쪽이 낫지만, 상금 구조상 지금 칩을 모으는 가치가 커서 {i} 쪽이 나아요.": "{c} is better in chips, but the payouts make gaining chips now worth more, so {i} is better.",
+  "선택 간 차이가 계산 오차 수준이라, 어느 쪽을 골라도 큰 손해는 없어요.": "The gap is within calculation noise; neither choice costs much.",
+  "ICM 때문에 필요 승률이 {p}%p 높아졌지만, 그래도 충분한 선택이었어요.": "ICM raised the equity you need by {p} points, but your choice still cleared it.",
+  "칩으로 봐도, 상금으로 봐도 같은 답이에요. 좋은 선택이었어요.": "Chips and prize money agree: good choice.",
+  "상금 압박 때문에 필요 승률이 {p}%p 올라가서, {i} 쪽이 나았어요.": "Payout pressure raised the equity you need by {p} points, so {i} was better.",
+  "칩으로 봐도, 상금으로 봐도 {i} 쪽이 나았어요.": "In both chips and prize money, {i} was better.",
+  "콜 받으면 불리하지만(필요 {n} · 내 승률 {e}), 상대가 충분히 자주 접어서 {i} 쪽이 나아요.": "You are behind when called (need {n}, you have {e}), but they fold often enough that {i} is better.",
   "개인정보처리방침": "Privacy Policy",
   "이용약관": "Terms of Service",
   "이미지를 저장했어요.": "Image saved.",
@@ -2151,13 +2225,13 @@ function drawLines(){
 function drawTabs(){
   const el = document.getElementById("ltabs");
   el.innerHTML = S.lines.map((l, k) => `<button class="ltab ${k === S.lineSel ? "on" : ""}" data-k="${k}">${lineName(l.name)}</button>`).join("") +
-    `<button class="ltab add" id="newLine">${!S.premium && S.lines.length >= FREE_LINES ? "🔒 " : ""}${t("+ 빈 라인")}</button>`;
+    `<button class="ltab add" id="newLine">${!isPremium() && S.lines.length >= FREE_LINES ? "🔒 " : ""}${t("+ 빈 라인")}</button>`;
   el.querySelectorAll(".ltab[data-k]").forEach(b => b.onclick = () => { S.lineSel = +b.dataset.k; save(); drawLines(); });
   document.getElementById("newLine").onclick = () => addLine([]);
 }
 let openResp = null;
 function addLine(acts, resp){
-  if (!S.premium && S.lines.length >= FREE_LINES) return openPaywall("lines");
+  if (!isPremium() && S.lines.length >= FREE_LINES) return openPaywall("lines");
   if (S.lines.length >= 6) return toast(t("라인은 6개까지 만들 수 있어요."));
   const used = new Set(S.lines.map(l => l.name));
   let k = 1, name; do { name = "라인 " + String.fromCharCode(65 + k); k++; } while (used.has(name));
@@ -2536,7 +2610,7 @@ function checkBackLine(d, st){
   }
   const r = lastRes.cache.get(key);
   if (!r || !ok(r.ev)) return null;
-  return { ev: r.ev, se: r.se, outs: r.outs, mixed: r.mixed, calledEq: r.calledEq };
+  return { ev: r.ev, se: r.se, chip: r.chip, outs: r.outs, mixed: r.mixed, calledEq: r.calledEq };
 }
 // (예전 방식) 리버에서 공짜로 체크할 수 있을 때, 체크하면 바로 쇼다운이면 그 값을 계산
 function checkBackEV(ctx, snap){
@@ -2784,21 +2858,21 @@ function buildDecisions(){
     const st = d.snap.street, mine = evalAt(0, st);
     const reliable = !r.decisions.some(x => x.k > d.k && x.snap.street > st);
     const list = [];
-    if (d.toCall > 0 && d.e.act.a !== "f") list.push({ label: t("폴드했다면"), short: t("폴드"), ev: d.foldEV, se: 0, note: d.multi ? t("남은 두 명이 팟을 반씩 가져간다고 가정") : "" });
+    if (d.toCall > 0 && d.e.act.a !== "f") list.push({ label: t("폴드했다면"), short: t("폴드"), ev: d.foldEV, chip: d.snap.stack[S.hero] - lastRes.ctx.stacks[S.hero], se: 0, note: d.multi ? t("남은 두 명이 팟을 반씩 가져간다고 가정") : "" });
     let callInfo = null;
     if (d.e.act.a === "f" && d.toCall > 0) {
       const cl = callLine(d, st);
       if (cl && ok(cl.r.ev)) {
-        list.push({ label: t("콜했다면"), short: t("콜"), ev: cl.r.ev, se: cl.r.se || 0, note: cl.approx ? t("콜하고 체크다운 가정 (근사)") : t("콜하면 바로 쇼다운") });
+        list.push({ label: t("콜했다면"), short: t("콜"), ev: cl.r.ev, chip: cl.r.chip, se: cl.r.se || 0, note: cl.approx ? t("콜하고 체크다운 가정 (근사)") : t("콜하면 바로 쇼다운") });
         callInfo = callNeedInfo(cl.r, d);
       } else if (cl && cl.r.error) list.push({ label: t("콜했다면"), short: t("콜"), ev: null, note: cl.r.error });
     }
     const cb = d.e.act.a !== "x" ? checkBackLine(d, st) : null;
-    if (cb) list.push({ label: t("체크했다면"), short: t("체크"), ev: cb.ev, se: cb.se, note: t("체크하고 바로 쇼다운"), outs: cb.outs });
+    if (cb) list.push({ label: t("체크했다면"), short: t("체크"), ev: cb.ev, chip: cb.chip, se: cb.se, note: t("체크하고 바로 쇼다운"), outs: cb.outs });
     (alts[d.k] || []).forEach(a => {
       const txt = a.act.a === "f" ? t("폴드") : a.act.a === "x" ? t("체크") : a.act.a === "c" ? t("콜") : `${a.act.to >= d.snap.bet[S.hero] + d.snap.stack[S.hero] ? t("올인") : t("레이즈")} ${stackText(Math.min(a.act.to, d.snap.bet[S.hero] + d.snap.stack[S.hero]))}`;
       const ar = evalAt(a.li, st);
-      if (ok(ar.ev)) list.push({ label: `${lineName(a.name)} · ${txt}`, short: txt, ev: ar.ev, se: ar.se });
+      if (ok(ar.ev)) list.push({ label: `${lineName(a.name)} · ${txt}`, short: txt, ev: ar.ev, chip: ar.chip, se: ar.se });
       else list.push({ label: `${lineName(a.name)} · ${txt}`, short: txt, ev: null, note: ar.incomplete ? t("라인이 아직 안 끝났어요") : ar.error || "" });
     });
     const valid = list.filter(x => ok(x.ev));
@@ -2812,6 +2886,114 @@ function buildDecisions(){
     return { d, st, reliable, list, bestAlt, impact: close ? 0 : raw, close, info: callInfo ? null : info, callInfo, fe, mineEV: mine.ev, mineSE: mine.se || 0 };
   });
   return { r, items };
+}
+
+
+/* ================= 상세 해설 (프리미엄) ================= */
+// 쇼다운에서 내가 이기면/지면 받는 상금 가치와 칩 (두 명일 때)
+function termVals(ctx, H){
+  const h = S.hero, live = H.parts.filter(i => !H.folded[i]);
+  if (live.length !== 2 || !live.includes(h)) return null;
+  const v = live.find(i => i !== h), slices = potSlices(H);
+  const out = win => {
+    const fs = H.stack.slice();
+    for (const sl of slices) { if (sl.elig.length === 1) fs[sl.elig[0]] += sl.amt; else fs[win ? h : v] += sl.amt; }
+    return { v: heroValue(ctx, fs), c: fs[h] };
+  };
+  return { W: out(true), L: out(false) };
+}
+// 콜·올인이 이득이 되려면 필요한 승률 (칩 기준 / ICM 기준). 내가 그 뒤로 칩을 더 넣지 않는 결정만 계산해요.
+function detailNeed(it){
+  const d = it.d, h = S.hero, ctx = lastRes.ctx;
+  let base = null;
+  if (d.toCall > 0) base = { v: d.foldEV, c: d.snap.stack[h], name: t("폴드") };
+  else { const ck = it.list.find(x => x.short === t("체크") && ok(x.ev) && x.chip != null); if (ck) base = { v: ck.ev, c: ctx.stacks[h] + ck.chip, name: t("체크") }; }
+  if (!base) return null;
+  const folded = d.e.act.a === "f";
+  const r = folded ? (callLine(d, it.st) || {}).r : evalAt(0, it.st);
+  if (!r || !r.R || !r.R.H.end) return null;
+  let term = r.R.H;
+  if (term.end.type !== "showdown") {
+    const pts = responsePoints(r.R), lp = pts[pts.length - 1];
+    const ct = lp && lp.folded ? callThrough(r.R.snaps[lp.k], lp.seat) : null;
+    term = ct && ct.H;
+  }
+  if (!term || !term.end || term.end.type !== "showdown") return null;
+  const after = d.k + 1 < r.R.snaps.length ? r.R.snaps[d.k + 1] : r.R.H;
+  if (term.commit[h] !== after.commit[h]) return null;
+  const tv = termVals(ctx, term);
+  if (!tv || tv.W.v - tv.L.v < 1 || tv.W.c - tv.L.c < 1) return null;
+  const clamp = x => Math.min(Math.max(x, 0), 1);
+  let eq = r.calledEq != null ? r.calledEq : null;
+  if (eq == null && r.outs) {
+    const cs = r.outs.map(o => o.fs[h]), cW = Math.max(...cs), cL = Math.min(...cs);
+    let w = 0, tie = 0; r.outs.forEach(o => { if (o.fs[h] === cW) w += o.p; else if (o.fs[h] !== cL) tie += o.p; });
+    if (cW > cL) eq = w + tie / 2;
+  }
+  const isCall = folded || d.e.act.a === "c";
+  return { icm: clamp((base.v - tv.L.v) / (tv.W.v - tv.L.v)), chip: clamp((base.c - tv.L.c) / (tv.W.c - tv.L.c)), eq, base: base.name, isCall };
+}
+const sgnStack = v => (Math.abs(v) < 1 ? "±0" : (v < 0 ? "−" : "+") + stackText(Math.abs(v)));
+// 한 결정의 해설 데이터
+function detailFor(it){
+  const h = S.hero, mine = evalAt(0, it.st), ctx = lastRes.ctx;
+  const opts = [{ name: actText(it.d.e), ev: it.mineEV, chip: mine.chip, me: true }]
+    .concat(it.list.filter(x => ok(x.ev) && x.chip != null).map(x => ({ name: x.short, ev: x.ev, chip: x.chip })));
+  if (opts.length < 2 || mine.chip == null) return null;
+  const icmBest = opts.reduce((a, b) => (b.ev > a.ev ? b : a));
+  let chipBest = opts.reduce((a, b) => (b.chip > a.chip ? b : a));
+  // 칩 차이가 아주 작으면(0.1BB 미만) 같은 답으로 봐요
+  if (chipBest !== icmBest && chipBest.chip - icmBest.chip < 0.1 * S.bb) chipBest = icmBest;
+  const differ = chipBest !== icmBest;
+  const need = detailNeed(it);
+  const passive = o => o.name === t("폴드") || o.name === t("체크");
+  let say;
+  if (differ && passive(icmBest)) say = t("칩으로는 {c} 쪽이 이득이지만, 탈락 위험이 상금 기대값을 깎아서 {i} 쪽이 나아요.", { c: chipBest.name, i: icmBest.name });
+  else if (differ) say = t("칩으로는 {c} 쪽이 낫지만, 상금 구조상 지금 칩을 모으는 가치가 커서 {i} 쪽이 나아요.", { c: chipBest.name, i: icmBest.name });
+  else if (it.close) say = t("선택 간 차이가 계산 오차 수준이라, 어느 쪽을 골라도 큰 손해는 없어요.");
+  else if (icmBest.me && need && !need.isCall && need.eq != null && need.eq < need.icm) say = t("콜 받으면 불리하지만(필요 {n} · 내 승률 {e}), 상대가 충분히 자주 접어서 {i} 쪽이 나아요.", { n: (need.icm * 100).toFixed(1) + "%", e: (need.eq * 100).toFixed(1) + "%", i: icmBest.name });
+  else if (icmBest.me && need && need.icm - need.chip >= 0.05) say = t("ICM 때문에 필요 승률이 {p}%p 높아졌지만, 그래도 충분한 선택이었어요.", { p: ((need.icm - need.chip) * 100).toFixed(1) });
+  else if (icmBest.me) say = t("칩으로 봐도, 상금으로 봐도 같은 답이에요. 좋은 선택이었어요.");
+  else if (need && need.icm - need.chip >= 0.05) say = t("상금 압박 때문에 필요 승률이 {p}%p 올라가서, {i} 쪽이 나았어요.", { p: ((need.icm - need.chip) * 100).toFixed(1), i: icmBest.name });
+  else say = t("칩으로 봐도, 상금으로 봐도 {i} 쪽이 나았어요.", { i: icmBest.name });
+  return { it, opts, icmBest, chipBest, differ, need, say };
+}
+function detailSection(D){
+  if (!D || !D.items.length) return "";
+  const title = `<div class="card-head"><h2>📘 ${t("상세 해설")}</h2>${isPremium() ? `<span class="pill">${t("프리미엄")}</span>` : `<span class="dt-lock">🔒</span>`}</div>`;
+  if (!isPremium()) return `<section class="card detail locked">${title}<button class="dt-unlock" onclick="openPaywall('detail')">${t("주간권으로 보기")}</button></section>`;
+  const rel = D.items.filter(x => x.reliable), use = rel.length ? rel : D.items;
+  const blocks = use.map(detailFor).filter(Boolean);
+  if (!blocks.length) return `<section class="card detail">${title}<p class="help" style="margin:0">${t("비교할 다른 선택이 있는 결정이 없어요. 라인 화면에서 ↳ 다르게로 다른 선택을 만들어보세요.")}</p></section>`;
+  const pc = x => (x * 100).toFixed(1) + "%";
+  return `<section class="card detail">${title}
+    ${blocks.map(b => `
+      <div class="dt-block">
+        <div class="dt-head">${STREETS[b.it.st]} · ${actText(b.it.d.e)}${b.it.reliable ? "" : ` <span class="chip">${t("참고")}</span>`}</div>
+        <div class="dt-best">
+          <div><span>${t("칩EV 기준 최선")}</span><b>${b.chipBest.name}</b></div>
+          <div><span>${t("ICM 기준 최선")}</span><b>${b.icmBest.name}</b></div>
+        </div>
+        ${b.differ ? `<div class="dt-flag">⚖️ ${t("상금 구조가 판단을 바꿨어요")}</div>` : ""}
+        ${b.need ? `<div class="dt-need">
+          <span class="lbl">${b.need.isCall ? t("콜이 이득이 되려면 필요한 승률") : t("콜 받았을 때 필요한 승률 ({b} 대비)", { b: b.need.base })}</span>
+          <div class="dt-need-g">
+            <div><span>${t("칩 기준")}</span><b>${pc(b.need.chip)}</b></div>
+            <div><span>${t("ICM 기준")}</span><b>${pc(b.need.icm)}</b></div>
+            ${b.need.eq != null ? `<div><span>${t("내 승률")}</span><b class="${b.need.eq >= b.need.icm ? "pos" : "neg"}">${pc(b.need.eq)}</b></div>` : ""}
+          </div>
+          ${!b.need.isCall ? `<small>${t("상대가 접는 경우는 빼고, 콜 받았을 때만 따진 값이에요.")}</small>` : ""}
+        </div>` : ""}
+        <table class="dt-tbl">
+          <tr><th>${t("선택")}</th><th>${t("기대 상금")}</th><th>${t("기대 칩")}</th></tr>
+          ${b.opts.slice().sort((x, y) => y.ev - x.ev).map(o => `<tr class="${o.me ? "me" : ""}"><td>${o.name}${o.me ? ` <small>(${t("실제")})</small>` : ""}</td>
+            <td>${won(round4(o.ev))}${o === b.icmBest ? "" : `<em class="neg">${sgnWon(o.ev - b.icmBest.ev)}</em>`}</td>
+            <td>${sgnStack(o.chip)}</td></tr>`).join("")}
+        </table>
+        <p class="dt-say">💬 ${b.say}</p>
+      </div>`).join("")}
+    <p class="help" style="margin:8px 0 0">${t("기대 상금 차이는 그 상황에서 가장 좋은 선택(ICM 기준)과 비교한 값이에요. 기대 칩은 핸드 전 스택 대비 평균 증감이에요.")}</p>
+  </section>`;
 }
 
 /* ================= 결과 이미지 저장 · 공유 ================= */
@@ -3085,6 +3267,7 @@ function result(){
     ${verdictSection(D)}
     <button class="sharebtn" id="shareBtn">📷 ${t("결과 이미지 저장·공유")}</button>
     ${decisionSection(D)}
+    ${detailSection(D)}
     ${lineErr}
     ${linesSection()}
     ${equitySection(R.equity)}
@@ -3128,6 +3311,11 @@ function row(ic, title, text){
 /* ================= 설정 · 프리미엄 · 광고 ================= */
 // 가격: 원 기준. 일본·영어권 가격이 정해지면 여기만 바꾸면 돼요
 const PRICE = { month: 3990, year: 19900 };
+/* 프리미엄 여부는 앱 전체에서 isPremium() 한 곳만 봐요.
+   테스트용 스위치: true = 항상 프리미엄 / false = 항상 무료 / null = 설정(⚙) 화면의 "테스트 모드" 스위치를 따라요 */
+const PREMIUM_TEST = null;
+function isPremium(){ return PREMIUM_TEST !== null ? PREMIUM_TEST : S.premium === true; }
+function setPremium(on){ S.premium = !!on; save(); }
 const FREE_LINES = 2;          // 무료는 라인 2개까지 (실제 라인 + 1개)
 const AD_FREE_VIEWS = 2;       // 결과 화면 처음 2번은 광고 없음, 그 뒤로 한 번 걸러 광고
 const AD_CODE = "";            // 실제 광고 코드(예: 애드센스)를 받으면 여기에 넣어요
@@ -3147,8 +3335,8 @@ function openSettings(){
     <span class="lbl">${t("언어")}</span>
     <div class="langs">${Object.entries(LANGS).map(([k, v]) => `<button data-l="${k}" class="${S.lang === k ? "on" : ""}">${v}</button>`).join("")}</div>
     <span class="lbl" style="margin-top:16px">${t("이용 중인 요금제")}</span>
-    <div class="planrow"><b>${S.premium ? t("프리미엄") : t("무료")}</b>${S.premium ? "" : `<button class="mini" id="goPrem">${t("프리미엄 보기 ›")}</button>`}</div>
-    <div class="devrow"><span>${t("테스트 모드: 프리미엄 켜기")}</span><button class="switch ${S.premium ? "on" : ""}" id="devPrem" aria-label="premium test"><i></i></button></div>
+    <div class="planrow"><b>${isPremium() ? t("프리미엄") : t("무료")}</b>${isPremium() ? "" : `<button class="mini" id="goPrem">${t("프리미엄 보기 ›")}</button>`}</div>
+    <div class="devrow"><span>${t("테스트 모드: 프리미엄 켜기")}</span><button class="switch ${isPremium() ? "on" : ""}" id="devPrem" aria-label="premium test"><i></i></button></div>
     <p class="help" style="margin-top:4px">${t("결제 연결 전까지 프리미엄 화면을 확인하는 용도예요.")}</p>
     <div class="doclinks"><button class="mini" data-doc="privacy">${t("개인정보처리방침")} ›</button><button class="mini" data-doc="terms">${t("이용약관")} ›</button></div>`);
   document.querySelectorAll("[data-doc]").forEach(b => b.onclick = () => openDoc(b.dataset.doc));
@@ -3159,8 +3347,9 @@ function openSettings(){
   });
   const gp = document.getElementById("goPrem"); if (gp) gp.onclick = () => openPaywall();
   document.getElementById("devPrem").onclick = () => {
-    S.premium = !S.premium; save(); openSettings();
+    setPremium(!isPremium()); openSettings();
     if (S.step === 5) drawLines();
+    if (S.step === 6 && lastRes) result();
   };
 }
 // 개인정보처리방침 · 이용약관 (앱 안에서 바로 보기)
@@ -3175,6 +3364,7 @@ function openPaywall(reason){
   openModal(`
     <div class="sheet-head"><b>⭐ ${t("프리미엄")}</b><button class="mini" id="mClose">${t("닫기")}</button></div>
     ${reason === "lines" ? `<p class="pw-reason">${t("무료 버전은 라인을 {n}개까지 비교할 수 있어요.", { n: FREE_LINES })}</p>` : ""}
+    ${reason === "detail" ? `<p class="pw-reason">${t("상세 해설은 프리미엄에서 볼 수 있어요.")}</p>` : ""}
     <ul class="pw-list">
       <li>✓ ${t("광고 없이 결과 보기")}</li>
       <li>✓ ${t("라인 무제한 비교 (최대 6개)")}</li>
@@ -3192,7 +3382,7 @@ function openPaywall(reason){
 // 결과를 볼 때마다 횟수를 세고, 무료면 2회 이후 한 번 걸러 광고
 function maybeShowAd(){
   S.resultViews = (S.resultViews || 0) + 1; save();
-  if (S.premium) return;
+  if (isPremium()) return;
   const v = S.resultViews;
   if (v <= AD_FREE_VIEWS || (v - AD_FREE_VIEWS - 1) % 2 !== 0) return;
   const ov = document.getElementById("adOv");
