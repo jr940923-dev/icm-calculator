@@ -332,6 +332,15 @@ main{max-width:560px;margin:0 auto;padding:4px 16px 120px}
 .detail .dt-lock{font-size:18px}
 .detail.locked{display:flex;flex-direction:column;gap:12px}
 .detail.locked .card-head{margin:0}
+.plans2{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+.plans2 .plan{flex-direction:row;justify-content:space-between;padding:14px 16px}
+.plans2 .plan.big{padding:22px 16px}
+.plans2 .plan.big span{font-size:24px}
+.plans2 .badge3{right:12px}
+.dt-ad{border:0;border-radius:14px;background:var(--text);color:var(--bg);font-weight:800;font-size:15px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dt-ad small{font-weight:600;font-size:12px;opacity:.8}
+.dt-ad:disabled{opacity:.5}
+.dt-note{margin:-4px 0 6px;font-size:13px;color:var(--sub);font-weight:600}
 .dt-unlock{border:0;border-radius:14px;background:var(--pri);color:#fff;font-weight:800;font-size:15px;min-height:46px}
 .dt-block{border-top:1px solid var(--line);padding:14px 0 6px}
 .dt-block:first-of-type{border-top:0;padding-top:4px}
@@ -500,7 +509,8 @@ const DEFAULT = {
   stacks: Array(9).fill(null),
   heroCards: [null, null], board: [null, null, null, null, null], villains: [],
   anteType: "bb", lines: [{ name: "실제 라인", acts: [] }], lineSel: 0, runout: "avg",
-  lang: null, cur: null, premium: false, resultViews: 0
+  lang: null, cur: null, premium: false, resultViews: 0,
+  freeDetailUsed: false, rewardDay: "", rewardUsed: 0
 };
 const clone = o => JSON.parse(JSON.stringify(o));
 
@@ -565,6 +575,24 @@ const I18N = {
   "상금 압박 때문에 필요 승률이 {p}%p 올라가서, {i} 쪽이 나았어요.": "賞金のプレッシャーで必要勝率が{p}%p上がったため、{i}の方が良かったです。",
   "칩으로 봐도, 상금으로 봐도 {i} 쪽이 나았어요.": "チップで見ても賞金で見ても{i}の方が良かったです。",
   "콜 받으면 불리하지만(필요 {n} · 내 승률 {e}), 상대가 충분히 자주 접어서 {i} 쪽이 나아요.": "コールされると不利ですが（必要{n}・自分の勝率{e}）、相手が十分に降りるため{i}の方が良いです。",
+  "광고 보고 해설 보기": "広告を見て解説を見る",
+  "오늘 {n}회 남음": "今日あと{n}回",
+  "오늘 무료 해설을 다 봤어요. 밤 12시에 다시 {n}회 생겨요.": "今日の無料解説は使い切りました。夜12時にまた{n}回使えます。",
+  "주간 {p}으로 무제한": "週{p}で無制限",
+  "첫 해설은 무료로 보여드려요. 다음부터는 광고를 한 번 보면 열려요.": "最初の解説は無料です。次からは広告を1回見ると開きます。",
+  "오늘 광고로 볼 수 있는 해설 {n}회 남음": "今日広告で見られる解説はあと{n}回",
+  "해설이 열렸어요. 오늘 {n}회 남았어요.": "解説が開きました。今日はあと{n}回です。",
+  "광고를 끝까지 봐야 해설이 열려요.": "広告を最後まで見ると解説が開きます。",
+  "광고를 불러오지 못했어요. 잠시 후 다시 시도해주세요.": "広告を読み込めませんでした。しばらくしてからもう一度お試しください。",
+  "건너뛰기": "スキップ",
+  "보상형 광고 자리 (테스트)": "リワード広告枠（テスト）",
+  "보상 받기": "報酬を受け取る",
+  "상세 해설을 광고 없이 무제한으로 볼 수 있어요.": "詳細解説を広告なしで無制限に見られます。",
+  "상세 해설 무제한": "詳細解説が無制限",
+  "광고 없이 보기": "広告なし",
+  "주간": "週間",
+  "7일마다 결제": "7日ごとに決済",
+  "해지하면 이번 기간 끝까지 사용, 자동 갱신만 멈춰요.": "解約しても今の期間の終わりまで使えます。自動更新だけ止まります。",
   "개인정보처리방침": "プライバシーポリシー",
   "이용약관": "利用規約",
   "이미지를 저장했어요.": "画像を保存しました。",
@@ -908,6 +936,24 @@ const I18N = {
   "상금 압박 때문에 필요 승률이 {p}%p 올라가서, {i} 쪽이 나았어요.": "Payout pressure raised the equity you need by {p} points, so {i} was better.",
   "칩으로 봐도, 상금으로 봐도 {i} 쪽이 나았어요.": "In both chips and prize money, {i} was better.",
   "콜 받으면 불리하지만(필요 {n} · 내 승률 {e}), 상대가 충분히 자주 접어서 {i} 쪽이 나아요.": "You are behind when called (need {n}, you have {e}), but they fold often enough that {i} is better.",
+  "광고 보고 해설 보기": "Watch an ad to unlock",
+  "오늘 {n}회 남음": "{n} left today",
+  "오늘 무료 해설을 다 봤어요. 밤 12시에 다시 {n}회 생겨요.": "You've used today's free analyses. {n} more at midnight.",
+  "주간 {p}으로 무제한": "Unlimited for {p}/week",
+  "첫 해설은 무료로 보여드려요. 다음부터는 광고를 한 번 보면 열려요.": "Your first analysis is free. Next time, watch one ad to unlock.",
+  "오늘 광고로 볼 수 있는 해설 {n}회 남음": "{n} ad-unlocked analyses left today",
+  "해설이 열렸어요. 오늘 {n}회 남았어요.": "Unlocked. {n} left today.",
+  "광고를 끝까지 봐야 해설이 열려요.": "Watch the ad to the end to unlock.",
+  "광고를 불러오지 못했어요. 잠시 후 다시 시도해주세요.": "Couldn't load an ad. Please try again shortly.",
+  "건너뛰기": "Skip",
+  "보상형 광고 자리 (테스트)": "Rewarded ad slot (test)",
+  "보상 받기": "Claim reward",
+  "상세 해설을 광고 없이 무제한으로 볼 수 있어요.": "Unlimited in-depth analysis, no ads.",
+  "상세 해설 무제한": "Unlimited in-depth analysis",
+  "광고 없이 보기": "No ads",
+  "주간": "Weekly",
+  "7일마다 결제": "Billed every 7 days",
+  "해지하면 이번 기간 끝까지 사용, 자동 갱신만 멈춰요.": "If you cancel, you keep access until the period ends; only auto-renewal stops.",
   "개인정보처리방침": "Privacy Policy",
   "이용약관": "Terms of Service",
   "이미지를 저장했어요.": "Image saved.",
@@ -2225,13 +2271,12 @@ function drawLines(){
 function drawTabs(){
   const el = document.getElementById("ltabs");
   el.innerHTML = S.lines.map((l, k) => `<button class="ltab ${k === S.lineSel ? "on" : ""}" data-k="${k}">${lineName(l.name)}</button>`).join("") +
-    `<button class="ltab add" id="newLine">${!isPremium() && S.lines.length >= FREE_LINES ? "🔒 " : ""}${t("+ 빈 라인")}</button>`;
+    `<button class="ltab add" id="newLine">${t("+ 빈 라인")}</button>`;
   el.querySelectorAll(".ltab[data-k]").forEach(b => b.onclick = () => { S.lineSel = +b.dataset.k; save(); drawLines(); });
   document.getElementById("newLine").onclick = () => addLine([]);
 }
 let openResp = null;
 function addLine(acts, resp){
-  if (!isPremium() && S.lines.length >= FREE_LINES) return openPaywall("lines");
   if (S.lines.length >= 6) return toast(t("라인은 6개까지 만들 수 있어요."));
   const used = new Set(S.lines.map(l => l.name));
   let k = 1, name; do { name = "라인 " + String.fromCharCode(65 + k); k++; } while (used.has(name));
@@ -2699,7 +2744,7 @@ async function step6(){
     });
     if (token !== calcToken || S.step !== 6) return;
   }
-  lastRes = { ctx, eq, equity, lines: [], cache: new Map() };
+  lastRes = { ctx, eq, equity, lines: [], cache: new Map(), detailOpen: false, detailFree: false, detailByAd: false };
   if (S.villains.length) {
     for (let k = 0; k < S.lines.length; k++) {
       const el = document.getElementById("prog"); if (el) el.textContent = t("라인 계산 중... ({a}/{b})", { a: k + 1, b: S.lines.length });
@@ -2960,13 +3005,27 @@ function detailFor(it){
 }
 function detailSection(D){
   if (!D || !D.items.length) return "";
-  const title = `<div class="card-head"><h2>📘 ${t("상세 해설")}</h2>${isPremium() ? `<span class="pill">${t("프리미엄")}</span>` : `<span class="dt-lock">🔒</span>`}</div>`;
-  if (!isPremium()) return `<section class="card detail locked">${title}<button class="dt-unlock" onclick="openPaywall('detail')">${t("주간권으로 보기")}</button></section>`;
   const rel = D.items.filter(x => x.reliable), use = rel.length ? rel : D.items;
   const blocks = use.map(detailFor).filter(Boolean);
+  // 설치 후 첫 1회는 광고 없이 열어줘요 (보여줄 해설이 있을 때만 사용 처리)
+  if (!isPremium() && !lastRes.detailOpen && !S.freeDetailUsed && blocks.length) {
+    S.freeDetailUsed = true; save(); lastRes.detailOpen = true; lastRes.detailFree = true;
+  }
+  const open = isPremium() || lastRes.detailOpen;
+  const title = `<div class="card-head"><h2>📘 ${t("상세 해설")}</h2>${isPremium() ? `<span class="pill">${t("프리미엄")}</span>` : open ? "" : `<span class="dt-lock">🔒</span>`}</div>`;
+  if (!open) {
+    const left = rewardLeft();
+    return `<section class="card detail locked">${title}
+      ${left > 0 ? `<button class="dt-ad" id="dtAdBtn" onclick="unlockDetailByAd()">▶ ${t("광고 보고 해설 보기")}<small>${t("오늘 {n}회 남음", { n: left })}</small></button>`
+        : `<p class="help" style="margin:0">${t("오늘 무료 해설을 다 봤어요. 밤 12시에 다시 {n}회 생겨요.", { n: REWARD_PER_DAY })}</p>`}
+      <button class="dt-unlock" onclick="openPaywall('detail')">${t("주간 {p}으로 무제한", { p: priceText(PRICE.week) })}</button>
+    </section>`;
+  }
   if (!blocks.length) return `<section class="card detail">${title}<p class="help" style="margin:0">${t("비교할 다른 선택이 있는 결정이 없어요. 라인 화면에서 ↳ 다르게로 다른 선택을 만들어보세요.")}</p></section>`;
+  const note = isPremium() ? "" : lastRes.detailFree ? `<p class="dt-note">🎁 ${t("첫 해설은 무료로 보여드려요. 다음부터는 광고를 한 번 보면 열려요.")}</p>`
+    : `<p class="dt-note">${t("오늘 광고로 볼 수 있는 해설 {n}회 남음", { n: rewardLeft() })}</p>`;
   const pc = x => (x * 100).toFixed(1) + "%";
-  return `<section class="card detail">${title}
+  return `<section class="card detail">${title}${note}
     ${blocks.map(b => `
       <div class="dt-block">
         <div class="dt-head">${STREETS[b.it.st]} · ${actText(b.it.d.e)}${b.it.reliable ? "" : ` <span class="chip">${t("참고")}</span>`}</div>
@@ -2994,6 +3053,64 @@ function detailSection(D){
       </div>`).join("")}
     <p class="help" style="margin:8px 0 0">${t("기대 상금 차이는 그 상황에서 가장 좋은 선택(ICM 기준)과 비교한 값이에요. 기대 칩은 핸드 전 스택 대비 평균 증감이에요.")}</p>
   </section>`;
+}
+
+/* ---------- 광고 보고 해설 열기 (보상형 광고) ---------- */
+function todayKey(){ const d = new Date(); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; }
+function rewardLeft(){
+  if (S.rewardDay !== todayKey()) { S.rewardDay = todayKey(); S.rewardUsed = 0; save(); }
+  return Math.max(0, REWARD_PER_DAY - (S.rewardUsed || 0));
+}
+function refreshDetail(){ const el = document.querySelector(".detail"); if (el && lastRes) el.outerHTML = detailSection(lastRes.D); }
+async function unlockDetailByAd(){
+  if (isPremium() || rewardLeft() <= 0) return refreshDetail();
+  const btn = document.getElementById("dtAdBtn"); if (btn) btn.disabled = true;
+  const r = await showRewardedAd();
+  if (r === "ok") {
+    S.rewardUsed = (S.rewardUsed || 0) + 1; save();
+    lastRes.detailOpen = true; lastRes.detailByAd = true;
+    refreshDetail(); toast(t("해설이 열렸어요. 오늘 {n}회 남았어요.", { n: rewardLeft() }));
+  } else {
+    if (btn) btn.disabled = false;
+    toast(r === "skip" ? t("광고를 끝까지 봐야 해설이 열려요.") : t("광고를 불러오지 못했어요. 잠시 후 다시 시도해주세요."));
+  }
+}
+// 결과: "ok" 끝까지 봄 / "skip" 중간에 닫음 / "fail" 못 불러옴
+function showRewardedAd(){
+  const C = window.Capacitor, A = C && C.isNativePlatform && C.isNativePlatform() && C.Plugins && C.Plugins.AdMob;
+  return A ? nativeRewarded(A) : webRewardedTest();
+}
+let admobReady = null;
+function admobInit(A){ if (!admobReady) admobReady = A.initialize({ initializeForTesting: ADMOB.testing }).catch(() => { admobReady = null; }); return admobReady; }
+function nativeRewarded(A){
+  return new Promise(async resolve => {
+    let rewarded = false, finished = false; const hs = [];
+    const done = v => { if (finished) return; finished = true; hs.forEach(h => h && h.remove && h.remove()); resolve(v); };
+    try {
+      await admobInit(A);
+      hs.push(await A.addListener("onRewardedVideoAdReward", () => { rewarded = true; }));
+      hs.push(await A.addListener("onRewardedVideoAdDismissed", () => done(rewarded ? "ok" : "skip")));
+      hs.push(await A.addListener("onRewardedVideoAdFailedToShow", () => done("fail")));
+      await A.prepareRewardVideoAd({ adId: ADMOB.rewarded, isTesting: ADMOB.testing });
+      A.showRewardVideoAd().then(() => { rewarded = true; }).catch(() => done("fail"));
+    } catch (e) { done("fail"); }
+  });
+}
+// 웹에서는 진짜 광고 대신 5초짜리 테스트 화면을 보여줘요
+function webRewardedTest(){
+  return new Promise(resolve => {
+    const ov = document.getElementById("adOv");
+    ov.innerHTML = `<div class="adbox">
+      <div class="ad-top"><span class="adtag">${t("광고")}</span><button class="mini" id="rwSkip">${t("건너뛰기")}</button></div>
+      <div class="ad-slot"><span>${t("보상형 광고 자리 (테스트)")}</span><b id="rwSec" style="font-size:28px">5</b></div>
+      <button class="btn primary" id="rwDone" style="width:100%;margin-top:10px" disabled>${t("보상 받기")}</button></div>`;
+    ov.classList.add("show");
+    let n = 5; const sec = document.getElementById("rwSec"), ok = document.getElementById("rwDone");
+    const tm = setInterval(() => { n--; sec.textContent = n; if (n <= 0) { clearInterval(tm); ok.disabled = false; sec.textContent = "✓"; } }, 1000);
+    const end = v => { clearInterval(tm); ov.classList.remove("show"); resolve(v); };
+    document.getElementById("rwSkip").onclick = () => end(n <= 0 ? "ok" : "skip");
+    ok.onclick = () => end("ok");
+  });
 }
 
 /* ================= 결과 이미지 저장 · 공유 ================= */
@@ -3310,13 +3427,15 @@ function row(ic, title, text){
 
 /* ================= 설정 · 프리미엄 · 광고 ================= */
 // 가격: 원 기준. 일본·영어권 가격이 정해지면 여기만 바꾸면 돼요
-const PRICE = { month: 3990, year: 19900 };
+const PRICE = { week: 1900, month: 5900 };
+const REWARD_PER_DAY = 3;      // 광고 보고 해설 열기: 하루 3회 (0시 초기화). 설치 후 첫 1회 무료는 따로
+// AdMob 광고 ID. 지금은 구글 공식 테스트 ID예요. 실제 출시 때 AdMob에서 받은 ID로 바꿔요
+const ADMOB = { rewarded: "ca-app-pub-3940256099942544/5224354917", interstitial: "ca-app-pub-3940256099942544/1033173712", testing: true };
 /* 프리미엄 여부는 앱 전체에서 isPremium() 한 곳만 봐요.
    테스트용 스위치: true = 항상 프리미엄 / false = 항상 무료 / null = 설정(⚙) 화면의 "테스트 모드" 스위치를 따라요 */
 const PREMIUM_TEST = null;
 function isPremium(){ return PREMIUM_TEST !== null ? PREMIUM_TEST : S.premium === true; }
 function setPremium(on){ S.premium = !!on; save(); }
-const FREE_LINES = 2;          // 무료는 라인 2개까지 (실제 라인 + 1개)
 const AD_FREE_VIEWS = 2;       // 결과 화면 처음 2번은 광고 없음, 그 뒤로 한 번 걸러 광고
 const AD_CODE = "";            // 실제 광고 코드(예: 애드센스)를 받으면 여기에 넣어요
 function priceText(n){ return S.lang === "ko" ? fmt(n) + "원" : "₩" + fmt(n); }
@@ -3360,20 +3479,20 @@ function openDoc(name){
   document.getElementById("mClose").onclick = closeModal;
 }
 function openPaywall(reason){
-  const perMonth = Math.round(PRICE.year / 12), off = Math.round((1 - perMonth / PRICE.month) * 100);
+  const off = Math.round((1 - PRICE.month / (PRICE.week * 52 / 12)) * 100);
   openModal(`
     <div class="sheet-head"><b>⭐ ${t("프리미엄")}</b><button class="mini" id="mClose">${t("닫기")}</button></div>
-    ${reason === "lines" ? `<p class="pw-reason">${t("무료 버전은 라인을 {n}개까지 비교할 수 있어요.", { n: FREE_LINES })}</p>` : ""}
-    ${reason === "detail" ? `<p class="pw-reason">${t("상세 해설은 프리미엄에서 볼 수 있어요.")}</p>` : ""}
+    ${reason === "detail" ? `<p class="pw-reason">${t("상세 해설을 광고 없이 무제한으로 볼 수 있어요.")}</p>` : ""}
     <ul class="pw-list">
-      <li>✓ ${t("광고 없이 결과 보기")}</li>
-      <li>✓ ${t("라인 무제한 비교 (최대 6개)")}</li>
+      <li>✓ ${t("상세 해설 무제한")}</li>
+      <li>✓ ${t("광고 없이 보기")}</li>
     </ul>
-    <div class="plans">
-      <button class="plan on" data-p="year"><span class="badge3">${t("{p}% 할인", { p: off })}</span><b>${t("연간")}</b><span>${priceText(PRICE.year)}</span><small>${t("월 {x}꼴", { x: priceText(perMonth) })}</small></button>
-      <button class="plan" data-p="month"><b>${t("월간")}</b><span>${priceText(PRICE.month)}</span><small>${t("매달 결제")}</small></button>
+    <div class="plans2">
+      <button class="plan big on" data-p="week"><b>${t("주간")}</b><span>${priceText(PRICE.week)}</span><small>${t("7일마다 결제")}</small></button>
+      <button class="plan" data-p="month"><span class="badge3">${t("{p}% 할인", { p: off })}</span><b>${t("월간")}</b><span>${priceText(PRICE.month)}</span><small>${t("매달 결제")}</small></button>
     </div>
     <button class="btn primary" id="buyBtn" style="width:100%;margin-top:12px">${t("구독하기")}</button>
+    <p class="help" style="text-align:center;margin-bottom:0">${t("해지하면 이번 기간 끝까지 사용, 자동 갱신만 멈춰요.")}</p>
     <p class="help" style="text-align:center">${t("결제 기능은 준비 중이에요.")}</p>`);
   document.getElementById("mClose").onclick = closeModal;
   document.querySelectorAll(".plan").forEach(b => b.onclick = () => document.querySelectorAll(".plan").forEach(x => x.classList.toggle("on", x === b)));
