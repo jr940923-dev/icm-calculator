@@ -11,6 +11,10 @@ on:
 permissions:
   contents: write
 
+env:
+  # AdMob 앱 ID. 지금은 구글 공식 테스트 ID. 출시 때 AdMob에서 받은 "앱 ID"로 바꿔요 (광고 단위 ID 아님)
+  ADMOB_APP_ID: ca-app-pub-3940256099942544~3347511713
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,7 +40,7 @@ jobs:
           cp *.html app/www/
           cd app
           npm init -y > /dev/null
-          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7 @capacitor/app@7 @capacitor/share@7 @capacitor/filesystem@7
+          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7 @capacitor/app@7 @capacitor/share@7 @capacitor/filesystem@7 @capacitor-community/admob@7
           cat > capacitor.config.json <<'JSON'
           {
             "appId": "com.icmcalc.app",
@@ -46,6 +50,9 @@ jobs:
           }
           JSON
           npx cap add android
+          # AdMob 앱 ID를 앱 설정(AndroidManifest)에 넣기
+          sed -i "s#</application>#    <meta-data android:name=\"com.google.android.gms.ads.APPLICATION_ID\" android:value=\"$ADMOB_APP_ID\"/>\n    </application>#" android/app/src/main/AndroidManifest.xml
+          grep -n "APPLICATION_ID" android/app/src/main/AndroidManifest.xml
           npx cap sync android
 
       - name: 앱 아이콘 넣기
