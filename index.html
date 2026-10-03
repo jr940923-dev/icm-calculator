@@ -292,6 +292,12 @@ main{max-width:560px;margin:0 auto;padding:4px 16px 120px}
 .vd-grid b{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vd-grid b.pos,.vd-grid b.neg,.vd-grid b.muted{color:#fff}
 .vd-grid small{font-size:11px;opacity:.75}
+.vd-luck{margin-top:8px;background:rgba(0,0,0,.16);border-radius:14px;padding:10px 12px}
+.vd-luck div{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.vd-luck span{font-size:12px;opacity:.85}
+.vd-luck b{font-size:16px;font-weight:800;color:#fff}
+.vd-luck small{font-size:11px;opacity:.75}
+.vd-luck p{margin:4px 0 0;font-size:13px;opacity:.95}
 .vd-foot{margin:10px 0 0;font-size:12px;opacity:.8}
 .sgrp{margin-bottom:14px}
 .sgrp:last-child{margin-bottom:0}
@@ -608,6 +614,13 @@ const I18N = {
   "이후 서로 체크다운 가정 (근사)": "以降お互いチェックダウンと仮定（近似）",
   "림프했다면": "リンプしていたら",
   "림프": "リンプ",
+  "평균 기대 결과": "平均的な期待結果",
+  "핸드 전 대비 평균": "ハンド前比・平均",
+  "카드 운": "カード運",
+  "= 실제 결과 − 평균 기대 결과": "＝実際の結果 − 平均的な期待結果",
+  "평균 기대대로 흘러간 핸드예요.": "平均的な期待どおりに進んだハンドです。",
+  "평균보다 카드가 {x}어치 안 따라줬어요.": "平均よりカードが{x}分ついてきませんでした。",
+  "평균보다 카드가 {x}어치 더 따라줬어요.": "平均よりカードが{x}分ついてきました。",
   "개인정보처리방침": "プライバシーポリシー",
   "이용약관": "利用規約",
   "이미지를 저장했어요.": "画像を保存しました。",
@@ -984,6 +997,13 @@ const I18N = {
   "이후 서로 체크다운 가정 (근사)": "Check-down afterwards (approx.)",
   "림프했다면": "If you limped",
   "림프": "Limp",
+  "평균 기대 결과": "Expected result",
+  "핸드 전 대비 평균": "avg. vs before hand",
+  "카드 운": "Card luck",
+  "= 실제 결과 − 평균 기대 결과": "= actual − expected",
+  "평균 기대대로 흘러간 핸드예요.": "The hand went as expected.",
+  "평균보다 카드가 {x}어치 안 따라줬어요.": "The cards ran {x} worse than average.",
+  "평균보다 카드가 {x}어치 더 따라줬어요.": "The cards ran {x} better than average.",
   "개인정보처리방침": "Privacy Policy",
   "이용약관": "Terms of Service",
   "이미지를 저장했어요.": "Image saved.",
@@ -3253,7 +3273,7 @@ function verdictData(D){
     else if (res >= 0) { title = t("결과는 좋았지만, 결정은 −였어요"); tone = "bad"; text = luck > 10 ? t("운이 좋았던 핸드예요. {w}가 있었어요.", { w: where }) : t("{w}가 있었어요.", { w: where }); }
     else { title = t("결정도 −, 결과도 −"); tone = "bad"; text = t("{w}가 있었어요.", { w: where }); }
   }
-  return { title, text, tone, decVal, luck, res, hasActual, A, anchor, badList, refs: D.items.some(x => !x.reliable) };
+  return { title, text, tone, decVal, luck, res, expChg: expect - base, hasActual, A, anchor, badList, refs: D.items.some(x => !x.reliable) };
 }
 
 // 공유용 세로 카드 이미지 그리기 (1080×1350)
@@ -3328,8 +3348,8 @@ function drawShareCard(){
   const sy = Math.max(ty + 30, y + 300), cw = (W - 200) / 3;
   const cells = V ? [
     [t("결정의 가치"), V.decVal != null ? sgnWon(V.decVal) : "-", V.decVal],
-    [t("운"), V.hasActual ? sgnWon(V.luck) : "-", V.luck],
     [t("실제 결과"), V.hasActual ? sgnWon(V.res) : "-", V.res],
+    [t("카드 운"), V.hasActual ? sgnWon(V.luck) : "-", V.luck],
   ] : [[t("내 스택"), stackText(C.stacks[h]), 0], [t("칩 비율"), pct(C.stacks[h] / C.totalChips), 0], [t("상금 비율"), pct(lastRes.eq[h] / C.prizes.reduce((a, b) => a + b, 0)), 0]];
   cells.forEach(([lab, val, num], i) => {
     const x = 100 + i * cw;
@@ -3384,16 +3404,18 @@ async function shareResult(){
 function verdictSection(D){
   if (!D) return "";
   const V = verdictData(D);
-  const { title, text, tone, decVal, luck, res, hasActual, A, anchor, badList } = V;
+  const { title, text, tone, decVal, luck, res, expChg, hasActual, A, anchor, badList } = V;
   return `
     <section class="verdict ${tone}">
       <div class="vd-title">${tone === "good" ? "👍" : tone === "bad" ? "🤔" : "💡"} ${title}</div>
       <p class="vd-text">${text}</p>
       <div class="vd-grid">
         <div><span>${t("결정의 가치")}</span>${decVal != null ? `<b class="${cls(decVal)}">${sgnWon(decVal)}</b><small>${badList.length ? t("놓친 기대값") : t("차선책보다")}</small>` : `<b class="muted">-</b><small>${t("비교 대상 없음")}</small>`}</div>
-        <div><span>${t("운")}</span>${hasActual ? `<b class="${cls(luck)}">${sgnWon(luck)}</b><small>${t("실제 − 기대값")}</small>` : (A && A.need ? `<button class="needbtn" onclick="goTo(4)"><b>+</b><small>${t("{x} 넣기", { x: A.need })} ›</small></button>` : `<b class="muted">-</b><small>${t("계산 불가")}</small>`)}</div>
-        <div><span>${t("실제 결과")}</span>${hasActual ? `<b class="${cls(res)}">${sgnWon(res)}</b><small>${t("핸드 전 대비")}</small>` : `<b class="muted">-</b><small>&nbsp;</small>`}</div>
+        <div><span>${t("평균 기대 결과")}</span><b class="${cls(expChg)}">${sgnWon(expChg)}</b><small>${t("핸드 전 대비 평균")}</small></div>
+        <div><span>${t("실제 결과")}</span>${hasActual ? `<b class="${cls(res)}">${sgnWon(res)}</b><small>${t("핸드 전 대비")}</small>` : (A && A.need ? `<button class="needbtn" onclick="goTo(4)"><b>+</b><small>${t("{x} 넣기", { x: A.need })} ›</small></button>` : `<b class="muted">-</b><small>${t("계산 불가")}</small>`)}</div>
       </div>
+      ${hasActual ? `<div class="vd-luck"><div><span>🎲 ${t("카드 운")}</span><b>${sgnWon(luck)}</b><small>${t("= 실제 결과 − 평균 기대 결과")}</small></div>
+        <p>${Math.abs(luck) < 10 ? t("평균 기대대로 흘러간 핸드예요.") : luck < 0 ? t("평균보다 카드가 {x}어치 안 따라줬어요.", { x: won(round3(-luck)) }) : t("평균보다 카드가 {x}어치 더 따라줬어요.", { x: won(round3(luck)) })}</p></div>` : ""}
       <p class="vd-foot">${t("판단 기준: {s} {a}부터", { s: STREETS[anchor.st], a: actText(anchor.d.e) })}${V.refs ? " · " + t("그 전 결정은 참고용") : ""}</p>
       <button class="helplink" onclick="openGuide('result')">${t("결과 읽는 법")} ›</button>
     </section>`;

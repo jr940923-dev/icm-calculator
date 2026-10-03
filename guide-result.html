@@ -63,12 +63,13 @@ body.embed .gnav{display:none}
     <p>카드 아래 숫자 세 개는 이렇게 읽어요.</p>
     <ul>
       <li><b>결정의 가치</b>: 손해 본 결정이 있으면 <b>놓친 기대값</b>의 합계예요. 모두 최선이었다면 마지막 결정이 <b>차선책보다</b> 얼마나 나았는지 보여줘요.</li>
-      <li><b>운</b>: 실제 결과 − 기대값이에요. +면 평균보다 잘 풀렸고, −면 덜 풀렸어요. 상대 핸드를 모르면 계산할 수 없어서 <b>+ 상대 핸드 넣기</b> 버튼이 나와요. 쇼다운에서 본 핸드를 넣으면 계산돼요.</li>
+      <li><b>평균 기대 결과</b>: 그 결정을 같은 상황에서 아주 많이 반복했을 때, 핸드 전보다 상금 가치가 평균적으로 얼마나 늘거나 줄지예요.</li>
+      <li><b>카드 운</b> (실제 결과 아래 줄): <b>실제 결과 − 평균 기대 결과</b>예요. +면 평균보다 카드가 잘 따라줬고, −면 덜 따라줬어요. 상대 핸드를 모르면 실제 결과를 계산할 수 없어서 <b>+ 상대 핸드 넣기</b> 버튼이 나와요.</li>
       <li><b>실제 결과</b>: 핸드 전과 비교해서 상금 가치가 실제로 얼마나 늘거나 줄었는지예요.</li>
     </ul>
     <div class="ex">
       <p><b>예:</b> AK로 올인했는데 기대값이 +20만이었어요. 상대 QQ에 져서 실제 결과는 −30만.</p>
-      <p>→ 결정의 가치 +20만, 운 −50만, 실제 결과 −30만. "결과는 나빴지만, 결정은 좋았어요"예요.</p>
+      <p>→ 결정의 가치 +20만, 평균 기대 결과 +20만, 실제 결과 −30만, <b>카드 운 −50만</b> (−30만 − 20만). "결과는 나빴지만, 결정은 좋았어요"예요.</p>
     </div>
     
     <p>상대 핸드를 모를 때는 결과를 판단할 수 없으니, 제목도 결정만 보고 <b>"결정은 좋았어요"</b> 또는 <b>"결정에 손해가 있었어요"</b>로 나와요.</p>
@@ -137,12 +138,13 @@ body.embed .gnav{display:none}
     <p>カードの下の3つの数字はこう読みます。</p>
     <ul>
       <li><b>判断の価値</b>：損をした判断があれば<b>逃した期待値</b>の合計です。すべて最善だった場合は、最後の判断が<b>次善の選択より</b>どれだけ良かったかを示します。</li>
-      <li><b>運</b>：実際の結果 − 期待値です。＋なら平均より上振れ、−なら下振れです。相手のハンドが分からないと計算できないため、<b>＋相手のハンドを入力</b>ボタンが表示されます。ショーダウンで見たハンドを入力すると計算されます。</li>
+      <li><b>平均的な期待結果</b>：その判断を同じ状況で何度も繰り返した時、ハンド前と比べて賞金の価値が平均でどれだけ増減するかです。</li>
+      <li><b>カード運</b>（実際の結果の下の行）：<b>実際の結果 − 平均的な期待結果</b>です。＋なら平均よりカードがついてきて、−ならついてきませんでした。相手のハンドが分からないと実際の結果を計算できないため、<b>＋相手のハンドを入力</b>ボタンが表示されます。</li>
       <li><b>実際の結果</b>：ハンド前と比べて、賞金の価値が実際にどれだけ増減したかです。</li>
     </ul>
     <div class="ex">
       <p><b>例：</b>AKでオールインし、期待値は+2万円。相手のQQに負けて実際の結果は−3万円。</p>
-      <p>→ 判断の価値+2万円、運−5万円、実際の結果−3万円。「結果は悪かったけど、判断は良かったです」になります。</p>
+      <p>→ 判断の価値+2万円、平均的な期待結果+2万円、実際の結果−3万円、<b>カード運−5万円</b>。「結果は悪かったけど、判断は良かったです」になります。</p>
     </div>
     
     <p>相手のハンドが分からない時は結果を判断できないため、タイトルも判断だけを見て<b>「良い判断でした」</b>または<b>「判断に損がありました」</b>と表示されます。</p>
@@ -211,12 +213,13 @@ body.embed .gnav{display:none}
     <p>The three numbers under the card:</p>
     <ul>
       <li><b>Decision value</b>: if any decision cost you, the total <b>EV lost</b>. If every decision was best, how much better your last decision was than the <b>next best</b> option.</li>
-      <li><b>Luck</b>: actual result − expected value. Positive means it ran better than average, negative means worse. If you don't know the opponent's hand, an <b>+ Add opponent's hand</b> button appears; enter the hand you saw at showdown.</li>
+      <li><b>Expected result</b>: how much your prize equity would change on average if you repeated the decision many times.</li>
+      <li><b>Card luck</b> (the line under the numbers): <b>actual result − expected result</b>. Positive means the cards ran better than average, negative means worse. Without the opponent's hand the actual result can't be computed, so an <b>+ Add opponent's hand</b> button appears.</li>
       <li><b>Actual result</b>: how much your prize equity actually changed compared with before the hand.</li>
     </ul>
     <div class="ex">
       <p><b>Example:</b> you shove AK with an expected value of +$200, lose to QQ, and the actual result is −$300.</p>
-      <p>→ Decision value +$200, luck −$500, actual result −$300: "Bad result, good decision".</p>
+      <p>→ Decision value +$200, expected result +$200, actual result −$300, <b>card luck −$500</b>: "Bad result, good decision".</p>
     </div>
     
     <p>Without the opponent's hand the result can't be judged, so the title grades the decision only: <b>"Good decision"</b> or <b>"A decision cost you"</b>.</p>
