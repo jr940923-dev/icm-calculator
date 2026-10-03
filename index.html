@@ -599,6 +599,15 @@ const I18N = {
   "상대 반응 보통 · 콜 받으면 이후 체크다운 가정 (근사)": "相手の反応は普通・コールされたら以降チェックダウンと仮定（近似）",
   "상대의 체크레이즈는 계산하지 않아서, 벳 쪽이 실제보다 조금 좋게 나올 수 있어요.": "相手のチェックレイズは計算していないため、ベットが実際より少し良く出ることがあります。",
   "칩 기준으로도 승률이 모자라요(필요 {n} · 내 승률 {e}). {i} 쪽이 나았어요.": "チップ基準でも勝率が足りません（必要{n}・自分の勝率{e}）。{i}の方が良かったです。",
+  "이 결정만 보면": "この判断だけ見ると",
+  "이 결정만": "この判断だけ",
+  "그 뒤는 상대 콜 · 서로 체크다운으로 가정": "その後は相手コール・お互いチェックダウンと仮定",
+  "실제 라인대로 끝까지 치면": "実際のライン通り最後までプレイすると",
+  "뒤에서 한 내 선택의 손익까지 포함": "後の自分の選択の損益も含む",
+  "뒤에 내 결정이 더 남은 결정은, 실제 라인대로 끝까지 치면 뒤에서 한 선택의 손익이 섞여요. 그래서 그 결정 자체는 \"이 결정만 보면\"(그 뒤는 체크다운 가정) 값으로 따로 판정해요. 맨 위 결론에는 넣지 않아요.": "後に自分の判断が残っている判断は、実際のライン通りに最後までプレイすると後の選択の損益が混ざります。そのため判断そのものは「この判断だけ見ると」（その後はチェックダウンと仮定）の値で別に評価します。一番上の結論には含めません。",
+  "이후 서로 체크다운 가정 (근사)": "以降お互いチェックダウンと仮定（近似）",
+  "림프했다면": "リンプしていたら",
+  "림프": "リンプ",
   "개인정보처리방침": "プライバシーポリシー",
   "이용약관": "利用規約",
   "이미지를 저장했어요.": "画像を保存しました。",
@@ -767,7 +776,7 @@ const I18N = {
   "라인 계산 중... ({a}/{b})": "ライン計算中... ({a}/{b})",
   "내 결정 분석 중... ({a}/{b})": "判断を分析中... ({a}/{b})",
   "상대가 한 번도 안 접어도 {a}보다 나아요.": "相手が一度も降りなくても{a}より良いです。",
-  "상대가 80% 넘게 접어도 {a}보다 못해요.": "相手が80%以上降りても{a}より悪いです。",
+  "상대가 80%를 접어줘도 {a}보다 손해예요.": "相手が80%降りても{a}より損です。",
   "{a}보다 나으려면 상대가 <b>{p}%</b> 이상 접어야 해요.": "{a}より良くするには、相手が<b>{p}%</b>以上降りる必要があります。",
   "상대 반응 <b>{r}</b> → 예상 폴드율 <b>{p}</b>": "相手の反応 <b>{r}</b> → 予想フォールド率 <b>{p}</b>",
   "충분": "十分",
@@ -966,6 +975,15 @@ const I18N = {
   "상대 반응 보통 · 콜 받으면 이후 체크다운 가정 (근사)": "Normal response · check-down after a call (approx.)",
   "상대의 체크레이즈는 계산하지 않아서, 벳 쪽이 실제보다 조금 좋게 나올 수 있어요.": "Opponent check-raises aren't modeled, so betting may look slightly better than it is.",
   "칩 기준으로도 승률이 모자라요(필요 {n} · 내 승률 {e}). {i} 쪽이 나았어요.": "Not enough equity even in chips (need {n}, you have {e}). {i} was better.",
+  "이 결정만 보면": "This decision alone",
+  "이 결정만": "alone",
+  "그 뒤는 상대 콜 · 서로 체크다운으로 가정": "Assumes a call, then check-down",
+  "실제 라인대로 끝까지 치면": "Playing the actual line to the end",
+  "뒤에서 한 내 선택의 손익까지 포함": "Includes your later choices",
+  "뒤에 내 결정이 더 남은 결정은, 실제 라인대로 끝까지 치면 뒤에서 한 선택의 손익이 섞여요. 그래서 그 결정 자체는 \"이 결정만 보면\"(그 뒤는 체크다운 가정) 값으로 따로 판정해요. 맨 위 결론에는 넣지 않아요.": "For decisions followed by more of your own decisions, playing the actual line to the end mixes in the result of those later choices. So the decision itself is graded on \"This decision alone\" (check-down afterwards) and is left out of the top verdict.",
+  "이후 서로 체크다운 가정 (근사)": "Check-down afterwards (approx.)",
+  "림프했다면": "If you limped",
+  "림프": "Limp",
   "개인정보처리방침": "Privacy Policy",
   "이용약관": "Terms of Service",
   "이미지를 저장했어요.": "Image saved.",
@@ -1134,7 +1152,7 @@ const I18N = {
   "라인 계산 중... ({a}/{b})": "Calculating lines... ({a}/{b})",
   "내 결정 분석 중... ({a}/{b})": "Analyzing decisions... ({a}/{b})",
   "상대가 한 번도 안 접어도 {a}보다 나아요.": "Better than {a} even if they never fold.",
-  "상대가 80% 넘게 접어도 {a}보다 못해요.": "Worse than {a} even if they fold over 80%.",
+  "상대가 80%를 접어줘도 {a}보다 손해예요.": "Worse than {a} even if they fold 80% of the time.",
   "{a}보다 나으려면 상대가 <b>{p}%</b> 이상 접어야 해요.": "To beat {a}, they need to fold <b>{p}%</b> or more.",
   "상대 반응 <b>{r}</b> → 예상 폴드율 <b>{p}</b>": "Response <b>{r}</b> → expected folds <b>{p}</b>",
   "충분": "Enough",
@@ -2665,17 +2683,22 @@ function showdownEV(ctx, H, atStreet){
   return { ev, se, outs: d.outs };
 }
 // 리버에서 공짜로 체크할 수 있을 때: 실제 라인을 그 자리까지 가져와서 체크로 끝낸 라인으로 계산 (상대 레인지 좁히기도 똑같이 적용)
+// 공짜로 체크할 수 있는데 벳했을 때 "체크했다면": 체크 뒤로는 서로 체크다운 (리버에서 바로 쇼다운이면 정확)
 function checkBackLine(d, st){
-  if (d.snap.street !== 3 || d.snap.cur - d.snap.bet[S.hero] > 0) return null;
+  if (d.snap.street === 0 || d.snap.cur - d.snap.bet[S.hero] > 0) return null;
   const key = `cb:${d.k}:${st}`;
   if (!lastRes.cache.has(key)) {
     const line0 = S.lines[0], acts = line0.acts.slice(0, d.k).concat([{ p: S.hero, a: "x" }]);
-    const R = replay(handCfg(), acts);
-    lastRes.cache.set(key, R.H.end && R.H.end.type === "showdown" && R.valid === acts.length ? evaluateLine(lastRes.ctx, { acts, resp: line0.resp }, st, null, 80000, d.k) : null);
+    let R = replay(handCfg(), acts), extra = 0;
+    while (R.valid === acts.length && !R.H.end && R.H.toAct != null && extra < 40) {
+      const i = R.H.toAct; acts.push({ p: i, a: R.H.cur - R.H.bet[i] > 0 ? "c" : "x" }); extra++;
+      R = replay(handCfg(), acts);
+    }
+    lastRes.cache.set(key, R.H.end && R.H.end.type === "showdown" && R.valid === acts.length ? { r: evaluateLine(lastRes.ctx, { acts, resp: line0.resp }, st, null, 80000, d.k), direct: extra === 0 } : null);
   }
-  const r = lastRes.cache.get(key);
+  const c = lastRes.cache.get(key), r = c && c.r;
   if (!r || !ok(r.ev)) return null;
-  return { ev: r.ev, se: r.se, chip: r.chip, outs: r.outs, mixed: r.mixed, calledEq: r.calledEq };
+  return { ev: r.ev, se: r.se, chip: r.chip, outs: r.outs, mixed: r.mixed, calledEq: r.calledEq, direct: c.direct };
 }
 // (예전 방식) 리버에서 공짜로 체크할 수 있을 때, 체크하면 바로 쇼다운이면 그 값을 계산
 function checkBackEV(ctx, snap){
@@ -2831,6 +2854,19 @@ async function precomputeDecisions(token){
     const mine = evalAt(0, st, d.k);
     if (d.e.act.a !== "x") checkBackLine(d, st);
     else betLine(d, st);
+    if (d.e.act.a === "r" && d.toCall > 0) { await tick(); if (token !== calcToken) return; callLine(d, st); }
+    if (d.e.act.a !== "f" && decs.some(x => x.k > d.k)) {
+      await tick(); if (token !== calcToken) return;
+      const sl = soloLine(d, st);
+      if (sl && sl.r.mixed && d.e.act.a === "r") {
+        const p = sl.r.pts.find(q => q.k > d.k && q.street === st);
+        if (p) for (const f of [0, 20, 40, 60, 80]) {
+          await tick(); if (token !== calcToken) return;
+          const key = `gs:${p.k}:${st}:${f}:${d.k}`;
+          if (!lastRes.cache.has(key)) lastRes.cache.set(key, evaluateLine(lastRes.ctx, sl.line, st, { [p.k]: { t: "pct", pct: f } }, 25000, d.k));
+        }
+      }
+    }
     if (mine.mixed && d.e.act.a === "r") {
       const log = mine.R.log;
       const p = mine.pts.find(q => q.k > d.k && q.street === st && log.slice(d.k + 1, q.k).every(e => e.act.p !== S.hero));
@@ -2843,14 +2879,14 @@ async function precomputeDecisions(token){
   }
 }
 // 내 벳·레이즈 바로 뒤 상대 반응 자리를 찾아서, 폴드율별 기대값과 손익분기 폴드율 계산
-function foldInfo(mine, d, st, bestAlt){
+function foldInfo(mine, d, st, bestAlt, line = S.lines[0], tag = "g"){
   if (!mine.mixed || d.e.act.a !== "r") return null;
   const log = mine.R.log;
   const p = mine.pts.find(q => q.k > d.k && q.street === st && log.slice(d.k + 1, q.k).every(e => e.act.p !== S.hero));
   if (!p) return null;
   const grid = [0, 20, 40, 60, 80].map(f => {
-    const key = `g:${p.k}:${st}:${f}:${d.k}`;
-    if (!lastRes.cache.has(key)) lastRes.cache.set(key, evaluateLine(lastRes.ctx, S.lines[0], st, { [p.k]: { t: "pct", pct: f } }, 25000, d.k));
+    const key = `${tag}:${p.k}:${st}:${f}:${d.k}`;
+    if (!lastRes.cache.has(key)) lastRes.cache.set(key, evaluateLine(lastRes.ctx, line, st, { [p.k]: { t: "pct", pct: f } }, 25000, d.k));
     return { f, ev: lastRes.cache.get(key).ev };
   });
   let be = null;
@@ -2868,7 +2904,7 @@ function feHTML(fe, bestAlt){
   const altName = bestAlt ? bestAlt.short : "";
   const est = fe.p.foldRate;
   const verdict = fe.be == null ? "" : fe.be <= 0 ? t("상대가 한 번도 안 접어도 {a}보다 나아요.", { a: altName })
-    : fe.be >= 100 ? t("상대가 80% 넘게 접어도 {a}보다 못해요.", { a: altName })
+    : fe.be >= 100 ? t("상대가 80%를 접어줘도 {a}보다 손해예요.", { a: altName })
     : t("{a}보다 나으려면 상대가 <b>{p}%</b> 이상 접어야 해요.", { a: altName, p: Math.round(fe.be) });
   return `
     <div class="fe">
@@ -2915,6 +2951,22 @@ function betLine(d, st){
   const c = lastRes.cache.get(key);
   return c && c.r && ok(c.r.ev) ? c : null;
 }
+// 참고 결정용 "이 결정만 보면": 내 액션 뒤로는 상대가 콜하고 서로 체크다운한다고 가정 (뒤의 내 선택 손익이 섞이지 않게)
+function soloLine(d, st){
+  const key = `solo:${d.k}:${st}`;
+  if (!lastRes.cache.has(key)) {
+    const line0 = S.lines[0], acts = line0.acts.slice(0, d.k + 1);
+    let R = replay(handCfg(), acts), extra = 0;
+    while (R.valid === acts.length && !R.H.end && R.H.toAct != null && extra < 40) {
+      const i = R.H.toAct; acts.push({ p: i, a: R.H.cur - R.H.bet[i] > 0 ? "c" : "x" }); extra++;
+      R = replay(handCfg(), acts);
+    }
+    const line = { acts, resp: line0.resp || {} };
+    lastRes.cache.set(key, R.valid === acts.length && R.H.end ? { r: evaluateLine(lastRes.ctx, line, st, null, 80000, d.k), line } : null);
+  }
+  const c = lastRes.cache.get(key);
+  return c && c.r && ok(c.r.ev) ? c : null;
+}
 // 콜 vs 폴드: ICM 기준 필요 승률, 칩 기준 필요 승률, 내 승률
 function callNeedInfo(r, d){
   if (!r || !r.outs || !r.showdown) return null;
@@ -2955,7 +3007,13 @@ function buildDecisions(){
       } else if (cl && cl.r.error) list.push({ label: t("콜했다면"), short: t("콜"), ev: null, note: cl.r.error });
     }
     const cb = d.e.act.a !== "x" ? checkBackLine(d, st) : null;
-    if (cb) list.push({ label: t("체크했다면"), short: t("체크"), ev: cb.ev, chip: cb.chip, se: cb.se, note: t("체크하고 바로 쇼다운"), outs: cb.outs });
+    if (cb) list.push({ label: t("체크했다면"), short: t("체크"), ev: cb.ev, chip: cb.chip, se: cb.se, note: cb.direct ? t("체크하고 바로 쇼다운") : t("이후 서로 체크다운 가정 (근사)"), outs: cb.outs });
+    // 상대 벳에 레이즈했을 때 "콜했다면"
+    if (d.e.act.a === "r" && d.toCall > 0) {
+      const cl2 = callLine(d, st);
+      const limp = d.snap.street === 0 && d.snap.cur <= S.bb;
+      if (cl2 && ok(cl2.r.ev)) list.push({ label: limp ? t("림프했다면") : t("콜했다면"), short: limp ? t("림프") : t("콜"), ev: cl2.r.ev, chip: cl2.r.chip, se: cl2.r.se || 0, note: cl2.approx ? t("콜하고 체크다운 가정 (근사)") : t("콜하면 바로 쇼다운") });
+    }
     const bl = betLine(d, st);
     if (bl) list.push({ label: bl.allin ? t("올인했다면") : t("1/2팟 벳했다면"), short: bl.allin ? t("올인") : t("벳 1/2팟"), ev: bl.r.ev, chip: bl.r.chip, se: bl.r.se || 0,
       note: t("상대 반응 보통 · 콜 받으면 이후 체크다운 가정 (근사)"), betAlt: true });
@@ -2971,9 +3029,20 @@ function buildDecisions(){
     const noise = bestAlt ? 2 * Math.sqrt((mine.se || 0) ** 2 + (bestAlt.se || 0) ** 2) : 0;
     const close = raw != null && Math.abs(raw) < Math.max(noise, 10);
     const info = allinInfo(mine, mine.decisions.find(x => x.k === d.k), cb);
-    const fe = foldInfo(mine, d, st, bestAlt);
+    // 참고 결정: "이 결정만 보면" 값으로 따로 판정
+    let solo = null;
+    if (!reliable && d.e.act.a !== "f") {
+      const sl = soloLine(d, st);
+      if (sl) {
+        const sraw = bestAlt ? sl.r.ev - bestAlt.ev : null;
+        const snoise = bestAlt ? 2 * Math.sqrt((sl.r.se || 0) ** 2 + (bestAlt.se || 0) ** 2) : 0;
+        const sclose = sraw != null && Math.abs(sraw) < Math.max(snoise, 10);
+        solo = { ev: sl.r.ev, se: sl.r.se || 0, chip: sl.r.chip, r: sl.r, line: sl.line, impact: sclose ? 0 : sraw, close: sclose };
+      }
+    }
+    const fe = solo ? foldInfo(solo.r, d, st, bestAlt, solo.line, "gs") : foldInfo(mine, d, st, bestAlt);
     if (!callInfo && d.toCall > 0 && d.e.act.a === "c") callInfo = mine.outs ? callNeedInfo(mine, d) : null;
-    return { d, st, reliable, list, bestAlt, impact: close ? 0 : raw, close, info: callInfo ? null : info, callInfo, fe, mineEV: mine.ev, mineSE: mine.se || 0 };
+    return { d, st, reliable, list, bestAlt, impact: close ? 0 : raw, close, info: callInfo ? null : info, callInfo, fe, mineEV: mine.ev, mineSE: mine.se || 0, solo };
   });
   return { r, items };
 }
@@ -3000,7 +3069,7 @@ function detailNeed(it){
   else { const ck = it.list.find(x => x.short === t("체크") && ok(x.ev) && x.chip != null); if (ck) base = { v: ck.ev, c: ctx.stacks[h] + ck.chip, name: t("체크") }; }
   if (!base) return null;
   const folded = d.e.act.a === "f";
-  const r = folded ? (callLine(d, it.st) || {}).r : evalAt(0, it.st, d.k);
+  const r = folded ? (callLine(d, it.st) || {}).r : it.solo ? it.solo.r : evalAt(0, it.st, d.k);
   if (!r || !r.R || !r.R.H.end) return null;
   let term = r.R.H;
   if (term.end.type !== "showdown") {
@@ -3027,9 +3096,9 @@ const sgnStack = v => (Math.abs(v) < 1 ? "±0" : (v < 0 ? "−" : "+") + stackTe
 // 한 결정의 해설 데이터
 function detailFor(it){
   const h = S.hero, mine = evalAt(0, it.st, it.d.k), ctx = lastRes.ctx;
-  const opts = [{ name: actText(it.d.e), ev: it.mineEV, chip: mine.chip, me: true }]
+  const opts = [it.solo ? { name: `${actText(it.d.e)} (${t("이 결정만")})`, ev: it.solo.ev, chip: it.solo.chip, me: true } : { name: actText(it.d.e), ev: it.mineEV, chip: mine.chip, me: true }]
     .concat(it.list.filter(x => ok(x.ev) && x.chip != null).map(x => ({ name: x.short, ev: x.ev, chip: x.chip })));
-  if (opts.length < 2 || mine.chip == null) return null;
+  if (opts.length < 2 || opts[0].chip == null) return null;
   const icmBest = opts.reduce((a, b) => (b.ev > a.ev ? b : a));
   let chipBest = opts.reduce((a, b) => (b.chip > a.chip ? b : a));
   // 칩 차이가 아주 작으면(0.1BB 미만) 같은 답으로 봐요
@@ -3040,7 +3109,7 @@ function detailFor(it){
   let say;
   if (differ && passive(icmBest)) say = t("칩으로는 {c} 쪽이 이득이지만, 탈락 위험이 상금 기대값을 깎아서 {i} 쪽이 나아요.", { c: chipBest.name, i: icmBest.name });
   else if (differ) say = t("칩으로는 {c} 쪽이 낫지만, 상금 구조상 지금 칩을 모으는 가치가 커서 {i} 쪽이 나아요.", { c: chipBest.name, i: icmBest.name });
-  else if (it.close) say = t("선택 간 차이가 계산 오차 수준이라, 어느 쪽을 골라도 큰 손해는 없어요.");
+  else if (it.solo ? it.solo.close : it.close) say = t("선택 간 차이가 계산 오차 수준이라, 어느 쪽을 골라도 큰 손해는 없어요.");
   else if (icmBest.me && need && !need.isCall && need.eq != null && need.eq < need.icm) say = t("콜 받으면 불리하지만(필요 {n} · 내 승률 {e}), 상대가 충분히 자주 접어서 {i} 쪽이 나아요.", { n: (need.icm * 100).toFixed(1) + "%", e: (need.eq * 100).toFixed(1) + "%", i: icmBest.name });
   else if (icmBest.me && need && need.icm - need.chip >= 0.05) say = t("ICM 때문에 필요 승률이 {p}%p 높아졌지만, 그래도 충분한 선택이었어요.", { p: ((need.icm - need.chip) * 100).toFixed(1) });
   else if (icmBest.me) say = t("칩으로 봐도, 상금으로 봐도 같은 답이에요. 좋은 선택이었어요.");
@@ -3352,17 +3421,23 @@ function decisionSection(D){
     return `
       <div class="sgrp">
         <div class="sg-head"><b>${STREETS[st]}</b>${head}</div>
-        ${items.map(({ d, reliable, list, bestAlt, impact, close, info, callInfo, fe, mineEV }) => `
+        ${items.map(({ d, reliable, list, bestAlt, impact, close, info, callInfo, fe, mineEV, solo }) => { const base = solo ? solo.ev : mineEV; return `
           <div class="dcard ${reliable ? "" : "ref"}">
             <div class="dc-top"><b>${actText(d.e)}</b>
-              ${!reliable ? `<span class="chip">${t("참고")}</span>`
+              ${!reliable && solo ? (solo.impact == null ? `<span class="chip">${t("참고")}</span>`
+                : solo.close ? `<span class="chip">${t("이 결정만 보면")} ≈</span>`
+                : solo.impact >= -10 ? `<span class="chip good">${t("이 결정만 보면")} ✓ ${Math.abs(solo.impact) >= 10 ? "+" + won(round3(solo.impact)) : ""}</span>`
+                : `<span class="chip bad">${t("이 결정만 보면")} ✗ ${won(round3(-solo.impact))}</span>`)
+              : !reliable ? `<span class="chip">${t("참고")}</span>`
                 : impact == null ? `<span class="chip">${t("비교 대상 없음")}</span>`
                 : close ? `<span class="chip">${t("≈ 비슷해요")}</span>`
                 : impact >= -10 ? `<span class="chip good">${t("✓ 최선")} ${Math.abs(impact) >= 10 ? "+" + won(round3(impact)) : ""}</span>`
                 : `<span class="chip bad">${t("✗ {x} 손해", { x: won(round3(-impact)) })}</span>`}
             </div>
-            <div class="alt me"><span>${t("이렇게 했을 때 (실제)")}</span><span>${won(round4(mineEV))}</span></div>
-            ${list.map(x => `<div class="alt"><span>${x.label}${x.note ? `<small>${x.note}</small>` : ""}</span>${ok(x.ev) ? `<span>${won(round4(x.ev))} <em class="${cls(x.ev - mineEV)}">${sgnWon(x.ev - mineEV)}</em></span>` : "<span>-</span>"}</div>`).join("")}
+            ${solo ? `<div class="alt me"><span>${t("이 결정만 보면")}<small>${t("그 뒤는 상대 콜 · 서로 체크다운으로 가정")}</small></span><span>${won(round4(solo.ev))}</span></div>
+              <div class="alt"><span>${t("실제 라인대로 끝까지 치면")}<small>${t("뒤에서 한 내 선택의 손익까지 포함")}</small></span><span>${won(round4(mineEV))} <em class="${cls(mineEV - base)}">${sgnWon(mineEV - base)}</em></span></div>`
+              : `<div class="alt me"><span>${t("이렇게 했을 때 (실제)")}</span><span>${won(round4(mineEV))}</span></div>`}
+            ${list.map(x => `<div class="alt"><span>${x.label}${x.note ? `<small>${x.note}</small>` : ""}</span>${ok(x.ev) ? `<span>${won(round4(x.ev))} <em class="${cls(x.ev - base)}">${sgnWon(x.ev - base)}</em></span>` : "<span>-</span>"}</div>`).join("")}
             ${list.some(x => x.betAlt) ? `<p class="help" style="margin:6px 0 0">${t("상대의 체크레이즈는 계산하지 않아서, 벳 쪽이 실제보다 조금 좋게 나올 수 있어요.")}</p>` : ""}
             ${reliable && close ? `<p class="help" style="margin:6px 0 0">${t("가장 좋은 다른 선택({a})과 차이가 오차 범위 안이라, 어느 쪽이 낫다고 말하기 어려워요.", { a: bestAlt.short })}</p>` : ""}
             ${reliable && !list.length ? `<p class="help" style="margin:6px 0 0">${t("다른 선택과 비교하려면 라인 화면에서 이 액션 옆 <b>↳ 다르게</b>를 눌러 라인을 만들어보세요.")}</p>` : ""}
@@ -3370,14 +3445,14 @@ function decisionSection(D){
             ${callInfo ? callInfoHTML(callInfo) : ""}
             ${info ? `<div class="eqline">${t("콜 받았을 때 내 승률 <b>{p}</b>", { p: pct(info.eq) })} · ${t("{b}보다 나으려면 필요한 승률 <b>{n}</b>", { b: info.base, n: pct(info.need) })}
               <span class="${info.eq >= info.need ? "pos" : "neg"}">${info.eq >= info.need ? t("→ 충분해요") : t("→ 부족해요")}</span></div>` : ""}
-          </div>`).join("")}
+          </div>`; }).join("")}
       </div>`;
   }).join("");
   return `
     <section class="card">
       <h2>${t("스트리트별 내 결정")}</h2>
       <p class="help" style="margin:-8px 0 12px">${t("각 선택을 폴드, 그리고 직접 만든 다른 라인과 비교해요. 금액은 모두 상금 기준 기대값이고, 상대 핸드는 모른다고 보고(레인지) 계산해요.")}</p>
-      ${D.items.some(x => !x.reliable) ? `<p class="refnote"><b>${t("참고")}</b> ${t("그 뒤의 내 행동을 실제 라인대로 고정해서 계산한 값이에요. 그래서 뒤에서 한 선택의 손익이 같이 섞여 있고, 드로우·커넥터처럼 맞았을 때만 크게 이기는 핸드는 낮게 나올 수 있어요.")}</p>` : ""}
+      ${D.items.some(x => !x.reliable) ? `<p class="refnote"><b>${t("참고")}</b> ${t("뒤에 내 결정이 더 남은 결정은, 실제 라인대로 끝까지 치면 뒤에서 한 선택의 손익이 섞여요. 그래서 그 결정 자체는 \"이 결정만 보면\"(그 뒤는 체크다운 가정) 값으로 따로 판정해요. 맨 위 결론에는 넣지 않아요.")}</p>` : ""}
       ${sgroups}
     </section>`;
 }

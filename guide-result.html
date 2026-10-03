@@ -76,7 +76,7 @@ body.embed .gnav{display:none}
     <h2>무엇과 비교하나요?</h2>
     <p>결정의 가치는 항상 "다른 선택을 했다면"과의 차이예요. 비교 대상은 두 가지예요.</p>
     <ul>
-      <li><b>자동 비교</b>: 상대 베팅을 받았을 땐 <b>폴드했다면</b>, 리버에서 벳했을 땐 <b>체크했다면</b>, 내가 폴드했을 땐 <b>콜했다면</b>을 앱이 알아서 계산해요.</li>
+      <li><b>자동 비교</b>: 상대 베팅을 받았을 땐 <b>폴드했다면</b>, 리버에서 벳했을 땐 <b>체크했다면</b>, 내가 폴드했을 땐 <b>콜했다면</b>, 내가 체크했을 땐 <b>1/2팟 벳했다면</b>을 앱이 알아서 계산해요. (벳 비교는 상대 체크레이즈를 빼고 계산한 근사예요.)</li>
       <li><b>내가 만든 라인</b>: 라인 화면에서 <b>↳ 다르게</b>로 만든 선택들이에요. 예를 들어 "올인 대신 2.2BB 레이즈였다면?"은 라인을 하나 만들어야 비교돼요.</li>
     </ul>
     
@@ -85,7 +85,7 @@ body.embed .gnav{display:none}
       <li><b>✓ 최선</b>: 비교한 선택들 중 가장 좋았어요. 옆 숫자는 다음으로 좋은 선택과의 차이예요.</li>
       <li><b>≈ 비슷해요</b>: 차이가 계산 오차 범위 안이라, 어느 쪽이든 괜찮아요.</li>
       <li><b>−금액</b>: 더 좋은 선택이 있었고, 그만큼 기대값을 놓쳤어요.</li>
-      <li><b>참고</b>: 이후 스트리트에서 내가 또 행동한 앞쪽 결정이에요. 이 앱은 그 뒤의 행동을 실제 라인대로 고정해서 계산하는데, 그러면 드로우나 커넥터처럼 나중 스트리트에서 유연하게 움직여야 가치가 나는 핸드가 실제보다 나쁘게 나와요. 그래서 참고로만 보여주고 결론에는 넣지 않아요. 맨 위의 <b>판단 기준</b>이 결론에 쓰인 첫 결정이에요.</li>
+      <li><b>참고 · 이 결정만 보면</b>: 뒤에 내 결정이 더 남은 앞쪽 결정이에요. 실제 라인대로 끝까지 치면 뒤에서 한 선택(예: 리버 올인 콜)의 손익까지 섞여서, "KQs 오픈이 손해" 같은 이상한 판정이 나올 수 있어요. 그래서 이런 결정은 <b>이 결정만 보면</b>, 즉 그 뒤는 상대가 콜하고 서로 체크다운한다고 가정한 값으로 따로 판정해요(✓/✗). 맨 위 결론에는 넣지 않고, 결론은 <b>판단 기준</b>에 적힌 마지막 결정들로 내려요.</li>
     </ul>
     
     <h2>결과론이 아니에요</h2>
@@ -150,7 +150,7 @@ body.embed .gnav{display:none}
     <h2>何と比べているの？</h2>
     <p>判断の価値は、常に「別の選択をしていたら」との差です。比較対象は2種類あります。</p>
     <ul>
-      <li><b>自動比較</b>：相手のベットを受けた時は<b>フォールドしていたら</b>、リバーでベットした時は<b>チェックしていたら</b>、自分がフォールドした時は<b>コールしていたら</b>をアプリが自動で計算します。</li>
+      <li><b>自動比較</b>：相手のベットを受けた時は<b>フォールドしていたら</b>、リバーでベットした時は<b>チェックしていたら</b>、自分がフォールドした時は<b>コールしていたら</b>、自分がチェックした時は<b>1/2ポットベットしていたら</b>をアプリが自動で計算します。（ベットとの比較は相手のチェックレイズを除いた近似です。）</li>
       <li><b>自分で作ったライン</b>：ライン画面の<b>↳ 別の選択</b>で作った選択です。例えば「オールインの代わりに2.2BBレイズだったら？」は、ラインを1つ作ると比較されます。</li>
     </ul>
     
@@ -159,7 +159,7 @@ body.embed .gnav{display:none}
       <li><b>✓ 最善</b>：比較した選択の中で最も良かった判断です。横の数字は次善の選択との差です。</li>
       <li><b>≈ ほぼ同じ</b>：差が計算誤差の範囲内なので、どちらでも構いません。</li>
       <li><b>−金額</b>：より良い選択があり、その分の期待値を逃しました。</li>
-      <li><b>参考</b>：後のストリートでも自分がアクションした、前の方の判断です。このアプリはその後の行動を実際のライン通りに固定して計算するため、ドローやコネクターのように後のストリートで柔軟に動いてこそ価値が出るハンドは、実際より悪く出てしまいます。そのため参考表示にとどめ、結論には含めません。一番上の<b>評価の基準</b>が、結論に使われた最初の判断です。</li>
+      <li><b>参考・この判断だけ見ると</b>：後に自分の判断が残っている前の方の判断です。実際のライン通り最後までプレイすると後の選択（例：リバーのオールインコール）の損益まで混ざり、「KQsのオープンが損」のような変な評価になることがあります。そのためこうした判断は<b>この判断だけ見ると</b>、つまりその後は相手がコールしてお互いチェックダウンすると仮定した値で別に評価します（✓/✗）。一番上の結論には含めず、結論は<b>評価の基準</b>に書かれた最後の判断で出します。</li>
     </ul>
     
     <h2>結果論ではありません</h2>
@@ -224,7 +224,7 @@ body.embed .gnav{display:none}
     <h2>Compared with what?</h2>
     <p>Decision value is always the difference from "if you had done something else". There are two kinds of comparison.</p>
     <ul>
-      <li><b>Automatic</b>: <b>If you folded</b> when facing a bet, <b>If you checked</b> when you bet the river, and <b>If you called</b> when you folded.</li>
+      <li><b>Automatic</b>: <b>If you folded</b> when facing a bet, <b>If you checked</b> when you bet the river, <b>If you called</b> when you folded, and <b>If you bet 1/2 pot</b> when you checked (an approximation that leaves out opponent check-raises).</li>
       <li><b>Lines you create</b> with <b>↳ What if</b> on the line screen. "What if I raised to 2.2BB instead of shoving?" needs its own line to be compared.</li>
     </ul>
     
@@ -233,7 +233,7 @@ body.embed .gnav{display:none}
       <li><b>✓ Best</b>: the best of the options compared. The number shows the gap to the next best.</li>
       <li><b>≈ About equal</b>: the gap is within calculation noise, so either is fine.</li>
       <li><b>−amount</b>: a better option existed, and you gave up that much EV.</li>
-      <li><b>Reference</b>: an earlier decision where you acted again on a later street. The app fixes your later actions to the actual line, which undervalues hands like draws and connectors that gain value by playing flexibly later. So these are shown for reference only and left out of the verdict. <b>Graded from</b> at the top marks the first decision used for the verdict.</li>
+      <li><b>Reference · This decision alone</b>: an earlier decision followed by more of your own decisions. Playing the actual line to the end would mix in the result of later choices (e.g. a river all-in call) and could produce odd verdicts like "the KQs open loses". So these decisions are graded on <b>This decision alone</b>: after it, the opponent calls and both players check down (✓/✗). They are left out of the top verdict, which is based on the decisions shown in <b>Graded from</b>.</li>
     </ul>
     
     <h2>No results-oriented thinking</h2>
