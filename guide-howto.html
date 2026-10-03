@@ -93,9 +93,11 @@ body.embed .gnav{display:none}
       <tr><td><b>보통</b> (기본)</td><td>원페어·드로우까지 콜</td><td>레인지 상위 55%만 계속</td></tr>
       <tr><td><b>콜링</b></td><td>에이스 하이도 콜</td><td>레인지 상위 70%까지 계속</td></tr>
     </table>
+    <p><b>내가 프리플랍 올인했을 때</b>는 상대가 훨씬 좁게 콜한다고 봐요: 타이트 상위 15% · 보통 25% · 콜링 40%. 토너먼트에서는 올인을 받는 쪽도 탈락 위험 때문에 넓게 콜하지 않거든요.</p>
     <ul>
       <li><b>폴드율 직접 입력</b>: "이 사람은 여기서 30%쯤 접는다"처럼 알면 숫자로 넣어요. 레인지에서 약한 핸드부터 그 비율만큼 접는 것으로 계산해요.</li>
-      <li>상대가 받은 뒤에는 <b>받은 핸드들만 남긴 좁은 레인지</b>로 다음 스트릿을 계산해요. 그래서 스트릿이 지날수록 상대 레인지가 강해져요.</li>
+      <li>상대가 받은 뒤에는 <b>받은 핸드들만 남긴 좁은 레인지</b>로 다음 스트리트을 계산해요. 그래서 스트리트이 지날수록 상대 레인지가 강해져요.</li>
+      <li><b>상대가 먼저 벳·레이즈하면</b> 그 스트리트에서 강한 핸드 쪽으로 레인지를 좁혀요. 벳은 탑페어 이상·드로우, 레이즈는 투페어 이상·드로우를 3배 무겁게 보고, 블러프도 일부 남겨둬요.</li>
       <li>잘 모르겠으면 <b>보통</b>으로 두세요. 결과 화면의 <b>폴드율별 표</b>를 보면 상대가 얼마나 접어야 내 선택이 이득인지 바로 보여요.</li>
     </ul>
     
@@ -156,9 +158,11 @@ body.embed .gnav{display:none}
       <tr><td><b>普通</b>（初期値）</td><td>ワンペア・ドローまでコール</td><td>レンジ上位55%のみ続行</td></tr>
       <tr><td><b>コーリング</b></td><td>エースハイでもコール</td><td>レンジ上位70%まで続行</td></tr>
     </table>
+    <p><b>自分がプリフロップでオールインした時</b>は、相手はずっと狭くコールするものとして計算します：タイト上位15%・普通25%・コーリング40%。トーナメントでは、オールインを受ける側も敗退のリスクがあるため広くはコールしないからです。</p>
     <ul>
       <li><b>フォールド率を直接入力</b>：「この人はここで30%くらい降りる」と分かっていれば数字で入力します。レンジの弱いハンドから、その割合だけ降りるものとして計算します。</li>
       <li>相手が受けた後は<b>受けたハンドだけを残した狭いレンジ</b>で次のストリートを計算します。ストリートが進むほど相手のレンジは強くなります。</li>
+      <li><b>相手が先にベット・レイズした場合</b>、そのストリートでは強いハンド寄りにレンジを絞ります。ベットはトップペア以上・ドロー、レイズはツーペア以上・ドローを3倍重く見て、ブラフも一部残します。</li>
       <li>分からなければ<b>普通</b>のままで大丈夫です。結果画面の<b>フォールド率別の表</b>で、相手がどれだけ降りれば自分の選択が得かすぐ分かります。</li>
     </ul>
     
@@ -219,9 +223,11 @@ body.embed .gnav{display:none}
       <tr><td><b>Normal</b> (default)</td><td>calls with any pair or draw</td><td>continues with top 55%</td></tr>
       <tr><td><b>Calling station</b></td><td>calls with ace-high too</td><td>continues with top 70%</td></tr>
     </table>
+    <p><b>When you shove preflop</b>, opponents are assumed to call much tighter: Tight top 15% · Normal 25% · Calling station 40%. In tournaments, the caller also risks busting, so calls are narrow.</p>
     <ul>
       <li><b>Enter fold % directly</b> if you have a read ("he folds here about 30%"). The weakest hands in the range fold first, up to that share.</li>
       <li>After they continue, the next street uses <b>only the hands that continued</b>, so their range gets stronger street by street.</li>
+      <li><b>When the opponent bets or raises first</b>, their range on that street is weighted toward strong hands: bets weight top pair+ and draws 3×, raises weight two pair+ and draws 3×, and some bluffs are kept.</li>
       <li>Not sure? Leave it on <b>Normal</b>. The <b>fold-rate table</b> in the results shows how often they must fold for your choice to profit.</li>
     </ul>
     
@@ -240,7 +246,7 @@ body.embed .gnav{display:none}
 </div>
 <script>
 // ▼ 문의 이메일: 여기 한 곳만 바꾸면 돼요
-const CONTACT = "";
+const CONTACT = "juntubee@gmail.com";
 const q = new URLSearchParams(location.search);
 if (q.has("embed")) document.body.classList.add("embed");
 const pick = l => {

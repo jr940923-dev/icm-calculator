@@ -62,14 +62,16 @@ body.embed .gnav{display:none}
     </table>
     <p>카드 아래 숫자 세 개는 이렇게 읽어요.</p>
     <ul>
-      <li><b>결정의 가치</b>: 손해 본 결정이 있으면 <b>놓친 기대값</b>의 합계예요. 모두 최선이었다면 마지막 결정이 <b>다음으로 좋은 선택보다</b> 얼마나 나았는지 보여줘요.</li>
-      <li><b>운</b>: 실제 결과 − 기대값이에요. +면 평균보다 잘 풀렸고, −면 덜 풀렸어요. 상대 핸드를 넣지 않으면 계산할 수 없어서 "-"로 나와요.</li>
+      <li><b>결정의 가치</b>: 손해 본 결정이 있으면 <b>놓친 기대값</b>의 합계예요. 모두 최선이었다면 마지막 결정이 <b>차선책보다</b> 얼마나 나았는지 보여줘요.</li>
+      <li><b>운</b>: 실제 결과 − 기대값이에요. +면 평균보다 잘 풀렸고, −면 덜 풀렸어요. 상대 핸드를 모르면 계산할 수 없어서 <b>+ 상대 핸드 넣기</b> 버튼이 나와요. 쇼다운에서 본 핸드를 넣으면 계산돼요.</li>
       <li><b>실제 결과</b>: 핸드 전과 비교해서 상금 가치가 실제로 얼마나 늘거나 줄었는지예요.</li>
     </ul>
     <div class="ex">
       <p><b>예:</b> AK로 올인했는데 기대값이 +20만이었어요. 상대 QQ에 져서 실제 결과는 −30만.</p>
       <p>→ 결정의 가치 +20만, 운 −50만, 실제 결과 −30만. "결과는 나빴지만, 결정은 좋았어요"예요.</p>
     </div>
+    
+    <p>상대 핸드를 모를 때는 결과를 판단할 수 없으니, 제목도 결정만 보고 <b>"결정은 좋았어요"</b> 또는 <b>"결정에 손해가 있었어요"</b>로 나와요.</p>
     
     <h2>무엇과 비교하나요?</h2>
     <p>결정의 가치는 항상 "다른 선택을 했다면"과의 차이예요. 비교 대상은 두 가지예요.</p>
@@ -78,19 +80,19 @@ body.embed .gnav{display:none}
       <li><b>내가 만든 라인</b>: 라인 화면에서 <b>↳ 다르게</b>로 만든 선택들이에요. 예를 들어 "올인 대신 2.2BB 레이즈였다면?"은 라인을 하나 만들어야 비교돼요.</li>
     </ul>
     
-    <h2>스트릿별 결정</h2>
+    <h2>스트리트별 결정</h2>
     <ul>
       <li><b>✓ 최선</b>: 비교한 선택들 중 가장 좋았어요. 옆 숫자는 다음으로 좋은 선택과의 차이예요.</li>
       <li><b>≈ 비슷해요</b>: 차이가 계산 오차 범위 안이라, 어느 쪽이든 괜찮아요.</li>
       <li><b>−금액</b>: 더 좋은 선택이 있었고, 그만큼 기대값을 놓쳤어요.</li>
-      <li><b>참고</b>: 이후 스트릿에서 내가 또 행동한 앞쪽 결정이에요. 이 앱은 그 뒤의 행동을 실제 라인대로 고정해서 계산하는데, 그러면 드로우나 커넥터처럼 나중 스트릿에서 유연하게 움직여야 가치가 나는 핸드가 실제보다 나쁘게 나와요. 그래서 참고로만 보여주고 결론에는 넣지 않아요. 맨 위의 <b>판단 기준</b>이 결론에 쓰인 첫 결정이에요.</li>
+      <li><b>참고</b>: 이후 스트리트에서 내가 또 행동한 앞쪽 결정이에요. 이 앱은 그 뒤의 행동을 실제 라인대로 고정해서 계산하는데, 그러면 드로우나 커넥터처럼 나중 스트리트에서 유연하게 움직여야 가치가 나는 핸드가 실제보다 나쁘게 나와요. 그래서 참고로만 보여주고 결론에는 넣지 않아요. 맨 위의 <b>판단 기준</b>이 결론에 쓰인 첫 결정이에요.</li>
     </ul>
     
     <h2>결과론이 아니에요</h2>
     <p>결정은 <b>그 순간 알 수 있었던 것만으로</b> 평가해요.</p>
     <ul>
       <li>상대 핸드는 몰랐다고 보고 <b>레인지</b>로 계산해요. (쇼다운에서 본 핸드는 운 계산에만 써요.)</li>
-      <li>보드도 그 스트릿까지 나온 카드만 써요. 플랍 결정을 평가할 때 리버 카드는 몰랐던 거니까요.</li>
+      <li>보드도 그 스트리트까지 나온 카드만 써요. 플랍 결정을 평가할 때 리버 카드는 몰랐던 거니까요.</li>
     </ul>
     
     <h2>상대 반응과 폴드율 표</h2>
@@ -110,11 +112,11 @@ body.embed .gnav{display:none}
     <p>두 숫자 사이에 내 승률이 있으면 <b>"칩으로는 콜이지만, ICM 때문에 폴드가 맞아요"</b>가 떠요. 버블에서 자주 생기는 상황이에요.</p>
     
     <h2>라인 한눈에 비교</h2>
-    <p>만든 라인들을 나란히 놓고 비교해요. 각 라인은 실제 라인과 <b>갈라지는 스트릿 시점</b>에서, 같은 기준으로 계산해요.</p>
+    <p>만든 라인들을 나란히 놓고 비교해요. 각 라인은 실제 라인과 <b>갈라지는 스트리트 시점</b>에서, 같은 기준으로 계산해요.</p>
     
     <h2>숫자를 볼 때 팁</h2>
     <ul>
-      <li>몇천 원 차이는 사실상 같은 선택이에요. 큰 차이에 집중하세요.</li>
+      <li>금액은 계산 오차를 고려해서 앞 3자리까지만 보여줘요. 몇천 원 차이는 사실상 같은 선택이니, 큰 차이에 집중하세요.</li>
       <li>상대 레인지와 반응 성향을 바꿔보면, 결론이 얼마나 단단한지 확인할 수 있어요.</li>
     </ul>
     <nav class="gnav"><a href="guide-icm.html">ICM이란?</a><a href="guide-howto.html">사용법</a><a href="./" class=go>계산하러 가기 ›</a></nav>
@@ -135,13 +137,15 @@ body.embed .gnav{display:none}
     <p>カードの下の3つの数字はこう読みます。</p>
     <ul>
       <li><b>判断の価値</b>：損をした判断があれば<b>逃した期待値</b>の合計です。すべて最善だった場合は、最後の判断が<b>次善の選択より</b>どれだけ良かったかを示します。</li>
-      <li><b>運</b>：実際の結果 − 期待値です。＋なら平均より上振れ、−なら下振れです。相手のハンドを入力しないと計算できないため「-」と表示されます。</li>
+      <li><b>運</b>：実際の結果 − 期待値です。＋なら平均より上振れ、−なら下振れです。相手のハンドが分からないと計算できないため、<b>＋相手のハンドを入力</b>ボタンが表示されます。ショーダウンで見たハンドを入力すると計算されます。</li>
       <li><b>実際の結果</b>：ハンド前と比べて、賞金の価値が実際にどれだけ増減したかです。</li>
     </ul>
     <div class="ex">
       <p><b>例：</b>AKでオールインし、期待値は+2万円。相手のQQに負けて実際の結果は−3万円。</p>
       <p>→ 判断の価値+2万円、運−5万円、実際の結果−3万円。「結果は悪かったけど、判断は良かったです」になります。</p>
     </div>
+    
+    <p>相手のハンドが分からない時は結果を判断できないため、タイトルも判断だけを見て<b>「良い判断でした」</b>または<b>「判断に損がありました」</b>と表示されます。</p>
     
     <h2>何と比べているの？</h2>
     <p>判断の価値は、常に「別の選択をしていたら」との差です。比較対象は2種類あります。</p>
@@ -186,7 +190,7 @@ body.embed .gnav{display:none}
     
     <h2>数字を見る時のコツ</h2>
     <ul>
-      <li>数百円程度の差は、実質的に同じ選択です。大きな差に注目しましょう。</li>
+      <li>金額は計算誤差を考慮して上3桁まで表示します。数百円程度の差は実質的に同じ選択なので、大きな差に注目しましょう。</li>
       <li>相手のレンジや反応の傾向を変えてみると、結論がどれだけ確かなものか確認できます。</li>
     </ul>
     <nav class="gnav"><a href="guide-icm.html">ICMとは？</a><a href="guide-howto.html">使い方</a><a href="./" class=go>計算する ›</a></nav>
@@ -207,13 +211,15 @@ body.embed .gnav{display:none}
     <p>The three numbers under the card:</p>
     <ul>
       <li><b>Decision value</b>: if any decision cost you, the total <b>EV lost</b>. If every decision was best, how much better your last decision was than the <b>next best</b> option.</li>
-      <li><b>Luck</b>: actual result − expected value. Positive means it ran better than average, negative means worse. Shown as "-" if you didn't enter the opponent's hand.</li>
+      <li><b>Luck</b>: actual result − expected value. Positive means it ran better than average, negative means worse. If you don't know the opponent's hand, an <b>+ Add opponent's hand</b> button appears; enter the hand you saw at showdown.</li>
       <li><b>Actual result</b>: how much your prize equity actually changed compared with before the hand.</li>
     </ul>
     <div class="ex">
       <p><b>Example:</b> you shove AK with an expected value of +$200, lose to QQ, and the actual result is −$300.</p>
       <p>→ Decision value +$200, luck −$500, actual result −$300: "Bad result, good decision".</p>
     </div>
+    
+    <p>Without the opponent's hand the result can't be judged, so the title grades the decision only: <b>"Good decision"</b> or <b>"A decision cost you"</b>.</p>
     
     <h2>Compared with what?</h2>
     <p>Decision value is always the difference from "if you had done something else". There are two kinds of comparison.</p>
@@ -258,7 +264,7 @@ body.embed .gnav{display:none}
     
     <h2>Tips</h2>
     <ul>
-      <li>Tiny differences mean the choices are essentially equal. Focus on the big gaps.</li>
+      <li>Amounts are rounded to 3 significant digits because of simulation noise. Tiny differences mean the choices are essentially equal; focus on the big gaps.</li>
       <li>Try different opponent ranges and response styles to see how robust the conclusion is.</li>
     </ul>
     <nav class="gnav"><a href="guide-icm.html">What is ICM?</a><a href="guide-howto.html">How to use</a><a href="./" class=go>Open the calculator ›</a></nav>
@@ -267,7 +273,7 @@ body.embed .gnav{display:none}
 </div>
 <script>
 // ▼ 문의 이메일: 여기 한 곳만 바꾸면 돼요
-const CONTACT = "";
+const CONTACT = "juntubee@gmail.com";
 const q = new URLSearchParams(location.search);
 if (q.has("embed")) document.body.classList.add("embed");
 const pick = l => {
