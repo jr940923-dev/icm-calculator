@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>결과 읽는 법 · ICM 계산기</title>
+<style>
+:root{--bg:#f2f4f6;--card:#fff;--text:#191f28;--sub:#4e5968;--muted:#8b95a1;--line:#e5e8eb;--pri:#0e9f6e;--pri-soft:#e3f6ee}
+@media (prefers-color-scheme: dark){:root{--bg:#101214;--card:#1b1e22;--text:#eceef0;--sub:#b0b8c1;--muted:#7f8893;--line:#2b2f34;--pri:#2fbf8a;--pri-soft:#143a2d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Noto Sans KR","Hiragino Sans","Noto Sans JP",sans-serif;-webkit-text-size-adjust:100%}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.brand{font-weight:800;font-size:16px;color:var(--pri);text-decoration:none}
+.tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px}
+.tabs button{border:0;background:none;color:var(--sub);font:inherit;font-size:13px;font-weight:700;padding:5px 11px;border-radius:999px;cursor:pointer}
+.tabs button.on{background:var(--pri);color:#fff}
+article{display:none;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 20px}
+article.on{display:block}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.02em}
+.date{color:var(--muted);font-size:13px;margin:0 0 18px}
+.lead{background:var(--pri-soft);border-radius:12px;padding:12px 14px;margin:0 0 18px;font-weight:600}
+h2{font-size:16px;margin:22px 0 6px}
+p,li{color:var(--sub)}
+p{margin:0 0 8px}
+ul{margin:0 0 8px;padding-left:20px}
+a{color:var(--pri)}
+body.embed{background:var(--card)}
+body.embed .top,body.embed h1{display:none}
+body.embed .wrap{padding:14px 18px 40px}
+body.embed article{border:0;padding:4px 2px 16px;background:none}
+.ex{background:var(--bg);border-radius:12px;padding:12px 14px;margin:10px 0 8px}
+.ex p{margin:0 0 6px}.ex p:last-child{margin:0}
+table{width:100%;border-collapse:collapse;margin:8px 0 10px;font-size:14px}
+th,td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top;color:var(--sub)}
+th{color:var(--text);background:var(--bg)}
+small{color:var(--muted)}
+.gnav{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.gnav a{flex:1 1 auto;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-decoration:none;font-weight:700;font-size:14px}
+.gnav a.go{background:var(--pri);color:#fff;border-color:var(--pri)}
+body.embed .gnav{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="./">♠ ICM 계산기</a>
+    <div class="tabs"><button data-l="ko">한국어</button><button data-l="ja">日本語</button><button data-l="en">English</button></div>
+  </div>
+
+  <article data-l="ko">
+    <h1>결과 읽는 법</h1>
+    <p class="date">이겼는지 졌는지가 아니라, 결정이 좋았는지를 봐요</p>
+    <p class="lead">결과 화면의 모든 금액은 <b>상금 기준 기대값</b>이에요. 같은 상황을 아주 많이 반복했을 때 평균적으로 얻는 상금 가치이고, 실제로 받는 돈과는 달라요.</p>
+    
+    <h2>맨 위 결론 카드</h2>
+    <p>결정이 좋았는지와 결과가 좋았는지를 나눠서, 넷 중 하나로 알려줘요.</p>
+    <table>
+      <tr><th></th><th>결과 +</th><th>결과 −</th></tr>
+      <tr><th>결정 좋음</th><td>👍 결정도 좋고, 결과도 좋았어요</td><td>👍 결과는 나빴지만, 결정은 좋았어요<br><small>배드빗. 다음에도 같은 선택을 해도 돼요.</small></td></tr>
+      <tr><th>결정 손해</th><td>🤔 결과는 좋았지만, 결정은 −였어요<br><small>운이 도와준 판. 다음엔 조심.</small></td><td>🤔 결정도 −, 결과도 −</td></tr>
+    </table>
+    <p>카드 아래 숫자 세 개는 이렇게 읽어요.</p>
+    <ul>
+      <li><b>결정의 가치</b>: 손해 본 결정이 있으면 <b>놓친 기대값</b>의 합계예요. 모두 최선이었다면 마지막 결정이 <b>차선책보다</b> 얼마나 나았는지 보여줘요.</li>
+      <li><b>평균 기대 결과</b>: 그 결정을 같은 상황에서 아주 많이 반복했을 때, 핸드 전보다 상금 가치가 평균적으로 얼마나 늘거나 줄지예요.</li>
+      <li><b>카드 운</b> (실제 결과 아래 줄): <b>실제 결과 − 평균 기대 결과</b>예요. +면 평균보다 카드가 잘 따라줬고, −면 덜 따라줬어요. 상대 핸드를 모르면 실제 결과를 계산할 수 없어서 <b>+ 상대 핸드 넣기</b> 버튼이 나와요.</li>
+      <li><b>실제 결과</b>: 핸드 전과 비교해서 상금 가치가 실제로 얼마나 늘거나 줄었는지예요.</li>
+    </ul>
+    <div class="ex">
+      <p><b>예:</b> AK로 올인했는데 기대값이 +20만이었어요. 상대 QQ에 져서 실제 결과는 −30만.</p>
+      <p>→ 결정의 가치 +20만, 평균 기대 결과 +20만, 실제 결과 −30만, <b>카드 운 −50만</b> (−30만 − 20만). "결과는 나빴지만, 결정은 좋았어요"예요.</p>
+    </div>
+    
+    <p>상대 핸드를 모를 때는 결과를 판단할 수 없으니, 제목도 결정만 보고 <b>"결정은 좋았어요"</b> 또는 <b>"결정에 손해가 있었어요"</b>로 나와요.</p>
+    
+    <h2>무엇과 비교하나요?</h2>
+    <p>결정의 가치는 항상 "다른 선택을 했다면"과의 차이예요. 비교 대상은 두 가지예요.</p>
+    <ul>
+      <li><b>자동 비교</b>: 상대 베팅을 받았을 땐 <b>폴드했다면</b>, 리버에서 벳했을 땐 <b>체크했다면</b>, 내가 폴드했을 땐 <b>콜했다면</b>, 내가 체크했을 땐 <b>1/2팟 벳했다면</b>을 앱이 알아서 계산해요. (벳 비교는 상대 체크레이즈를 빼고 계산한 근사예요.)</li>
+      <li><b>내가 만든 라인</b>: 라인 화면에서 <b>↳ 다르게</b>로 만든 선택들이에요. 예를 들어 "올인 대신 2.2BB 레이즈였다면?"은 라인을 하나 만들어야 비교돼요.</li>
+    </ul>
+    
+    <h2>스트리트별 결정</h2>
+    <ul>
+      <li><b>✓ 최선</b>: 비교한 선택들 중 가장 좋았어요. 옆 숫자는 다음으로 좋은 선택과의 차이예요.</li>
+      <li><b>≈ 비슷해요</b>: 차이가 계산 오차 범위 안이라, 어느 쪽이든 괜찮아요.</li>
+      <li><b>−금액</b>: 더 좋은 선택이 있었고, 그만큼 기대값을 놓쳤어요.</li>
+      <li><b>참고 · 이 결정만 보면</b>: 뒤에 내 결정이 더 남은 앞쪽 결정이에요. <b>어떤 보드든 똑같은 베팅 라인이라면</b>(상대 레인지 전체에 대한 평균 손익) 값에는 뒤에서 한 선택(예: 리버 올인 콜)의 손익까지 섞여 있어서, "KQs 오픈이 손해" 같은 이상한 판정이 나올 수 있어요. 그래서 이런 결정은 <b>이 결정만 보면</b>, 즉 그 뒤는 상대가 콜하고 서로 체크다운한다고 가정한 값으로 따로 판정해요(✓/✗). 맨 위 결론에는 넣지 않고, 결론은 <b>판단 기준</b>에 적힌 마지막 결정들로 내려요.</li>
+    </ul>
+    
+    <h2>결과론이 아니에요</h2>
+    <p>결정은 <b>그 순간 알 수 있었던 것만으로</b> 평가해요.</p>
+    <ul>
+      <li>상대 핸드는 몰랐다고 보고 <b>레인지</b>로 계산해요. (쇼다운에서 본 핸드는 운 계산에만 써요.)</li>
+      <li>보드도 그 스트리트까지 나온 카드만 써요. 플랍 결정을 평가할 때 리버 카드는 몰랐던 거니까요.</li>
+    </ul>
+    
+    <h2>상대 반응과 폴드율 표</h2>
+    <p>내 벳·레이즈에는 상대가 접는 경우가 함께 계산돼요. (성향 설정은 <a href="guide-howto.html#fold" data-guide="howto#fold">사용법 → 상대 반응</a>을 보세요.)</p>
+    <ul>
+      <li><b>예상 폴드율</b>: 고른 성향으로 계산한, 상대가 접는 비율이에요.</li>
+      <li><b>손익분기</b>: "폴드보다 나으려면 상대가 <b>X%</b> 이상 접어야 해요." 상대가 그보다 자주 접는 사람이면 +예요.</li>
+      <li><b>폴드율별 표</b>: 0/20/40/60/80% 접을 때 각각 얼마나 이득인지예요. 상대 성향을 정확히 몰라도, 어느 구간부터 +인지 한눈에 볼 수 있어요.</li>
+    </ul>
+    
+    <h2>콜·폴드에 필요한 승률</h2>
+    <p>콜이나 폴드를 판단할 때는 필요한 승률을 두 가지로 보여줘요.</p>
+    <ul>
+      <li><b>ICM 기준</b>: 상금으로 따졌을 때 필요한 승률이에요.</li>
+      <li><b>칩으로만 보면</b>: 팟 오즈만 따진 승률이에요.</li>
+    </ul>
+    <p>두 숫자 사이에 내 승률이 있으면 <b>"칩으로는 콜이지만, ICM 때문에 폴드가 맞아요"</b>가 떠요. 버블에서 자주 생기는 상황이에요.</p>
+    
+    <h2>라인 한눈에 비교</h2>
+    <p>만든 라인들을 나란히 놓고 비교해요. 각 라인은 실제 라인과 <b>갈라지는 스트리트 시점</b>에서, 같은 기준으로 계산해요.</p>
+    
+    <h2>숫자를 볼 때 팁</h2>
+    <ul>
+      <li>금액은 계산 오차를 고려해서 앞 3자리까지만 보여줘요. 몇천 원 차이는 사실상 같은 선택이니, 큰 차이에 집중하세요.</li>
+      <li>상대 레인지와 반응 성향을 바꿔보면, 결론이 얼마나 단단한지 확인할 수 있어요.</li>
+    </ul>
+    <nav class="gnav"><a href="guide-icm.html">ICM이란?</a><a href="guide-howto.html">사용법</a><a href="./" class=go>계산하러 가기 ›</a></nav>
+  </article>
+
+  <article data-l="ja">
+    <h1>結果の読み方</h1>
+    <p class="date">勝ったか負けたかではなく、判断が良かったかを見ます</p>
+    <p class="lead">結果画面の金額はすべて<b>賞金ベースの期待値</b>です。同じ状況を何度も繰り返した時に平均して得られる賞金の価値で、実際に受け取るお金とは異なります。</p>
+    
+    <h2>一番上の結論カード</h2>
+    <p>判断が良かったかと結果が良かったかを分けて、4つのうちの1つで表示します。</p>
+    <table>
+      <tr><th></th><th>結果 +</th><th>結果 −</th></tr>
+      <tr><th>良い判断</th><td>👍 判断も結果も良かったです</td><td>👍 結果は悪かったけど、判断は良かったです<br><small>バッドビート。次も同じ選択でOK。</small></td></tr>
+      <tr><th>損した判断</th><td>🤔 結果は良かったけど、判断はマイナスでした<br><small>運に助けられたハンド。次は注意。</small></td><td>🤔 判断も結果もマイナス</td></tr>
+    </table>
+    <p>カードの下の3つの数字はこう読みます。</p>
+    <ul>
+      <li><b>判断の価値</b>：損をした判断があれば<b>逃した期待値</b>の合計です。すべて最善だった場合は、最後の判断が<b>次善の選択より</b>どれだけ良かったかを示します。</li>
+      <li><b>平均的な期待結果</b>：その判断を同じ状況で何度も繰り返した時、ハンド前と比べて賞金の価値が平均でどれだけ増減するかです。</li>
+      <li><b>カード運</b>（実際の結果の下の行）：<b>実際の結果 − 平均的な期待結果</b>です。＋なら平均よりカードがついてきて、−ならついてきませんでした。相手のハンドが分からないと実際の結果を計算できないため、<b>＋相手のハンドを入力</b>ボタンが表示されます。</li>
+      <li><b>実際の結果</b>：ハンド前と比べて、賞金の価値が実際にどれだけ増減したかです。</li>
+    </ul>
+    <div class="ex">
+      <p><b>例：</b>AKでオールインし、期待値は+2万円。相手のQQに負けて実際の結果は−3万円。</p>
+      <p>→ 判断の価値+2万円、平均的な期待結果+2万円、実際の結果−3万円、<b>カード運−5万円</b>。「結果は悪かったけど、判断は良かったです」になります。</p>
+    </div>
+    
+    <p>相手のハンドが分からない時は結果を判断できないため、タイトルも判断だけを見て<b>「良い判断でした」</b>または<b>「判断に損がありました」</b>と表示されます。</p>
+    
+    <h2>何と比べているの？</h2>
+    <p>判断の価値は、常に「別の選択をしていたら」との差です。比較対象は2種類あります。</p>
+    <ul>
+      <li><b>自動比較</b>：相手のベットを受けた時は<b>フォールドしていたら</b>、リバーでベットした時は<b>チェックしていたら</b>、自分がフォールドした時は<b>コールしていたら</b>、自分がチェックした時は<b>1/2ポットベットしていたら</b>をアプリが自動で計算します。（ベットとの比較は相手のチェックレイズを除いた近似です。）</li>
+      <li><b>自分で作ったライン</b>：ライン画面の<b>↳ 別の選択</b>で作った選択です。例えば「オールインの代わりに2.2BBレイズだったら？」は、ラインを1つ作ると比較されます。</li>
+    </ul>
+    
+    <h2>ストリートごとの判断</h2>
+    <ul>
+      <li><b>✓ 最善</b>：比較した選択の中で最も良かった判断です。横の数字は次善の選択との差です。</li>
+      <li><b>≈ ほぼ同じ</b>：差が計算誤差の範囲内なので、どちらでも構いません。</li>
+      <li><b>−金額</b>：より良い選択があり、その分の期待値を逃しました。</li>
+      <li><b>参考・この判断だけ見ると</b>：後に自分の判断が残っている前の方の判断です。<b>どんなボードでも同じベットラインなら</b>（相手レンジ全体に対する平均損益）の値には後の選択（例：リバーのオールインコール）の損益まで混ざり、「KQsのオープンが損」のような変な評価になることがあります。そのためこうした判断は<b>この判断だけ見ると</b>、つまりその後は相手がコールしてお互いチェックダウンすると仮定した値で別に評価します（✓/✗）。一番上の結論には含めず、結論は<b>評価の基準</b>に書かれた最後の判断で出します。</li>
+    </ul>
+    
+    <h2>結果論ではありません</h2>
+    <p>判断は<b>その時点で分かっていたことだけ</b>で評価します。</p>
+    <ul>
+      <li>相手のハンドは知らなかったものとして<b>レンジ</b>で計算します。（ショーダウンで見たハンドは運の計算にだけ使います。）</li>
+      <li>ボードもそのストリートまでに出たカードだけを使います。フロップの判断を評価する時、リバーのカードは知らなかったからです。</li>
+    </ul>
+    
+    <h2>相手の反応とフォールド率の表</h2>
+    <p>自分のベット・レイズには、相手が降りるケースも一緒に計算されます。（傾向の設定は<a href="guide-howto.html#fold" data-guide="howto#fold">使い方 → 相手の反応</a>をご覧ください。）</p>
+    <ul>
+      <li><b>予想フォールド率</b>：選んだ傾向で計算した、相手が降りる割合です。</li>
+      <li><b>損益分岐点</b>：「フォールドより良くするには、相手が<b>X%</b>以上降りる必要があります。」相手がそれより頻繁に降りる人ならプラスです。</li>
+      <li><b>フォールド率別の表</b>：0/20/40/60/80%降りた場合にそれぞれどれだけ得かを示します。相手の傾向が正確に分からなくても、どこからプラスになるか一目で分かります。</li>
+    </ul>
+    
+    <h2>コール・フォールドに必要な勝率</h2>
+    <p>コールやフォールドの判断では、必要な勝率を2通りで表示します。</p>
+    <ul>
+      <li><b>ICM基準</b>：賞金で考えた時に必要な勝率です。</li>
+      <li><b>チップだけで見ると</b>：ポットオッズだけで考えた勝率です。</li>
+    </ul>
+    <p>自分の勝率が2つの数字の間にある時は<b>「チップ的にはコールですが、ICMのためフォールドが正解です」</b>と表示されます。バブルでよく起こる状況です。</p>
+    
+    <h2>ラインの比較</h2>
+    <p>作ったラインを並べて比較します。各ラインは実際のラインと<b>分かれるストリートの時点</b>で、同じ基準で計算します。</p>
+    
+    <h2>数字を見る時のコツ</h2>
+    <ul>
+      <li>金額は計算誤差を考慮して上3桁まで表示します。数百円程度の差は実質的に同じ選択なので、大きな差に注目しましょう。</li>
+      <li>相手のレンジや反応の傾向を変えてみると、結論がどれだけ確かなものか確認できます。</li>
+    </ul>
+    <nav class="gnav"><a href="guide-icm.html">ICMとは？</a><a href="guide-howto.html">使い方</a><a href="./" class=go>計算する ›</a></nav>
+  </article>
+
+  <article data-l="en">
+    <h1>Reading the results</h1>
+    <p class="date">Not whether you won, but whether you decided well</p>
+    <p class="lead">Every amount on the results screen is <b>prize equity</b>: the average prize value you would get over many repeats of the same spot. It is not the money you actually receive.</p>
+    
+    <h2>The verdict card at the top</h2>
+    <p>It separates the quality of your decisions from the result, and shows one of four verdicts.</p>
+    <table>
+      <tr><th></th><th>Result +</th><th>Result −</th></tr>
+      <tr><th>Good decision</th><td>👍 Good decision, good result</td><td>👍 Bad result, good decision<br><small>A bad beat. Make the same play next time.</small></td></tr>
+      <tr><th>Costly decision</th><td>🤔 Good result, but a −EV decision<br><small>Luck bailed you out.</small></td><td>🤔 −EV decision, bad result</td></tr>
+    </table>
+    <p>The three numbers under the card:</p>
+    <ul>
+      <li><b>Decision value</b>: if any decision cost you, the total <b>EV lost</b>. If every decision was best, how much better your last decision was than the <b>next best</b> option.</li>
+      <li><b>Expected result</b>: how much your prize equity would change on average if you repeated the decision many times.</li>
+      <li><b>Card luck</b> (the line under the numbers): <b>actual result − expected result</b>. Positive means the cards ran better than average, negative means worse. Without the opponent's hand the actual result can't be computed, so an <b>+ Add opponent's hand</b> button appears.</li>
+      <li><b>Actual result</b>: how much your prize equity actually changed compared with before the hand.</li>
+    </ul>
+    <div class="ex">
+      <p><b>Example:</b> you shove AK with an expected value of +$200, lose to QQ, and the actual result is −$300.</p>
+      <p>→ Decision value +$200, expected result +$200, actual result −$300, <b>card luck −$500</b>: "Bad result, good decision".</p>
+    </div>
+    
+    <p>Without the opponent's hand the result can't be judged, so the title grades the decision only: <b>"Good decision"</b> or <b>"A decision cost you"</b>.</p>
+    
+    <h2>Compared with what?</h2>
+    <p>Decision value is always the difference from "if you had done something else". There are two kinds of comparison.</p>
+    <ul>
+      <li><b>Automatic</b>: <b>If you folded</b> when facing a bet, <b>If you checked</b> when you bet the river, <b>If you called</b> when you folded, and <b>If you bet 1/2 pot</b> when you checked (an approximation that leaves out opponent check-raises).</li>
+      <li><b>Lines you create</b> with <b>↳ What if</b> on the line screen. "What if I raised to 2.2BB instead of shoving?" needs its own line to be compared.</li>
+    </ul>
+    
+    <h2>Decisions by street</h2>
+    <ul>
+      <li><b>✓ Best</b>: the best of the options compared. The number shows the gap to the next best.</li>
+      <li><b>≈ About equal</b>: the gap is within calculation noise, so either is fine.</li>
+      <li><b>−amount</b>: a better option existed, and you gave up that much EV.</li>
+      <li><b>Reference · This decision alone</b>: an earlier decision followed by more of your own decisions. The <b>Same betting line on any board</b> value (average result against their whole range) mixes in the result of later choices (e.g. a river all-in call) and could produce odd verdicts like "the KQs open loses". So these decisions are graded on <b>This decision alone</b>: after it, the opponent calls and both players check down (✓/✗). They are left out of the top verdict, which is based on the decisions shown in <b>Graded from</b>.</li>
+    </ul>
+    
+    <h2>No results-oriented thinking</h2>
+    <p>Each decision is graded <b>only on what you could know at that moment</b>.</p>
+    <ul>
+      <li>The opponent's hand is treated as unknown and modeled as a <b>range</b>. (A hand seen at showdown is used only for luck.)</li>
+      <li>Only the board cards dealt by that street are used. You didn't know the river when you made your flop decision.</li>
+    </ul>
+    
+    <h2>Opponent response and the fold-rate table</h2>
+    <p>Your bets and raises include the cases where the opponent folds. (For the style settings, see <a href="guide-howto.html#fold" data-guide="howto#fold">How to use → Opponent response</a>.)</p>
+    <ul>
+      <li><b>Expected fold rate</b>: how often they fold under the style you chose.</li>
+      <li><b>Break-even</b>: "To beat folding, they must fold <b>X%</b> or more." If they fold more often than that, your play is +EV.</li>
+      <li><b>Fold-rate table</b>: your edge if they fold 0/20/40/60/80%. Even without a precise read, you can see where it turns positive.</li>
+    </ul>
+    
+    <h2>Equity needed to call</h2>
+    <p>For call/fold decisions, the required equity is shown two ways.</p>
+    <ul>
+      <li><b>ICM</b>: the equity needed in prize money.</li>
+      <li><b>Chips only</b>: the equity from pot odds alone.</li>
+    </ul>
+    <p>If your equity falls between the two, you'll see <b>"A call in chips, but ICM makes it a fold"</b>. This is common on the bubble.</p>
+    
+    <h2>Line comparison</h2>
+    <p>Your lines side by side. Each line is evaluated at the <b>street where it splits</b> from the actual line, on the same basis.</p>
+    
+    <h2>Tips</h2>
+    <ul>
+      <li>Amounts are rounded to 3 significant digits because of simulation noise. Tiny differences mean the choices are essentially equal; focus on the big gaps.</li>
+      <li>Try different opponent ranges and response styles to see how robust the conclusion is.</li>
+    </ul>
+    <nav class="gnav"><a href="guide-icm.html">What is ICM?</a><a href="guide-howto.html">How to use</a><a href="./" class=go>Open the calculator ›</a></nav>
+  </article>
+
+</div>
+<script>
+// ▼ 문의 이메일: 여기 한 곳만 바꾸면 돼요
+const CONTACT = "juntubee@gmail.com";
+const q = new URLSearchParams(location.search);
+if (q.has("embed")) document.body.classList.add("embed");
+const pick = l => {
+  document.querySelectorAll("article").forEach(a => a.classList.toggle("on", a.dataset.l === l));
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("on", b.dataset.l === l));
+  document.documentElement.lang = l;
+  document.title = document.querySelector(`article[data-l="${l}"] h1`).textContent + " · ICM";
+};
+const nav = (navigator.language || "en").slice(0, 2);
+pick(["ko", "ja", "en"].includes(q.get("lang")) ? q.get("lang") : ["ko", "ja", "en"].includes(nav) ? nav : "en");
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => pick(b.dataset.l));
+document.querySelectorAll("a[data-guide]").forEach(a => a.onclick = e => {
+  if (q.has("embed") && window.parent !== window) { e.preventDefault(); window.parent.postMessage({ icmGuide: a.dataset.guide }, "*"); }
+});
+if (location.hash) setTimeout(() => { const el = document.querySelector(`article.on ${location.hash}`); if (el) el.scrollIntoView(); }, 50);
+document.querySelectorAll(".mail").forEach(s => {
+  if (CONTACT) s.innerHTML = `<a href="mailto:${CONTACT}">${CONTACT}</a>`;
+  else s.textContent = "(email)";
+});
+</script>
+</body>
+</html>
